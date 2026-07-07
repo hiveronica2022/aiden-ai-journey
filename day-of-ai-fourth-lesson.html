@@ -1,0 +1,1742 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Day of AI 第四课：数据越多越聪明？</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #5d6878;
+      --paper: #fbfbf7;
+      --panel: #ffffff;
+      --line: #d9dfdc;
+      --teal: #0b8f8b;
+      --teal-soft: #ddf4f1;
+      --coral: #de6251;
+      --coral-soft: #ffe2dc;
+      --gold: #f1c64b;
+      --gold-soft: #fff1bd;
+      --green: #448f4b;
+      --green-soft: #e2f2df;
+      --blue: #436fc2;
+      --blue-soft: #e2ebff;
+      --violet: #725fb4;
+      --violet-soft: #ece7ff;
+      --shadow: 0 18px 44px rgba(23, 32, 51, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 9% 12%, rgba(241, 198, 75, 0.24), transparent 24%),
+        radial-gradient(circle at 88% 13%, rgba(11, 143, 139, 0.18), transparent 23%),
+        linear-gradient(180deg, #f7faf5 0%, #fbfbf7 48%, #f4f7fb 100%);
+    }
+
+    button, input, textarea, select { font: inherit; }
+    button { border: 0; cursor: pointer; }
+    a {
+      color: var(--teal);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+    h1, h2, h3, p { margin: 0; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+    }
+
+    .side {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 22px;
+      border-right: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      overflow: auto;
+    }
+
+    .map-link {
+      display: grid;
+      place-items: center;
+      min-height: 40px;
+      margin-bottom: 14px;
+      border: 1px solid #e0c55d;
+      border-radius: 8px;
+      background: var(--gold-soft);
+      color: var(--ink);
+      font-weight: 950;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .brand {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .brand-mark {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--ink);
+      box-shadow: var(--shadow);
+    }
+
+    .brand-mark svg { width: 36px; height: 36px; }
+
+    .eyebrow {
+      margin-bottom: 6px;
+      color: var(--coral);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .brand h1 {
+      font-size: 22px;
+      line-height: 1.16;
+      letter-spacing: 0;
+    }
+
+    .brand p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .progress-card, .timer-card, .parent-card {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 8px 22px rgba(23, 32, 51, 0.07);
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: 900;
+    }
+
+    .progress-track {
+      height: 12px;
+      border-radius: 999px;
+      background: #edf1ef;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), var(--gold));
+      transition: width 220ms ease;
+    }
+
+    .step-list {
+      display: grid;
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .step-tab {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 34px 1fr auto;
+      gap: 9px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+    }
+
+    .step-tab:hover, .step-tab:focus-visible {
+      outline: none;
+      border-color: var(--line);
+      background: #fff;
+    }
+
+    .step-tab.active {
+      background: var(--teal-soft);
+      border-color: #9bd8d1;
+    }
+
+    .step-tab.done { background: var(--green-soft); }
+
+    .step-num {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #eef2f4;
+      color: var(--ink);
+      font-weight: 950;
+    }
+
+    .step-tab.done .step-num {
+      color: #fff;
+      background: var(--green);
+    }
+
+    .step-title {
+      display: block;
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.24;
+    }
+
+    .step-time {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .step-status {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .timer-card {
+      margin: 14px 0;
+      color: #fff;
+      background: var(--ink);
+      border-color: transparent;
+    }
+
+    .timer {
+      margin-top: 8px;
+      font-size: 40px;
+      font-weight: 950;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .timer-actions button, .utility-btn {
+      min-height: 36px;
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .parent-card {
+      display: grid;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.46;
+    }
+
+    .parent-card strong { color: var(--ink); }
+
+    .content {
+      min-width: 0;
+      padding: clamp(18px, 4vw, 48px);
+    }
+
+    .mobile-top {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(14px);
+    }
+
+    .mobile-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .mobile-row select {
+      min-height: 42px;
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 0 10px;
+      font-weight: 900;
+    }
+
+    .stage {
+      min-height: calc(100vh - 96px);
+      display: none;
+      align-content: center;
+      gap: 22px;
+    }
+
+    .stage.active { display: grid; }
+
+    .stage-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .stage h2 {
+      max-width: 980px;
+      font-size: clamp(36px, 5.4vw, 72px);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .stage-lead {
+      max-width: 850px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 19px;
+      line-height: 1.65;
+    }
+
+    .time-pill, .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      border-radius: 8px;
+      padding: 0 12px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .time-pill {
+      color: var(--ink);
+      background: var(--gold-soft);
+      border: 1px solid #e0c55d;
+    }
+
+    .badge {
+      color: #244d97;
+      background: var(--blue-soft);
+      border: 1px solid #b8c8ef;
+      font-size: 13px;
+    }
+
+    .task-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.92fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .task-panel, .guide-panel, .answer-card, .report-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 10px 28px rgba(23, 32, 51, 0.08);
+    }
+
+    .task-panel, .guide-panel { padding: clamp(16px, 2.4vw, 24px); }
+
+    .guide-panel {
+      display: grid;
+      align-content: start;
+      gap: 12px;
+      color: var(--muted);
+      line-height: 1.62;
+    }
+
+    .guide-panel h3, .task-panel h3 {
+      font-size: 24px;
+      line-height: 1.22;
+    }
+
+    .guide-panel ul, .guide-panel ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .say-box, .prompt-box, .feedback {
+      padding: 14px;
+      border-radius: 8px;
+      line-height: 1.5;
+    }
+
+    .say-box {
+      background: var(--blue-soft);
+      border-left: 6px solid var(--blue);
+      color: var(--ink);
+      font-size: 21px;
+      font-weight: 900;
+    }
+
+    .prompt-box {
+      background: #f7faf5;
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+
+    .prompt-box strong { color: var(--coral); }
+
+    .feedback {
+      min-height: 44px;
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      background: #f7faf5;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+    }
+
+    .feedback.good {
+      color: #234a2a;
+      background: var(--green-soft);
+      border-color: #b8d9b8;
+    }
+
+    .feedback.bad {
+      color: #7c2d1f;
+      background: var(--coral-soft);
+      border-color: #eec0b8;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    .primary-btn, .secondary-btn, .quiet-btn {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 8px;
+      padding: 0 16px;
+      border: 1px solid transparent;
+      font-weight: 950;
+      text-decoration: none;
+    }
+
+    .primary-btn {
+      color: #fff;
+      background: var(--teal);
+    }
+
+    .secondary-btn {
+      color: var(--ink);
+      background: #fff;
+      border-color: var(--line);
+    }
+
+    .quiet-btn {
+      min-height: 38px;
+      color: var(--ink);
+      background: var(--gold-soft);
+      border-color: #e0c55d;
+      font-size: 14px;
+    }
+
+    .text-input, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fdfdfb;
+      color: var(--ink);
+      padding: 12px;
+      line-height: 1.55;
+    }
+
+    textarea {
+      min-height: 118px;
+      resize: vertical;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .example-bank, .fix-grid, .privacy-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .example-bank {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .fix-grid, .privacy-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .example-btn, .fix-btn, .privacy-btn {
+      min-height: 58px;
+      padding: 12px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      text-align: left;
+      font-weight: 950;
+      line-height: 1.35;
+    }
+
+    .example-btn:hover, .fix-btn:hover, .privacy-btn:hover,
+    .example-btn:focus-visible, .fix-btn:focus-visible, .privacy-btn:focus-visible {
+      outline: none;
+      border-color: var(--teal);
+      background: var(--teal-soft);
+    }
+
+    .example-btn.selected {
+      border-color: var(--teal);
+      background: var(--teal-soft);
+    }
+
+    .example-btn.selected.bad-pick {
+      border-color: var(--coral);
+      background: var(--coral-soft);
+    }
+
+    .fix-btn.correct, .privacy-btn.selected {
+      border-color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .fix-btn.wrong {
+      border-color: var(--coral);
+      background: var(--coral-soft);
+    }
+
+    .counts {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .count-card, .result-card {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .count-card strong {
+      display: block;
+      font-size: 34px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .count-card span, .result-card span {
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .result-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .result-card {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .result-card.ok {
+      border-color: #b8d9b8;
+      background: var(--green-soft);
+    }
+
+    .result-card.miss {
+      border-color: #eec0b8;
+      background: var(--coral-soft);
+    }
+
+    .meter {
+      height: 12px;
+      border-radius: 999px;
+      background: #edf1ef;
+      overflow: hidden;
+    }
+
+    .meter span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), var(--gold));
+    }
+
+    .meter.miss span {
+      background: linear-gradient(90deg, var(--coral), var(--gold));
+    }
+
+    .chip-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .chip {
+      min-height: 48px;
+      padding: 8px 18px;
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--ink);
+      font-size: 18px;
+      font-weight: 950;
+    }
+
+    .chip:hover, .chip:focus-visible {
+      outline: none;
+      border-color: var(--violet);
+      background: var(--violet-soft);
+    }
+
+    .chip.used {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .sentence-box {
+      min-height: 62px;
+      margin-top: 14px;
+      padding: 14px;
+      border: 2px dashed var(--violet);
+      border-radius: 8px;
+      background: var(--violet-soft);
+      color: var(--ink);
+      font-size: 24px;
+      font-weight: 950;
+      line-height: 1.4;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .reflection-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .answer-card { padding: 14px; }
+
+    .answer-card label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 950;
+      line-height: 1.35;
+    }
+
+    .report-card {
+      display: grid;
+      gap: 14px;
+      padding: clamp(18px, 4vw, 34px);
+      border: 3px solid var(--ink);
+      background:
+        linear-gradient(135deg, rgba(255, 241, 189, 0.72), rgba(221, 244, 241, 0.8)),
+        #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .report-card h3 {
+      font-size: clamp(30px, 5vw, 54px);
+      line-height: 1.05;
+    }
+
+    .report-card p, .report-card li {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.65;
+    }
+
+    .report-list {
+      margin: 0;
+      padding-left: 22px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 50;
+      max-width: min(420px, calc(100vw - 36px));
+      padding: 12px 14px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--ink);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(14px);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1080px) {
+      .app { display: block; }
+      .side { display: none; }
+      .mobile-top { display: block; }
+      .content { padding: 20px; }
+      .stage {
+        min-height: auto;
+        padding: 18px 0 40px;
+      }
+      .task-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .content { padding: 16px; }
+      .stage-head, .split, .reflection-grid, .counts { grid-template-columns: 1fr; }
+      .stage h2 { font-size: 38px; }
+      .example-bank, .fix-grid, .privacy-grid { grid-template-columns: 1fr; }
+      .result-card { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .side, .mobile-top, .action-row, .timer-card, .toast,
+      .primary-btn, .secondary-btn, .quiet-btn { display: none !important; }
+      .app { display: block; }
+      .content { padding: 0; }
+      .stage {
+        display: block !important;
+        min-height: auto;
+        break-after: page;
+      }
+      .stage:not([data-step="summary"]) { display: none !important; }
+      .report-card, .task-panel, .guide-panel, .answer-card { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-top">
+    <div class="mobile-row">
+      <select id="mobileStepSelect" aria-label="选择任务步骤"></select>
+      <button class="quiet-btn" type="button" id="mobileTimerButton">计时</button>
+    </div>
+  </div>
+
+  <div class="app">
+    <aside class="side" aria-label="任务导航">
+      <a class="map-link" href="day-of-ai-course-roadmap.html">&larr; 返回冒险地图</a>
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img">
+            <path d="M8 38V22M18 38V12M28 38V18M38 38V8" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+            <path d="M4 42h40" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="eyebrow">Day of AI 第四课</div>
+          <h1>数据越多越聪明？</h1>
+          <p>做两场实验：好数据喂出聪明模型，差数据把模型教笨。</p>
+        </div>
+      </div>
+
+      <div class="progress-card">
+        <div class="progress-top">
+          <span>任务进度</span>
+          <span id="progressText">0/8</span>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="step-list" id="stepList"></div>
+
+      <div class="timer-card" id="timerCard">
+        <strong>课堂计时器</strong>
+        <div class="timer" id="timerDisplay">30:00</div>
+        <div class="timer-actions">
+          <button id="startTimer" type="button">开始</button>
+          <button id="pauseTimer" type="button">暂停</button>
+          <button id="resetTimer" type="button">重置</button>
+        </div>
+      </div>
+
+      <div class="parent-card">
+        <strong>第四课核心句</strong>
+        <span>数据的质量比数量更重要：干净、贴对标签的例子，才能教出聪明的模型。</span>
+        <a class="utility-btn" href="day-of-ai-third-lesson.html" style="display:grid;place-items:center;text-decoration:none;">回到第三课</a>
+        <button class="utility-btn" type="button" id="resetAll">重新开始第四课</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="stage active" data-step="intro" aria-labelledby="intro-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 0</div>
+            <h2 id="intro-title">回顾一下：机器靠什么学习？</h2>
+            <p class="stage-lead">上一课你当了 AI 训练师。还记得吗？机器不是天生聪明，它要看例子才能学会。点一点下面的答案。</p>
+          </div>
+          <span class="time-pill">3 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>机器靠什么变聪明？</h3>
+            <div class="fix-grid" id="introGrid"></div>
+            <div class="feedback" id="introFeedback">点一个你觉得对的答案。</div>
+            <div class="action-row">
+              <button class="primary-btn" type="button" data-next>去做实验 A</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>家长开场白</h3>
+            <div class="say-box">&ldquo;今天我们来当科学家，做两场实验：先喂机器好吃的&lsquo;数据饭&rsquo;，再故意喂它&lsquo;坏掉的饭&rsquo;，看看会发生什么！&rdquo;</div>
+            <p>今天的问题是：数据是不是越多越好？先让孩子猜一猜，最后再回来对答案。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="expa" aria-labelledby="expa-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 1</div>
+            <h2 id="expa-title">实验 A：喂 10 张清晰照片</h2>
+            <p class="stage-lead">我们要训练一个&ldquo;水果分类器&rdquo;，教它认苹果和香蕉。点击卡片，把 10 张清清楚楚的照片都喂给它，然后按&ldquo;开始测试&rdquo;。</p>
+          </div>
+          <span class="time-pill">5 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>点击卡片喂数据</h3>
+            <div class="example-bank" id="expaBank"></div>
+            <div class="counts">
+              <div class="count-card"><strong id="expaCount">0</strong><span>已喂给模型的清晰照片（目标 10 张）</span></div>
+              <div class="count-card"><strong id="expaScore">?</strong><span>测试成绩（喂完再测）</span></div>
+            </div>
+            <div class="result-list" id="expaResults"></div>
+            <div class="feedback" id="expaFeedback">把 10 张照片都点亮，再开始测试。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="primary-btn" type="button" id="runExpaTest">开始测试</button>
+              <button class="primary-btn" type="button" data-next>去做实验 B</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>家长这样说</h3>
+            <div class="say-box">&ldquo;每张照片都像一口有营养的饭。喂得越认真，模型学得越好。&rdquo;</div>
+            <ul>
+              <li>喂之前可以问：这张照片清楚吗？标签贴对了吗？</li>
+              <li>测试后一起看：模型猜对了几个？</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="expb" aria-labelledby="expb-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 2</div>
+            <h2 id="expb-title">实验 B：故意捣乱，喂差数据</h2>
+            <p class="stage-lead">现在我们当一次&ldquo;捣蛋科学家&rdquo;：把模糊的照片、贴错标签的照片喂给同一个模型，至少喂 4 张，再测试一次。猜猜会怎样？</p>
+          </div>
+          <span class="time-pill">5 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>点击卡片喂差数据</h3>
+            <div class="example-bank" id="expbBank"></div>
+            <div class="counts">
+              <div class="count-card"><strong id="expbCount">0</strong><span>已喂的差数据（至少 4 张）</span></div>
+              <div class="count-card"><strong id="expbScore">?</strong><span>测试成绩（喂完再测）</span></div>
+            </div>
+            <div class="result-list" id="expbResults"></div>
+            <div class="feedback" id="expbFeedback">先喂至少 4 张差数据，再按&ldquo;再测一次&rdquo;。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="primary-btn" type="button" id="runExpbTest">再测一次</button>
+              <button class="primary-btn" type="button" data-next>讨论：为什么？</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>家长这样说</h3>
+            <div class="say-box">&ldquo;坏掉的饭吃多了会肚子疼。错误的例子学多了，模型也会&lsquo;学坏&rsquo;。&rdquo;</div>
+            <ul>
+              <li>测试前先让孩子预言：模型会变聪明还是变笨？</li>
+              <li>注意看：模型错的时候还特别自信！</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="discuss" aria-labelledby="discuss-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 3</div>
+            <h2 id="discuss-title">侦探时间：模型为什么变笨了？</h2>
+            <p class="stage-lead">同一个模型，第一次是学霸，第二次全答错。像侦探一样想一想，点出你的答案。</p>
+          </div>
+          <span class="time-pill">4 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>问题 1：模型为什么突然变笨？</h3>
+            <div class="fix-grid" id="q1Grid"></div>
+            <div class="feedback" id="q1Feedback">点一个答案试试。</div>
+            <h3 style="margin-top:18px;">问题 2：标签贴错了，机器会怎样？</h3>
+            <div class="fix-grid" id="q2Grid"></div>
+            <div class="feedback" id="q2Feedback">再点一个答案。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="primary-btn" type="button" data-next>去玩真实工具</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>家长追问</h3>
+            <ul>
+              <li>模型自己知道它学的例子是错的吗？</li>
+              <li>如果 100 张照片里有 50 张贴错标签，多喂照片有用吗？</li>
+              <li>谁负责检查喂给机器的数据？（答案：人！）</li>
+            </ul>
+            <div class="say-box">&ldquo;机器不挑食：你喂什么，它学什么。&rdquo;</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="realtool" aria-labelledby="realtool-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 4</div>
+            <h2 id="realtool-title">真实工具实战：训练家人表情识别</h2>
+            <p class="stage-lead">现在用真正的 AI 工具 Teachable Machine，训练一个能认出&ldquo;笑脸&rdquo;和&ldquo;鬼脸&rdquo;的模型。家长陪着一步一步来。</p>
+          </div>
+          <span class="time-pill">8 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>跟着卡片做</h3>
+            <div class="prompt-box">
+              <strong>第 1 步：</strong>打开 Teachable Machine，选&ldquo;图片项目&rdquo;（Image Project）。<br />
+              <strong>第 2 步：</strong>类别 1 改名&ldquo;笑脸&rdquo;，类别 2 改名&ldquo;鬼脸&rdquo;。<br />
+              <strong>第 3 步：</strong>用摄像头给每个表情拍 15&ndash;20 张（好数据：清楚、够多、多个角度）。<br />
+              <strong>第 4 步：</strong>点&ldquo;训练模型&rdquo;（Train Model），等它学完。<br />
+              <strong>第 5 步：</strong>做表情测试它！再故意侧脸、遮半张脸，看它会不会犯迷糊。
+            </div>
+            <div class="privacy-grid" id="toolGrid"></div>
+            <div class="feedback" id="realtoolFeedback">先勾选 3 条约定，再打开工具。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <a class="secondary-btn" href="https://teachablemachine.withgoogle.com" target="_blank" rel="noreferrer">打开 Teachable Machine</a>
+              <a class="secondary-btn" href="https://machinelearningforkids.co.uk" target="_blank" rel="noreferrer">备选：ML for Kids</a>
+              <button class="primary-btn" type="button" data-next>记录实验结果</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>家长小抄</h3>
+            <div class="say-box">&ldquo;这次轮到你用真数据训练真模型啦！&rdquo;</div>
+            <ul>
+              <li>照片只在浏览器里处理，不点&ldquo;上传/分享&rdquo;就不会传出去。</li>
+              <li>想复习第四课的道理：故意只拍 3 张照片训练，看模型是不是变笨。</li>
+              <li>打不开网站的话，用备选网站，或直接跳到下一步。</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="compare" aria-labelledby="compare-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 5</div>
+            <h2 id="compare-title">对比记录：好模型 vs 笨模型</h2>
+            <p class="stage-lead">像科学家写实验记录一样，说说你看到的两种模型。孩子口述，家长帮忙打字。</p>
+          </div>
+          <span class="time-pill">3 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <div class="split">
+              <div class="answer-card">
+                <label for="compareGood">😎 吃了好数据的模型，表现怎么样？</label>
+                <textarea id="compareGood" placeholder="例如：它几乎全猜对了，苹果就是苹果，香蕉就是香蕉。"></textarea>
+              </div>
+              <div class="answer-card">
+                <label for="compareBad">🤪 吃了差数据的模型，表现怎么样？</label>
+                <textarea id="compareBad" placeholder="例如：它把苹果说成香蕉，还特别自信！"></textarea>
+              </div>
+            </div>
+            <div class="feedback" id="compareFeedback">两格都写一句，就完成记录。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="primary-btn" type="button" data-next>去拼今天的结论</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>家长追问</h3>
+            <ul>
+              <li>两个模型是同一个&ldquo;脑子&rdquo;吗？差别在哪里？</li>
+              <li>如果你是模型，你想吃哪种&ldquo;数据饭&rdquo;？</li>
+            </ul>
+            <div class="say-box">&ldquo;实验记录写下来，才算真正的科学家。&rdquo;</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="conclude" aria-labelledby="conclude-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 6</div>
+            <h2 id="conclude-title">拼出今天的大结论</h2>
+            <p class="stage-lead">下面的词块打乱了，还混进了捣乱的词。按顺序点出 5 个词块，拼出今天最重要的一句话。</p>
+          </div>
+          <span class="time-pill">3 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>点词块，拼句子</h3>
+            <div class="chip-bank" id="chipBank"></div>
+            <div class="sentence-box" id="sentenceBox">（你拼的句子会出现在这里）</div>
+            <div class="feedback" id="concludeFeedback">按顺序点 5 个词块。小心捣乱的词！</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="secondary-btn" type="button" id="redoConclude">重来</button>
+              <button class="primary-btn" type="button" data-next>三句话收尾</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>提示</h3>
+            <p>想想两场实验：实验 A 只有 10 张照片但很干净，实验 B 照片更多却是坏的。哪个模型更聪明？</p>
+            <div class="say-box">&ldquo;多，不一定好。对，才最重要。&rdquo;</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="reflection" aria-labelledby="reflection-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 7</div>
+            <h2 id="reflection-title">三句话收尾</h2>
+            <p class="stage-lead">孩子口头说，家长帮忙打字。写完就能生成第四课报告。</p>
+          </div>
+          <span class="time-pill">3 分钟</span>
+        </div>
+        <div class="task-panel">
+          <div class="reflection-grid">
+            <div class="answer-card">
+              <label for="r1">1. 差数据会让模型怎么样？</label>
+              <textarea id="r1" placeholder="例如：会让模型学错，把苹果认成香蕉。"></textarea>
+            </div>
+            <div class="answer-card">
+              <label for="r2">2. 数据是越多越好吗？</label>
+              <textarea id="r2" placeholder="例如：不一定！又多又干净才好，错的数据越多越糟。"></textarea>
+            </div>
+            <div class="answer-card">
+              <label for="r3">3. 谁来保证数据的质量？</label>
+              <textarea id="r3" placeholder="例如：是人！我们要检查照片清不清楚、标签对不对。"></textarea>
+            </div>
+          </div>
+          <div class="feedback" id="reflectionFeedback">写完 3 个回答，就可以生成报告。</div>
+          <div class="action-row">
+            <button class="secondary-btn" type="button" data-prev>上一步</button>
+            <button class="primary-btn" type="button" data-next>生成第四课报告</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="summary" aria-labelledby="summary-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">完成</div>
+            <h2 id="summary-title">第四课学习报告</h2>
+            <p class="stage-lead">这页可以打印或截图保存。下一课我们去看 AI 怎么帮人创作。</p>
+          </div>
+          <span class="time-pill">已完成</span>
+        </div>
+        <div class="report-card">
+          <span class="badge">Day of AI 第四课</span>
+          <h3>今天我发现：数据的质量比数量更重要。</h3>
+          <ol class="report-list" id="summaryList"></ol>
+          <div class="say-box">核心句：干净、贴对标签的例子，才能教出聪明的模型；错的数据越多，模型越糊涂。</div>
+          <div class="action-row">
+            <button class="primary-btn" type="button" onclick="window.print()">打印报告</button>
+            <a class="secondary-btn" href="day-of-ai-course-roadmap.html">返回冒险地图</a>
+            <button class="secondary-btn" type="button" id="resetAllEnd">重新开始第四课</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const STORAGE_KEY = "day-of-ai-fourth-lesson-v1";
+    const steps = [
+      { id: "intro", title: "热身回顾", time: "3 分钟" },
+      { id: "expa", title: "实验 A：好数据", time: "5 分钟" },
+      { id: "expb", title: "实验 B：差数据", time: "5 分钟" },
+      { id: "discuss", title: "侦探时间", time: "4 分钟" },
+      { id: "realtool", title: "真实工具", time: "8 分钟" },
+      { id: "compare", title: "对比记录", time: "3 分钟" },
+      { id: "conclude", title: "拼结论", time: "3 分钟" },
+      { id: "reflection", title: "三句话", time: "3 分钟" },
+      { id: "summary", title: "报告", time: "完成" }
+    ];
+
+    const introOptions = [
+      { id: "data", text: "靠数据：看很多很多例子", good: true, note: "答对啦！机器靠例子学习，例子就是数据。今天我们研究：数据是不是越多越好？" },
+      { id: "magic", text: "靠魔法：它天生什么都会", good: false, note: "不是魔法哦。机器一开始什么都不会，全靠我们给它例子。再点点看！" },
+      { id: "mood", text: "靠心情：今天开心就聪明", good: false, note: "机器可没有心情。它聪不聪明，全看我们喂的例子好不好。再点点看！" }
+    ];
+
+    const goodCards = [
+      { id: "g1", text: "🍎 红苹果，拍得清清楚楚，标签：苹果" },
+      { id: "g2", text: "🍏 青苹果，光线很好，标签：苹果" },
+      { id: "g3", text: "🍎 树上的苹果，标签：苹果" },
+      { id: "g4", text: "🍎 盘子里的苹果，标签：苹果" },
+      { id: "g5", text: "🍎 切开的苹果，标签：苹果" },
+      { id: "g6", text: "🍌 黄黄的香蕉，标签：香蕉" },
+      { id: "g7", text: "🍌 一串香蕉，标签：香蕉" },
+      { id: "g8", text: "🍌 剥开一半的香蕉，标签：香蕉" },
+      { id: "g9", text: "🍌 弯弯的香蕉特写，标签：香蕉" },
+      { id: "g10", text: "🍌 桌上的香蕉，标签：香蕉" }
+    ];
+
+    const expaResults = [
+      { text: "🍎 一个新的红苹果", guess: "苹果", ok: true, conf: 97, note: "非常确定！" },
+      { text: "🍌 一根新的香蕉", guess: "香蕉", ok: true, conf: 95, note: "非常确定！" },
+      { text: "🍏 歪着放的青苹果", guess: "苹果", ok: true, conf: 91, note: "见过各种苹果，认得出。" },
+      { text: "🍌 有点发绿的香蕉", guess: "香蕉", ok: true, conf: 88, note: "颜色变了也认得。" },
+      { text: "🍎 光线有点暗的苹果", guess: "苹果", ok: true, conf: 86, note: "稳稳猜对。" }
+    ];
+
+    const badCards = [
+      { id: "b1", text: "🌫️ 糊成一团的照片，什么都看不清" },
+      { id: "b2", text: "📸 只拍到一半、黑乎乎的照片" },
+      { id: "b3", text: "🍌 明明是香蕉，标签却写着：苹果" },
+      { id: "b4", text: "🍎 明明是苹果，标签却写着：香蕉" },
+      { id: "b5", text: "🍊 拍的是橘子，标签却写着：苹果" },
+      { id: "b6", text: "🌫️ 手抖了，香蕉糊成一条黄影子" }
+    ];
+
+    const expbResults = [
+      { text: "🍎 一个新的红苹果", guess: "香蕉", ok: false, conf: 96, note: "错得离谱，还 96% 自信！" },
+      { text: "🍌 一根新的香蕉", guess: "苹果", ok: false, conf: 93, note: "完全说反了！" },
+      { text: "🍏 青苹果", guess: "香蕉", ok: false, conf: 89, note: "又错！它学了贴错的标签。" },
+      { text: "🍌 一串香蕉", guess: "苹果", ok: false, conf: 91, note: "被差数据带跑了。" },
+      { text: "🍎 盘子里的苹果", guess: "苹果", ok: true, conf: 52, note: "蒙对的，一点都不确定。" }
+    ];
+
+    const quizzes = {
+      q1: [
+        { id: "sad", text: "它今天心情不好", good: false, note: "机器没有心情哦。想想我们喂了它什么？" },
+        { id: "baddata", text: "我们喂的例子是错的、看不清的", good: true, note: "破案了！模型学什么像什么：喂错的例子，它就学错的规律。" },
+        { id: "naughty", text: "它故意捣乱气我们", good: false, note: "它不会故意捣乱。它只是照着我们给的例子学。再想想！" }
+      ],
+      q2: [
+        { id: "find", text: "它自己会发现标签错了", good: false, note: "可惜不会。机器不认识真正的香蕉，它只相信标签。再试试！" },
+        { id: "learnwrong", text: "它会把错的当成对的记住", good: true, note: "答对了！标签写什么它就学什么，错的也照单全收。所以人要检查数据！" },
+        { id: "nothing", text: "没影响，反正照片多", good: false, note: "影响可大了！错的照片越多，它学得越歪。再想想！" }
+      ]
+    };
+
+    const toolChecks = [
+      { id: "together", text: "家长陪着一起操作网页" },
+      { id: "private", text: "只拍愿意拍的表情，不点上传分享" },
+      { id: "camera", text: "玩完就关掉摄像头" }
+    ];
+
+    const TARGET_SENTENCE = ["数据的", "质量", "比", "数量", "更重要"];
+    const chipWords = ["比", "魔法", "质量", "数量", "数据的", "越乱越好", "更重要", "没关系"];
+
+    const state = loadState();
+    let currentStep = initialStep();
+    let remainingSeconds = state.remainingSeconds || 30 * 60;
+    let timerId = null;
+
+    const stepList = document.getElementById("stepList");
+    const mobileStepSelect = document.getElementById("mobileStepSelect");
+    const progressText = document.getElementById("progressText");
+    const progressFill = document.getElementById("progressFill");
+    const timerDisplay = document.getElementById("timerDisplay");
+    const toast = document.getElementById("toast");
+
+    function defaultState() {
+      return {
+        currentStep: "intro",
+        completed: {},
+        introChoice: "",
+        expa: { fed: {}, tested: false },
+        expb: { fed: {}, tested: false },
+        quiz: { q1: "", q2: "" },
+        toolChecks: {},
+        compare: { good: "", bad: "" },
+        conclude: [],
+        reflection: { r1: "", r2: "", r3: "" },
+        remainingSeconds: 30 * 60
+      };
+    }
+
+    function loadState() {
+      try {
+        return { ...defaultState(), ...JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") };
+      } catch (error) {
+        return defaultState();
+      }
+    }
+
+    function initialStep() {
+      const requested = new URLSearchParams(window.location.search).get("step") || window.location.hash.replace("#", "");
+      if (steps.some((step) => step.id === requested)) return requested;
+      return state.currentStep || "intro";
+    }
+
+    function saveState() {
+      state.currentStep = currentStep;
+      state.remainingSeconds = remainingSeconds;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    function renderNavigation() {
+      stepList.innerHTML = "";
+      mobileStepSelect.innerHTML = "";
+      steps.forEach((step, index) => {
+        const isDone = step.id === "summary" ? allDone() : Boolean(state.completed[step.id]);
+        const button = document.createElement("button");
+        button.className = `step-tab ${currentStep === step.id ? "active" : ""} ${isDone ? "done" : ""}`;
+        button.type = "button";
+        button.dataset.goStep = step.id;
+        button.innerHTML = `
+          <span class="step-num">${isDone ? "✓" : index}</span>
+          <span><span class="step-title">${step.title}</span><span class="step-time">${step.time}</span></span>
+          <span class="step-status">${currentStep === step.id ? "现在" : isDone ? "完成" : ""}</span>
+        `;
+        stepList.appendChild(button);
+
+        const option = document.createElement("option");
+        option.value = step.id;
+        option.textContent = `${index}. ${step.title}`;
+        option.selected = currentStep === step.id;
+        mobileStepSelect.appendChild(option);
+      });
+    }
+
+    function renderProgress() {
+      const taskSteps = steps.slice(0, -1);
+      const count = taskSteps.filter((step) => state.completed[step.id]).length;
+      progressText.textContent = `${count}/${taskSteps.length}`;
+      progressFill.style.width = `${Math.round((count / taskSteps.length) * 100)}%`;
+    }
+
+    function renderStages() {
+      document.querySelectorAll(".stage").forEach((stage) => {
+        stage.classList.toggle("active", stage.dataset.step === currentStep);
+      });
+      renderNavigation();
+      renderProgress();
+      mobileStepSelect.value = currentStep;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      saveState();
+    }
+
+    function goStep(id) {
+      currentStep = id;
+      if (id === "summary") renderSummary();
+      renderStages();
+    }
+
+    function nextStep() {
+      const index = steps.findIndex((step) => step.id === currentStep);
+      goStep(steps[Math.min(index + 1, steps.length - 1)].id);
+    }
+
+    function prevStep() {
+      const index = steps.findIndex((step) => step.id === currentStep);
+      goStep(steps[Math.max(index - 1, 0)].id);
+    }
+
+    function markComplete(id, done) {
+      state.completed[id] = done;
+      saveState();
+      renderProgress();
+      renderNavigation();
+    }
+
+    function allDone() {
+      return steps.slice(0, -1).every((step) => state.completed[step.id]);
+    }
+
+    function initGlobalControls() {
+      document.addEventListener("click", (event) => {
+        const go = event.target.closest("[data-go-step]");
+        if (go) goStep(go.dataset.goStep);
+        if (event.target.closest("[data-next]")) nextStep();
+        if (event.target.closest("[data-prev]")) prevStep();
+      });
+      mobileStepSelect.addEventListener("change", (event) => goStep(event.target.value));
+      document.getElementById("mobileTimerButton").addEventListener("click", () => {
+        document.getElementById("timerCard").scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+      document.getElementById("resetAll").addEventListener("click", resetAll);
+      document.getElementById("resetAllEnd").addEventListener("click", resetAll);
+    }
+
+    function resetAll() {
+      localStorage.removeItem(STORAGE_KEY);
+      Object.assign(state, defaultState());
+      currentStep = "intro";
+      remainingSeconds = 30 * 60;
+      hydrateFields();
+      renderAll();
+      renderStages();
+      renderTimer();
+      showToast("第四课已经重置。");
+    }
+
+    function initTimer() {
+      document.getElementById("startTimer").addEventListener("click", () => {
+        if (timerId) return;
+        timerId = window.setInterval(() => {
+          remainingSeconds = Math.max(0, remainingSeconds - 1);
+          renderTimer();
+          saveState();
+          if (remainingSeconds === 0) {
+            window.clearInterval(timerId);
+            timerId = null;
+            showToast("30 分钟到了，可以收尾啦。");
+          }
+        }, 1000);
+      });
+      document.getElementById("pauseTimer").addEventListener("click", () => {
+        window.clearInterval(timerId);
+        timerId = null;
+      });
+      document.getElementById("resetTimer").addEventListener("click", () => {
+        window.clearInterval(timerId);
+        timerId = null;
+        remainingSeconds = 30 * 60;
+        renderTimer();
+        saveState();
+      });
+      renderTimer();
+    }
+
+    function renderTimer() {
+      const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, "0");
+      const seconds = (remainingSeconds % 60).toString().padStart(2, "0");
+      timerDisplay.textContent = `${minutes}:${seconds}`;
+    }
+
+    function renderOptionGrid(gridId, options, chosenId, onPick) {
+      const grid = document.getElementById(gridId);
+      grid.innerHTML = "";
+      options.forEach((option) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        let cls = "fix-btn";
+        if (chosenId === option.id) cls += option.good ? " correct" : " wrong";
+        button.className = cls;
+        button.textContent = option.text;
+        button.addEventListener("click", () => onPick(option));
+        grid.appendChild(button);
+      });
+    }
+
+    function initIntro() { renderIntro(); }
+
+    function renderIntro() {
+      renderOptionGrid("introGrid", introOptions, state.introChoice, (option) => {
+        state.introChoice = option.id;
+        renderIntro();
+        saveState();
+      });
+      const chosen = introOptions.find((option) => option.id === state.introChoice);
+      const feedback = document.getElementById("introFeedback");
+      const done = Boolean(chosen && chosen.good);
+      feedback.textContent = chosen ? chosen.note : "点一个你觉得对的答案。";
+      feedback.className = `feedback ${done ? "good" : chosen ? "bad" : ""}`;
+      markComplete("intro", done);
+    }
+
+    function fedCount(exp, cards) {
+      return cards.filter((card) => exp.fed[card.id]).length;
+    }
+
+    function renderResultList(listId, results, show) {
+      const list = document.getElementById(listId);
+      list.innerHTML = "";
+      if (!show) return;
+      results.forEach((result) => {
+        const card = document.createElement("div");
+        card.className = `result-card ${result.ok ? "ok" : "miss"}`;
+        card.innerHTML = `
+          <strong>${result.text}</strong>
+          <span>模型大声说：这是 <strong>${result.guess}</strong>！${result.note}</span>
+          <span>${result.ok ? "✔ 猜对" : "✘ 猜错"}</span>
+          <div class="meter ${result.ok ? "" : "miss"}" style="grid-column:1 / -1;"><span style="width:${result.conf}%;"></span></div>
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function initExpa() {
+      const bank = document.getElementById("expaBank");
+      bank.innerHTML = "";
+      goodCards.forEach((card) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.cardId = card.id;
+        button.textContent = card.text;
+        button.addEventListener("click", () => {
+          state.expa.fed[card.id] = !state.expa.fed[card.id];
+          renderExpa();
+          saveState();
+        });
+        bank.appendChild(button);
+      });
+      document.getElementById("runExpaTest").addEventListener("click", () => {
+        if (fedCount(state.expa, goodCards) < 10) {
+          showToast("还没喂够！把 10 张清晰照片都点亮再测试。");
+          return;
+        }
+        state.expa.tested = true;
+        renderExpa();
+        saveState();
+        showToast("测试完成！看看它猜得多准！");
+      });
+      renderExpa();
+    }
+
+    function renderExpa() {
+      document.querySelectorAll("#expaBank button").forEach((button) => {
+        button.className = `example-btn ${state.expa.fed[button.dataset.cardId] ? "selected" : ""}`;
+      });
+      const count = fedCount(state.expa, goodCards);
+      document.getElementById("expaCount").textContent = count;
+      const correct = expaResults.filter((result) => result.ok).length;
+      document.getElementById("expaScore").textContent = state.expa.tested ? `${correct}/5` : "?";
+      renderResultList("expaResults", expaResults, state.expa.tested);
+      const feedback = document.getElementById("expaFeedback");
+      if (state.expa.tested) {
+        feedback.textContent = `太棒了！5 个新水果全猜对，正确率 100%！好数据喂出聪明模型！`;
+        feedback.className = "feedback good";
+      } else {
+        feedback.textContent = count < 10 ? `已喂 ${count}/10 张。把 10 张都点亮，再按“开始测试”。` : "10 张都喂好了！按“开始测试”看看它学得怎么样。";
+        feedback.className = "feedback";
+      }
+      markComplete("expa", state.expa.tested);
+    }
+
+    function initExpb() {
+      const bank = document.getElementById("expbBank");
+      bank.innerHTML = "";
+      badCards.forEach((card) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.cardId = card.id;
+        button.textContent = card.text;
+        button.addEventListener("click", () => {
+          state.expb.fed[card.id] = !state.expb.fed[card.id];
+          renderExpb();
+          saveState();
+        });
+        bank.appendChild(button);
+      });
+      document.getElementById("runExpbTest").addEventListener("click", () => {
+        if (fedCount(state.expb, badCards) < 4) {
+          showToast("捣乱还不够！至少喂 4 张差数据再测试。");
+          return;
+        }
+        state.expb.tested = true;
+        renderExpb();
+        saveState();
+        showToast("哎呀……快看模型闹了什么笑话！");
+      });
+      renderExpb();
+    }
+
+    function renderExpb() {
+      document.querySelectorAll("#expbBank button").forEach((button) => {
+        button.className = `example-btn ${state.expb.fed[button.dataset.cardId] ? "selected bad-pick" : ""}`;
+      });
+      const count = fedCount(state.expb, badCards);
+      document.getElementById("expbCount").textContent = count;
+      const correct = expbResults.filter((result) => result.ok).length;
+      document.getElementById("expbScore").textContent = state.expb.tested ? `${correct}/5` : "?";
+      renderResultList("expbResults", expbResults, state.expb.tested);
+      const feedback = document.getElementById("expbFeedback");
+      if (state.expb.tested) {
+        feedback.textContent = "天哪！5 个只对 1 个，还是蒙的！错的时候倒是特别自信。差数据把模型教笨了！";
+        feedback.className = "feedback bad";
+      } else {
+        feedback.textContent = count < 4 ? `已喂 ${count} 张差数据（至少 4 张）。` : "差数据喂进去了……深呼吸，按“再测一次”！";
+        feedback.className = "feedback";
+      }
+      markComplete("expb", state.expb.tested);
+    }
+
+    function initDiscuss() { renderDiscuss(); }
+
+    function renderDiscuss() {
+      ["q1", "q2"].forEach((key) => {
+        renderOptionGrid(`${key}Grid`, quizzes[key], state.quiz[key], (option) => {
+          state.quiz[key] = option.id;
+          renderDiscuss();
+          saveState();
+        });
+        const chosen = quizzes[key].find((option) => option.id === state.quiz[key]);
+        const feedback = document.getElementById(`${key}Feedback`);
+        feedback.textContent = chosen ? chosen.note : (key === "q1" ? "点一个答案试试。" : "再点一个答案。");
+        feedback.className = `feedback ${chosen ? (chosen.good ? "good" : "bad") : ""}`;
+      });
+      const done = ["q1", "q2"].every((key) => {
+        const chosen = quizzes[key].find((option) => option.id === state.quiz[key]);
+        return Boolean(chosen && chosen.good);
+      });
+      markComplete("discuss", done);
+    }
+
+    function initRealtool() {
+      const grid = document.getElementById("toolGrid");
+      grid.innerHTML = "";
+      toolChecks.forEach((item) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.checkId = item.id;
+        button.textContent = item.text;
+        button.addEventListener("click", () => {
+          state.toolChecks[item.id] = !state.toolChecks[item.id];
+          renderRealtool();
+          saveState();
+        });
+        grid.appendChild(button);
+      });
+      renderRealtool();
+    }
+
+    function renderRealtool() {
+      document.querySelectorAll("#toolGrid button").forEach((button) => {
+        button.className = `privacy-btn ${state.toolChecks[button.dataset.checkId] ? "selected" : ""}`;
+      });
+      const done = toolChecks.every((item) => state.toolChecks[item.id]);
+      const feedback = document.getElementById("realtoolFeedback");
+      feedback.textContent = done ? "约定完成！打开 Teachable Machine，开始训练表情模型吧。" : "先勾选 3 条约定，再打开工具。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("realtool", done);
+    }
+
+    function initCompare() {
+      const goodInput = document.getElementById("compareGood");
+      const badInput = document.getElementById("compareBad");
+      goodInput.value = state.compare.good;
+      badInput.value = state.compare.bad;
+      goodInput.addEventListener("input", () => {
+        state.compare.good = goodInput.value.trim();
+        renderCompare();
+        saveState();
+      });
+      badInput.addEventListener("input", () => {
+        state.compare.bad = badInput.value.trim();
+        renderCompare();
+        saveState();
+      });
+      renderCompare();
+    }
+
+    function renderCompare() {
+      const done = Boolean(state.compare.good && state.compare.bad);
+      const feedback = document.getElementById("compareFeedback");
+      feedback.textContent = done ? "实验记录完成！你已经是合格的小科学家啦。" : "两格都写一句，就完成记录。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("compare", done);
+    }
+
+    function concludeCorrect() {
+      return state.conclude.length === TARGET_SENTENCE.length &&
+        state.conclude.join("") === TARGET_SENTENCE.join("");
+    }
+
+    function initConclude() {
+      const bank = document.getElementById("chipBank");
+      bank.innerHTML = "";
+      chipWords.forEach((word, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.chipIndex = index;
+        button.textContent = word;
+        button.addEventListener("click", () => {
+          if (state.conclude.length >= TARGET_SENTENCE.length) return;
+          state.conclude.push(word);
+          renderConclude();
+          saveState();
+        });
+        bank.appendChild(button);
+      });
+      document.getElementById("redoConclude").addEventListener("click", () => {
+        state.conclude = [];
+        renderConclude();
+        saveState();
+      });
+      renderConclude();
+    }
+
+    function renderConclude() {
+      const usedCounts = {};
+      state.conclude.forEach((word) => {
+        usedCounts[word] = (usedCounts[word] || 0) + 1;
+      });
+      const seen = {};
+      document.querySelectorAll("#chipBank button").forEach((button) => {
+        const word = button.textContent;
+        seen[word] = (seen[word] || 0) + 1;
+        const used = seen[word] <= (usedCounts[word] || 0);
+        button.className = `chip ${used ? "used" : ""}`;
+      });
+      const box = document.getElementById("sentenceBox");
+      box.textContent = state.conclude.length ? state.conclude.join(" ") : "（你拼的句子会出现在这里）";
+      const feedback = document.getElementById("concludeFeedback");
+      if (concludeCorrect()) {
+        feedback.textContent = "完美！“数据的质量比数量更重要”——这就是第四课的大发现！";
+        feedback.className = "feedback good";
+      } else if (state.conclude.length >= TARGET_SENTENCE.length) {
+        feedback.textContent = "嗯……好像混进了捣乱的词。点“重来”再拼一次！";
+        feedback.className = "feedback bad";
+      } else {
+        feedback.textContent = `已经拼了 ${state.conclude.length}/5 个词块。按顺序点，小心捣乱的词！`;
+        feedback.className = "feedback";
+      }
+      markComplete("conclude", concludeCorrect());
+    }
+
+    function initReflection() {
+      ["r1", "r2", "r3"].forEach((id) => {
+        const input = document.getElementById(id);
+        input.value = state.reflection[id] || "";
+        input.addEventListener("input", () => {
+          state.reflection[id] = input.value.trim();
+          renderReflection();
+          saveState();
+        });
+      });
+      renderReflection();
+    }
+
+    function renderReflection() {
+      const done = ["r1", "r2", "r3"].every((id) => state.reflection[id]);
+      const feedback = document.getElementById("reflectionFeedback");
+      feedback.textContent = done ? "三句话都写好了。可以生成报告。" : "写完 3 个回答，就可以生成报告。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("reflection", done);
+    }
+
+    function renderSummary() {
+      const goodFed = fedCount(state.expa, goodCards);
+      const badFed = fedCount(state.expb, badCards);
+      const expaCorrect = expaResults.filter((result) => result.ok).length;
+      const expbCorrect = expbResults.filter((result) => result.ok).length;
+      document.getElementById("summaryList").innerHTML = `
+        <li>热身：我知道机器靠数据（很多例子）学习。</li>
+        <li>实验 A：我喂了 ${goodFed} 张清晰照片，模型测试 ${state.expa.tested ? `${expaCorrect}/5 全对` : "还没测试"}。</li>
+        <li>实验 B：我故意喂了 ${badFed} 张差数据，模型 ${state.expb.tested ? `只对 ${expbCorrect}/5，错的时候还特别自信` : "还没测试"}。</li>
+        <li>好模型的表现：${state.compare.good || "未填写"}</li>
+        <li>笨模型的表现：${state.compare.bad || "未填写"}</li>
+        <li>我拼出的结论：${concludeCorrect() ? "数据的质量比数量更重要！" : "还没拼好"}</li>
+        <li>我的三句话：${state.reflection.r1 || "未填写"}；${state.reflection.r2 || "未填写"}；${state.reflection.r3 || "未填写"}。</li>
+      `;
+    }
+
+    function hydrateFields() {
+      document.getElementById("compareGood").value = state.compare.good || "";
+      document.getElementById("compareBad").value = state.compare.bad || "";
+      ["r1", "r2", "r3"].forEach((id) => {
+        document.getElementById(id).value = state.reflection[id] || "";
+      });
+    }
+
+    function renderAll() {
+      renderIntro();
+      renderExpa();
+      renderExpb();
+      renderDiscuss();
+      renderRealtool();
+      renderCompare();
+      renderConclude();
+      renderReflection();
+    }
+
+    initGlobalControls();
+    initTimer();
+    initIntro();
+    initExpa();
+    initExpb();
+    initDiscuss();
+    initRealtool();
+    initCompare();
+    initConclude();
+    initReflection();
+    hydrateFields();
+    renderStages();
+  </script>
+</body>
+</html>

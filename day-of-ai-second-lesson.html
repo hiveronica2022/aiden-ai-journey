@@ -1,0 +1,1899 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Day of AI 第二课：什么是 AI？</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #5d6878;
+      --paper: #fbfbf7;
+      --panel: #ffffff;
+      --line: #d9dfdc;
+      --teal: #0b8f8b;
+      --teal-soft: #ddf4f1;
+      --coral: #de6251;
+      --coral-soft: #ffe2dc;
+      --gold: #f1c64b;
+      --gold-soft: #fff1bd;
+      --green: #448f4b;
+      --green-soft: #e2f2df;
+      --blue: #436fc2;
+      --blue-soft: #e2ebff;
+      --violet: #725fb4;
+      --violet-soft: #ece7ff;
+      --shadow: 0 18px 44px rgba(23, 32, 51, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 8% 12%, rgba(241, 198, 75, 0.24), transparent 24%),
+        radial-gradient(circle at 88% 14%, rgba(67, 111, 194, 0.18), transparent 24%),
+        linear-gradient(180deg, #f7faf5 0%, #fbfbf7 46%, #f4f7fb 100%);
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    a {
+      color: var(--teal);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+
+    .next-lesson-float {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 80;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      padding: 0 16px;
+      color: #fff;
+      background: var(--coral);
+      box-shadow: var(--shadow);
+      font-weight: 950;
+      text-decoration: none;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+    }
+
+    .side {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 22px;
+      border-right: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      overflow: auto;
+    }
+
+    .brand {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .brand-mark {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--ink);
+      box-shadow: var(--shadow);
+    }
+
+    .brand-mark svg {
+      width: 36px;
+      height: 36px;
+    }
+
+    .eyebrow {
+      margin-bottom: 6px;
+      color: var(--coral);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .brand h1 {
+      font-size: 22px;
+      line-height: 1.16;
+      letter-spacing: 0;
+    }
+
+    .brand p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .progress-card,
+    .timer-card,
+    .parent-card {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 8px 22px rgba(23, 32, 51, 0.07);
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: 900;
+    }
+
+    .progress-track {
+      height: 12px;
+      border-radius: 999px;
+      background: #edf1ef;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), var(--gold));
+      transition: width 220ms ease;
+    }
+
+    .step-list {
+      display: grid;
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .step-tab {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 34px 1fr auto;
+      gap: 9px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+    }
+
+    .step-tab:hover,
+    .step-tab:focus-visible {
+      outline: none;
+      border-color: var(--line);
+      background: #fff;
+    }
+
+    .step-tab.active {
+      background: var(--teal-soft);
+      border-color: #9bd8d1;
+    }
+
+    .step-tab.done {
+      background: var(--green-soft);
+    }
+
+    .step-num {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #eef2f4;
+      color: var(--ink);
+      font-weight: 950;
+    }
+
+    .step-tab.done .step-num {
+      color: #fff;
+      background: var(--green);
+    }
+
+    .step-title {
+      display: block;
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.24;
+    }
+
+    .step-time {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .step-status {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .timer-card {
+      margin: 14px 0;
+      color: #fff;
+      background: var(--ink);
+      border-color: transparent;
+    }
+
+    .timer {
+      margin-top: 8px;
+      font-size: 40px;
+      font-weight: 950;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .timer-actions button,
+    .utility-btn {
+      min-height: 36px;
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .parent-card {
+      display: grid;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.46;
+    }
+
+    .parent-card strong {
+      color: var(--ink);
+    }
+
+    .content {
+      min-width: 0;
+      padding: clamp(18px, 4vw, 48px);
+    }
+
+    .mobile-top {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(14px);
+    }
+
+    .mobile-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .mobile-row select {
+      min-height: 42px;
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 0 10px;
+      font-weight: 900;
+    }
+
+    .stage {
+      min-height: calc(100vh - 96px);
+      display: none;
+      align-content: center;
+      gap: 22px;
+    }
+
+    .stage.active {
+      display: grid;
+    }
+
+    .stage-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .stage h2 {
+      max-width: 980px;
+      font-size: clamp(36px, 5.4vw, 72px);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .stage-lead {
+      max-width: 850px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 19px;
+      line-height: 1.65;
+    }
+
+    .time-pill,
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      border-radius: 8px;
+      padding: 0 12px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .time-pill {
+      color: var(--ink);
+      background: var(--gold-soft);
+      border: 1px solid #e0c55d;
+    }
+
+    .badge {
+      color: #244d97;
+      background: var(--blue-soft);
+      border: 1px solid #b8c8ef;
+      font-size: 13px;
+    }
+
+    .task-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.92fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .task-panel,
+    .guide-panel,
+    .answer-card,
+    .report-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 10px 28px rgba(23, 32, 51, 0.08);
+    }
+
+    .task-panel,
+    .guide-panel {
+      padding: clamp(16px, 2.4vw, 24px);
+    }
+
+    .guide-panel {
+      display: grid;
+      align-content: start;
+      gap: 12px;
+      color: var(--muted);
+      line-height: 1.62;
+    }
+
+    .guide-panel h3,
+    .task-panel h3 {
+      font-size: 24px;
+      line-height: 1.22;
+    }
+
+    .guide-panel ul,
+    .guide-panel ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .say-box,
+    .prompt-box,
+    .feedback {
+      padding: 14px;
+      border-radius: 8px;
+      line-height: 1.5;
+    }
+
+    .say-box {
+      background: var(--blue-soft);
+      border-left: 6px solid var(--blue);
+      color: var(--ink);
+      font-size: 21px;
+      font-weight: 900;
+    }
+
+    .prompt-box {
+      background: #f7faf5;
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+
+    .prompt-box strong {
+      color: var(--coral);
+    }
+
+    .feedback {
+      min-height: 44px;
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      background: #f7faf5;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+    }
+
+    .feedback.good {
+      color: #234a2a;
+      background: var(--green-soft);
+      border-color: #b8d9b8;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .quiet-btn {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 8px;
+      padding: 0 16px;
+      border: 1px solid transparent;
+      font-weight: 950;
+      text-decoration: none;
+    }
+
+    .primary-btn {
+      color: #fff;
+      background: var(--teal);
+    }
+
+    .secondary-btn {
+      color: var(--ink);
+      background: #fff;
+      border-color: var(--line);
+    }
+
+    .quiet-btn {
+      min-height: 38px;
+      color: var(--ink);
+      background: var(--gold-soft);
+      border-color: #e0c55d;
+      font-size: 14px;
+    }
+
+    .text-input,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fdfdfb;
+      color: var(--ink);
+      padding: 12px;
+      line-height: 1.55;
+    }
+
+    .text-input {
+      min-height: 48px;
+    }
+
+    textarea {
+      min-height: 118px;
+      resize: vertical;
+    }
+
+    .choice-grid,
+    .sort-grid,
+    .data-grid,
+    .word-grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .choice-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sort-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .data-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .word-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .choice-btn,
+    .word-btn,
+    .data-btn,
+    .sort-card {
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .choice-btn,
+    .word-btn,
+    .data-btn {
+      min-height: 58px;
+      padding: 12px;
+      text-align: left;
+      font-weight: 950;
+      line-height: 1.35;
+    }
+
+    .choice-btn:hover,
+    .word-btn:hover,
+    .data-btn:hover,
+    .choice-btn:focus-visible,
+    .word-btn:focus-visible,
+    .data-btn:focus-visible {
+      outline: none;
+      border-color: var(--teal);
+      background: var(--teal-soft);
+    }
+
+    .choice-btn.selected,
+    .data-btn.selected,
+    .word-btn.selected {
+      border-color: var(--teal);
+      background: var(--teal-soft);
+    }
+
+    .sort-card {
+      min-height: 218px;
+      display: grid;
+      grid-template-rows: auto 1fr auto auto;
+      gap: 10px;
+      padding: 14px;
+    }
+
+    .sort-card[data-choice="rule"] {
+      border-color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .sort-card[data-choice="ai"] {
+      border-color: var(--teal);
+      background: var(--teal-soft);
+    }
+
+    .sort-card[data-choice="unsure"] {
+      border-color: #d0aa22;
+      background: var(--gold-soft);
+    }
+
+    .card-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 950;
+    }
+
+    .sort-card h3 {
+      font-size: 18px;
+      line-height: 1.2;
+    }
+
+    .sort-card p {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.42;
+    }
+
+    .sort-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .sort-actions button {
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .sort-actions button.active {
+      color: #fff;
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .answer-note {
+      display: none;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .show-feedback .answer-note {
+      display: block;
+    }
+
+    .algorithm-board {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .sequence-box {
+      min-height: 310px;
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      padding: 14px;
+      border: 2px dashed var(--teal);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .sequence-item {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--gold-soft);
+    }
+
+    .sequence-item span:first-child {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--ink);
+      font-weight: 950;
+    }
+
+    .robot-output {
+      min-height: 120px;
+      display: grid;
+      align-content: center;
+      gap: 8px;
+      padding: 16px;
+      border-radius: 8px;
+      background: var(--violet-soft);
+      border: 1px solid #c7bdec;
+    }
+
+    .robot-output strong {
+      font-size: 26px;
+      line-height: 1.15;
+    }
+
+    .machine-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .machine {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .machine h3 {
+      margin-bottom: 10px;
+    }
+
+    .machine-result {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #f7faf5;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .video-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border: 2px solid var(--ink);
+      border-radius: 8px;
+      background: #101827;
+      box-shadow: var(--shadow);
+    }
+
+    .video-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .video-prompts {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .video-prompts .prompt-box {
+      background: var(--gold-soft);
+      border-color: #e0c55d;
+    }
+
+    .reflection-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .answer-card {
+      padding: 14px;
+    }
+
+    .answer-card label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 950;
+      line-height: 1.35;
+    }
+
+    .report-card {
+      display: grid;
+      gap: 14px;
+      padding: clamp(18px, 4vw, 34px);
+      border: 3px solid var(--ink);
+      background:
+        linear-gradient(135deg, rgba(255, 241, 189, 0.72), rgba(226, 235, 255, 0.78)),
+        #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .report-card h3 {
+      font-size: clamp(30px, 5vw, 54px);
+      line-height: 1.05;
+    }
+
+    .report-card p,
+    .report-card li {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.65;
+    }
+
+    .report-list {
+      margin: 0;
+      padding-left: 22px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 50;
+      max-width: min(420px, calc(100vw - 36px));
+      padding: 12px 14px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--ink);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(14px);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1080px) {
+      .next-lesson-float {
+        right: 12px;
+        bottom: 12px;
+        top: auto;
+      }
+
+      .app {
+        display: block;
+      }
+
+      .side {
+        display: none;
+      }
+
+      .mobile-top {
+        display: block;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .stage {
+        min-height: auto;
+        padding: 18px 0 40px;
+      }
+
+      .task-grid,
+      .algorithm-board {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .content {
+        padding: 16px;
+      }
+
+      .stage-head,
+      .machine-grid,
+      .reflection-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stage h2 {
+        font-size: 38px;
+      }
+
+      .choice-grid,
+      .sort-grid,
+      .data-grid,
+      .word-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .side,
+      .mobile-top,
+      .action-row,
+      .timer-card,
+      .toast,
+      .primary-btn,
+      .secondary-btn,
+      .quiet-btn,
+      .sort-actions {
+        display: none !important;
+      }
+
+      .app {
+        display: block;
+      }
+
+      .content {
+        padding: 0;
+      }
+
+      .stage {
+        display: block !important;
+        min-height: auto;
+        break-after: page;
+      }
+
+      .stage:not([data-step="summary"]) {
+        display: none !important;
+      }
+
+      .report-card,
+      .task-panel,
+      .guide-panel,
+      .answer-card {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="next-lesson-float" href="day-of-ai-third-lesson.html">进入第三课</a>
+
+  <div class="mobile-top">
+    <div class="mobile-row">
+      <select id="mobileStepSelect" aria-label="选择任务步骤"></select>
+      <button class="quiet-btn" type="button" id="mobileTimerButton">计时</button>
+    </div>
+  </div>
+
+  <div class="app">
+    <aside class="side" aria-label="任务导航">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img">
+            <path d="M10 12h28v24H10z" fill="none" stroke="currentColor" stroke-width="4"/>
+            <path d="M16 20h16M16 28h9M20 4v8M28 4v8M20 36v8M28 36v8M2 20h8M2 28h8M38 20h8M38 28h8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="eyebrow">Day of AI 第二课</div>
+          <h1>什么是 AI？</h1>
+          <p>从“会执行规则”走到“会根据例子做判断”。</p>
+        </div>
+      </div>
+
+      <div class="progress-card">
+        <div class="progress-top">
+          <span>任务进度</span>
+          <span id="progressText">0/8</span>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="step-list" id="stepList"></div>
+
+      <div class="timer-card" id="timerCard">
+        <strong>课堂计时器</strong>
+        <div class="timer" id="timerDisplay">30:00</div>
+        <div class="timer-actions">
+          <button id="startTimer" type="button">开始</button>
+          <button id="pauseTimer" type="button">暂停</button>
+          <button id="resetTimer" type="button">重置</button>
+        </div>
+      </div>
+
+      <div class="parent-card">
+        <strong>第二课核心句</strong>
+        <span>普通程序按规则执行；AI 会从例子里学规律，再做判断或预测。</span>
+        <a class="utility-btn" href="day-of-ai-first-lesson.html" style="display:grid;place-items:center;text-decoration:none;">回到第一课</a>
+        <a class="utility-btn" href="day-of-ai-third-lesson.html" style="display:grid;place-items:center;text-decoration:none;">进入第三课</a>
+        <button class="utility-btn" type="button" id="resetAll">重新开始第二课</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="stage active" data-step="intro" aria-labelledby="intro-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 0</div>
+            <h2 id="intro-title">进入第二课：什么是 AI？</h2>
+            <p class="stage-lead">第一课我们知道：AI 会根据很多例子来猜，也会猜错。第二课我们要更进一步：分清“固定规则”“算法”和“AI 判断”。</p>
+          </div>
+          <span class="time-pill">2 分钟</span>
+        </div>
+
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>先复习一句</h3>
+            <label for="recallInput" class="sr-only">第一课记得什么</label>
+            <textarea id="recallInput" placeholder="孩子可以说：AI 会根据例子来猜答案，也会猜错。"></textarea>
+            <div class="feedback" id="introFeedback">写一句第一课记得的内容，就完成热身。</div>
+            <div class="action-row">
+              <button class="primary-btn" type="button" data-next>开始任务 1</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>家长开场白</h3>
+            <div class="say-box">“今天我们要做一个更厉害的侦探：不是只问它是不是 AI，而是问它是在按规则做事，还是在根据例子做判断。”</div>
+            <p>今天可以把“算法”解释成：一步一步的清楚指令。把“AI”解释成：从很多例子里学规律，再猜答案的系统。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="video" aria-labelledby="video-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 1</div>
+            <h2 id="video-title">看 3 分钟视频：机器怎样学习？</h2>
+            <p class="stage-lead">这段 Code.org 视频时长 2:56。观看时只抓一个问题：AI 是不是被人一步一步写死的？</p>
+          </div>
+          <span class="time-pill">3 分钟</span>
+        </div>
+
+        <div class="task-grid">
+          <div class="task-panel">
+            <div class="video-frame">
+              <iframe
+                title="Code.org: AI: What is Machine Learning?"
+                src="https://www.youtube.com/embed/OeU5m6vRyCk"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen></iframe>
+            </div>
+            <div class="video-prompts">
+              <div class="prompt-box"><strong>看前问题：</strong>机器学习是不是“电脑自己变聪明”？还是“它从很多例子里找规律”？</div>
+              <div class="prompt-box"><strong>看后问题：</strong>视频里有没有说到：数据、模式、预测？</div>
+            </div>
+            <div class="feedback" id="videoFeedback">看完视频后，点一下“我看完了”。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <a class="secondary-btn" href="https://www.khanacademy.org/computing/code-org/x06130d92%3Ahow-ai-works/x06130d92%3Awhat-is-ai/v/ai-what-is-machine-learning" target="_blank" rel="noreferrer">备用播放页</a>
+              <a class="secondary-btn" href="https://amara.org/videos/6EmSoj4gGdTD/info/ai-what-is-machine-learning/" target="_blank" rel="noreferrer">字幕/时长页</a>
+              <button class="primary-btn" type="button" id="markVideoWatched">我看完了</button>
+              <button class="primary-btn" type="button" data-next>继续任务 2</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>家长怎么讲</h3>
+            <div class="say-box">“机器学习不是电脑突然有脑子了，而是电脑看很多例子，找规律，然后猜一个新答案。”</div>
+            <ul>
+              <li>孩子只需要听懂“例子、规律、预测”。</li>
+              <li>如果视频英文听不懂，就暂停画面，用中文复述核心意思。</li>
+              <li>不要展开神经网络、大模型这些词。</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="compare" aria-labelledby="compare-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 2</div>
+            <h2 id="compare-title">它是固定规则，还是 AI 判断？</h2>
+            <p class="stage-lead">每张卡选择一次。先让孩子说理由，再看参考解释。</p>
+          </div>
+          <span class="time-pill">6 分钟</span>
+        </div>
+
+        <div class="task-panel" id="compareTask">
+          <div class="prompt-box"><strong>判断线索：</strong>如果它只按清楚规则做事，更像普通程序；如果它从例子或数据中学习，再做预测，更像 AI。</div>
+          <div class="sort-grid" id="compareGrid"></div>
+          <div class="feedback" id="compareFeedback">请选择全部 8 张卡片。</div>
+          <div class="action-row">
+            <button class="secondary-btn" type="button" data-prev>上一步</button>
+            <button class="secondary-btn" type="button" id="showCompareFeedback">查看参考解释</button>
+            <button class="primary-btn" type="button" data-next>继续任务 3</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="algorithm" aria-labelledby="algorithm-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 3</div>
+            <h2 id="algorithm-title">给机器人写一个算法</h2>
+            <p class="stage-lead">算法就是一步一步的清楚指令。机器人不会“猜你的意思”，所以指令漏一步，它就会做错。</p>
+          </div>
+          <span class="time-pill">5 分钟</span>
+        </div>
+
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>点击步骤，组成“刷牙算法”</h3>
+            <div class="choice-grid" id="algorithmChoices"></div>
+            <div class="algorithm-board">
+              <div class="sequence-box" id="sequenceBox"></div>
+              <div class="robot-output">
+                <span>机器人执行结果</span>
+                <strong id="robotResult">还没有算法</strong>
+                <span id="robotExplain">至少放入 5 个步骤，再让机器人执行。</span>
+              </div>
+            </div>
+            <div class="feedback" id="algorithmFeedback">算法要足够清楚，机器人才能照做。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="secondary-btn" type="button" id="undoAlgorithm">撤回一步</button>
+              <button class="secondary-btn" type="button" id="clearAlgorithm">清空</button>
+              <button class="primary-btn" type="button" id="runRobot">让机器人执行</button>
+              <button class="primary-btn" type="button" data-next>继续任务 4</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>家长追问</h3>
+            <ul>
+              <li>如果少了“打开牙膏盖”，机器人会发生什么？</li>
+              <li>如果顺序错了，会不会还能完成？</li>
+              <li>这是 AI 吗？还是固定算法？</li>
+            </ul>
+            <div class="say-box">“算法很像菜谱：步骤越清楚，执行越稳定。”</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="data" aria-labelledby="data-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 4</div>
+            <h2 id="data-title">AI 需要什么数据？</h2>
+            <p class="stage-lead">AI 不是凭空聪明。它要看相关数据，才可能做出比较好的判断。</p>
+          </div>
+          <span class="time-pill">4 分钟</span>
+        </div>
+
+        <div class="task-panel">
+          <div class="prompt-box"><strong>任务：</strong>如果 AI 要给你推荐一本书，哪些数据有帮助？哪些其实没关系？</div>
+          <div class="data-grid" id="dataGrid"></div>
+          <div class="feedback" id="dataFeedback">选择你觉得有帮助的数据。</div>
+          <div class="action-row">
+            <button class="secondary-btn" type="button" data-prev>上一步</button>
+            <button class="primary-btn" type="button" data-next>继续任务 5</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="machine" aria-labelledby="machine-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 5</div>
+            <h2 id="machine-title">运行两台机器</h2>
+            <p class="stage-lead">一台机器只按规则，一台机器根据例子来猜。让孩子感受两者的不同。</p>
+          </div>
+          <span class="time-pill">5 分钟</span>
+        </div>
+
+        <div class="task-panel">
+          <div class="machine-grid">
+            <div class="machine">
+              <h3>规则机器</h3>
+              <p>规则：身高低于 120cm，不能坐过山车。</p>
+              <input class="text-input" id="heightInput" type="number" placeholder="输入身高，例如 118" />
+              <button class="primary-btn" type="button" id="runRule" style="margin-top:10px;">运行规则</button>
+              <div class="machine-result" id="ruleResult">等待输入身高。</div>
+            </div>
+            <div class="machine">
+              <h3>AI 猜测机器</h3>
+              <p>它根据例子猜“这张画像不像猫”。请选择画的特征。</p>
+              <div class="choice-grid" id="catFeatures">
+                <button class="choice-btn" type="button" data-feature="ears">有尖耳朵</button>
+                <button class="choice-btn" type="button" data-feature="whiskers">有胡须</button>
+                <button class="choice-btn" type="button" data-feature="tail">有尾巴</button>
+                <button class="choice-btn" type="button" data-feature="wheels">有轮子</button>
+              </div>
+              <button class="primary-btn" type="button" id="runGuess" style="margin-top:10px;">让它猜</button>
+              <div class="machine-result" id="guessResult">等待选择特征。</div>
+            </div>
+          </div>
+          <div class="feedback" id="machineFeedback">运行两台机器后，比较它们有什么不同。</div>
+          <div class="action-row">
+            <button class="secondary-btn" type="button" data-prev>上一步</button>
+            <button class="primary-btn" type="button" data-next>继续任务 6</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="definition" aria-labelledby="definition-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 6</div>
+            <h2 id="definition-title">拼出你的 AI 定义</h2>
+            <p class="stage-lead">不用背标准答案。孩子能用自己的话说清楚，就已经很好。</p>
+          </div>
+          <span class="time-pill">3 分钟</span>
+        </div>
+
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>先点关键词，再写一句话</h3>
+            <div class="word-grid" id="wordGrid"></div>
+            <textarea id="definitionInput" style="margin-top:14px;" placeholder="例如：AI 是一种会从例子和数据里学规律，然后做判断或预测的电脑系统。"></textarea>
+            <div class="feedback" id="definitionFeedback">写出你自己的 AI 定义。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="secondary-btn" type="button" id="fillDefinition">帮我生成一句</button>
+              <button class="primary-btn" type="button" data-next>进入总结</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>可以接受的孩子版定义</h3>
+            <div class="say-box">“AI 是会从很多例子里学规律，然后帮我们做判断或预测的电脑系统。”</div>
+            <p>不要纠结“人工智能”的严谨定义。第二课的目标是分清：规则执行、算法步骤、AI 判断。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="reflection" aria-labelledby="reflection-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 7</div>
+            <h2 id="reflection-title">三句话收尾</h2>
+            <p class="stage-lead">孩子口头说，家长可以帮他打字。写完就生成第二课报告。</p>
+          </div>
+          <span class="time-pill">2 分钟</span>
+        </div>
+
+        <div class="task-panel">
+          <div class="reflection-grid">
+            <div class="answer-card">
+              <label for="r1">1. 普通程序和 AI 有什么不同？</label>
+              <textarea id="r1" placeholder="例如：普通程序按规则做，AI 会从例子里学规律。"></textarea>
+            </div>
+            <div class="answer-card">
+              <label for="r2">2. 算法是什么？</label>
+              <textarea id="r2" placeholder="例如：算法是一串清楚的步骤。"></textarea>
+            </div>
+            <div class="answer-card">
+              <label for="r3">3. AI 为什么需要数据？</label>
+              <textarea id="r3" placeholder="例如：因为 AI 要从数据和例子里学习。"></textarea>
+            </div>
+          </div>
+          <div class="feedback" id="reflectionFeedback">写完 3 个回答，就可以生成报告。</div>
+          <div class="action-row">
+            <button class="secondary-btn" type="button" data-prev>上一步</button>
+            <button class="primary-btn" type="button" data-next>生成第二课报告</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="summary" aria-labelledby="summary-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">完成</div>
+            <h2 id="summary-title">第二课学习报告</h2>
+            <p class="stage-lead">这页可以打印或截图保存。下一课可以进入“机器如何学习”。</p>
+          </div>
+          <span class="time-pill">已完成</span>
+        </div>
+
+        <div class="report-card">
+          <span class="badge">Day of AI 第二课</span>
+          <h3>今天我知道：规则会执行，AI 会学习和判断。</h3>
+          <ol class="report-list" id="summaryList"></ol>
+          <div class="say-box">核心句：普通程序按规则执行；AI 会从例子里学规律，再做判断或预测。</div>
+          <div class="action-row">
+            <button class="primary-btn" type="button" onclick="window.print()">打印报告</button>
+            <a class="secondary-btn" href="day-of-ai-first-lesson.html">回到第一课</a>
+            <a class="secondary-btn" href="day-of-ai-third-lesson.html">进入第三课</a>
+            <button class="secondary-btn" type="button" id="resetAllEnd">重新开始第二课</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const STORAGE_KEY = "day-of-ai-second-lesson-v1";
+    const steps = [
+      { id: "intro", title: "复习", time: "2 分钟" },
+      { id: "video", title: "短视频", time: "3 分钟" },
+      { id: "compare", title: "规则还是 AI", time: "6 分钟" },
+      { id: "algorithm", title: "写算法", time: "5 分钟" },
+      { id: "data", title: "选数据", time: "4 分钟" },
+      { id: "machine", title: "两台机器", time: "5 分钟" },
+      { id: "definition", title: "定义 AI", time: "3 分钟" },
+      { id: "reflection", title: "三句话", time: "2 分钟" },
+      { id: "summary", title: "报告", time: "完成" }
+    ];
+
+    const compareItems = [
+      { id: "calc", icon: "算", title: "计算器算 9+8", desc: "按数学规则直接算。", answer: "rule", note: "更像固定规则。它不需要从例子里学习。" },
+      { id: "recommend", icon: "荐", title: "视频推荐", desc: "根据你看过什么来猜。", answer: "ai", note: "更像 AI。它用历史数据预测你可能喜欢什么。" },
+      { id: "traffic", icon: "灯", title: "红灯停绿灯行", desc: "交通灯按设定切换。", answer: "rule", note: "更像固定规则。规则清楚，输出稳定。" },
+      { id: "face", icon: "脸", title: "相机识别人脸", desc: "从图片中找脸部模式。", answer: "ai", note: "更像 AI。它根据很多图片例子学习识别。" },
+      { id: "timer", icon: "定", title: "闹钟 7 点响", desc: "时间到了就响。", answer: "rule", note: "更像固定规则。它只是执行时间条件。" },
+      { id: "translate", icon: "译", title: "自动翻译", desc: "猜一句话在另一种语言中怎么说。", answer: "ai", note: "更像 AI。现代翻译通常从大量文本中学习。" },
+      { id: "door", icon: "门", title: "按门铃发出声音", desc: "按下按钮就响。", answer: "rule", note: "更像固定规则。按下就是触发。" },
+      { id: "quickdraw", icon: "画", title: "猜你的涂鸦", desc: "根据很多涂鸦例子来猜。", answer: "ai", note: "更像 AI。它用例子学习图形模式。" }
+    ];
+
+    const algorithmOptions = ["拿起牙刷", "打开牙膏盖", "挤牙膏", "刷牙", "漱口", "放回牙刷", "先去睡觉", "把牙膏吃掉"];
+    const helpfulData = [
+      { id: "age", text: "年龄", helpful: true },
+      { id: "books", text: "以前喜欢的书", helpful: true },
+      { id: "topics", text: "喜欢的主题", helpful: true },
+      { id: "level", text: "阅读难度", helpful: true },
+      { id: "shoe", text: "鞋码", helpful: false },
+      { id: "weather", text: "今天几点下雨", helpful: false },
+      { id: "language", text: "会读哪种语言", helpful: true },
+      { id: "snack", text: "昨天吃了什么零食", helpful: false },
+      { id: "finished", text: "最近读完的书", helpful: true }
+    ];
+    const words = ["很多例子", "数据", "学习规律", "判断", "预测", "可能出错", "人来检查", "不是魔法"];
+
+    const state = loadState();
+    let currentStep = initialStep();
+    let remainingSeconds = state.remainingSeconds || 30 * 60;
+    let timerId = null;
+
+    const stepList = document.getElementById("stepList");
+    const mobileStepSelect = document.getElementById("mobileStepSelect");
+    const progressText = document.getElementById("progressText");
+    const progressFill = document.getElementById("progressFill");
+    const timerDisplay = document.getElementById("timerDisplay");
+    const toast = document.getElementById("toast");
+
+    function defaultState() {
+      return {
+        currentStep: "intro",
+        completed: {},
+        recall: "",
+        videoWatched: false,
+        compare: {},
+        compareFeedbackShown: false,
+        sequence: [],
+        data: {},
+        ruleRan: false,
+        guessRan: false,
+        features: {},
+        words: {},
+        definition: "",
+        reflection: { r1: "", r2: "", r3: "" },
+        remainingSeconds: 30 * 60
+      };
+    }
+
+    function loadState() {
+      try {
+        return { ...defaultState(), ...JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") };
+      } catch (error) {
+        return defaultState();
+      }
+    }
+
+    function initialStep() {
+      const requested = new URLSearchParams(window.location.search).get("step") || window.location.hash.replace("#", "");
+      if (steps.some((step) => step.id === requested)) return requested;
+      return state.currentStep || "intro";
+    }
+
+    function saveState() {
+      state.currentStep = currentStep;
+      state.remainingSeconds = remainingSeconds;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    function renderNavigation() {
+      stepList.innerHTML = "";
+      mobileStepSelect.innerHTML = "";
+      steps.forEach((step, index) => {
+        const isDone = step.id === "summary" ? allDone() : Boolean(state.completed[step.id]);
+        const button = document.createElement("button");
+        button.className = `step-tab ${currentStep === step.id ? "active" : ""} ${isDone ? "done" : ""}`;
+        button.type = "button";
+        button.dataset.goStep = step.id;
+        button.innerHTML = `
+          <span class="step-num">${isDone ? "✓" : index}</span>
+          <span><span class="step-title">${step.title}</span><span class="step-time">${step.time}</span></span>
+          <span class="step-status">${currentStep === step.id ? "现在" : isDone ? "完成" : ""}</span>
+        `;
+        stepList.appendChild(button);
+
+        const option = document.createElement("option");
+        option.value = step.id;
+        option.textContent = `${index}. ${step.title}`;
+        option.selected = currentStep === step.id;
+        mobileStepSelect.appendChild(option);
+      });
+    }
+
+    function renderProgress() {
+      const taskSteps = steps.slice(0, -1);
+      const count = taskSteps.filter((step) => state.completed[step.id]).length;
+      progressText.textContent = `${count}/${taskSteps.length}`;
+      progressFill.style.width = `${Math.round((count / taskSteps.length) * 100)}%`;
+    }
+
+    function renderStages() {
+      document.querySelectorAll(".stage").forEach((stage) => {
+        stage.classList.toggle("active", stage.dataset.step === currentStep);
+      });
+      renderNavigation();
+      renderProgress();
+      mobileStepSelect.value = currentStep;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      saveState();
+    }
+
+    function goStep(id) {
+      currentStep = id;
+      if (id === "summary") renderSummary();
+      renderStages();
+    }
+
+    function nextStep() {
+      const index = steps.findIndex((step) => step.id === currentStep);
+      goStep(steps[Math.min(index + 1, steps.length - 1)].id);
+    }
+
+    function prevStep() {
+      const index = steps.findIndex((step) => step.id === currentStep);
+      goStep(steps[Math.max(index - 1, 0)].id);
+    }
+
+    function markComplete(id, done) {
+      state.completed[id] = done;
+      saveState();
+      renderProgress();
+      renderNavigation();
+    }
+
+    function allDone() {
+      return steps.slice(0, -1).every((step) => state.completed[step.id]);
+    }
+
+    function initGlobalControls() {
+      document.addEventListener("click", (event) => {
+        const go = event.target.closest("[data-go-step]");
+        if (go) goStep(go.dataset.goStep);
+        if (event.target.closest("[data-next]")) nextStep();
+        if (event.target.closest("[data-prev]")) prevStep();
+      });
+      mobileStepSelect.addEventListener("change", (event) => goStep(event.target.value));
+      document.getElementById("mobileTimerButton").addEventListener("click", () => {
+        document.getElementById("timerCard").scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+      document.getElementById("resetAll").addEventListener("click", resetAll);
+      document.getElementById("resetAllEnd").addEventListener("click", resetAll);
+    }
+
+    function resetAll() {
+      localStorage.removeItem(STORAGE_KEY);
+      Object.assign(state, defaultState());
+      currentStep = "intro";
+      remainingSeconds = 30 * 60;
+      hydrateFields();
+      renderAll();
+      renderStages();
+      showToast("第二课已经重置。");
+    }
+
+    function initTimer() {
+      document.getElementById("startTimer").addEventListener("click", () => {
+        if (timerId) return;
+        timerId = window.setInterval(() => {
+          remainingSeconds = Math.max(0, remainingSeconds - 1);
+          renderTimer();
+          saveState();
+          if (remainingSeconds === 0) {
+            window.clearInterval(timerId);
+            timerId = null;
+            showToast("30 分钟到了，可以收尾啦。");
+          }
+        }, 1000);
+      });
+      document.getElementById("pauseTimer").addEventListener("click", () => {
+        window.clearInterval(timerId);
+        timerId = null;
+      });
+      document.getElementById("resetTimer").addEventListener("click", () => {
+        window.clearInterval(timerId);
+        timerId = null;
+        remainingSeconds = 30 * 60;
+        renderTimer();
+        saveState();
+      });
+      renderTimer();
+    }
+
+    function renderTimer() {
+      const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, "0");
+      const seconds = (remainingSeconds % 60).toString().padStart(2, "0");
+      timerDisplay.textContent = `${minutes}:${seconds}`;
+    }
+
+    function initIntro() {
+      const input = document.getElementById("recallInput");
+      input.value = state.recall;
+      input.addEventListener("input", () => {
+        state.recall = input.value.trim();
+        renderIntro();
+        saveState();
+      });
+      renderIntro();
+    }
+
+    function renderIntro() {
+      const done = Boolean(state.recall);
+      const feedback = document.getElementById("introFeedback");
+      feedback.textContent = done ? "热身完成。可以进入第二课正式任务。" : "写一句第一课记得的内容，就完成热身。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("intro", done);
+    }
+
+    function initVideo() {
+      document.getElementById("markVideoWatched").addEventListener("click", () => {
+        state.videoWatched = true;
+        renderVideo();
+        saveState();
+        showToast("视频任务已记录。");
+      });
+      renderVideo();
+    }
+
+    function renderVideo() {
+      const feedback = document.getElementById("videoFeedback");
+      feedback.textContent = state.videoWatched ? "已完成视频任务。继续做分类判断。" : "看完视频后，点一下“我看完了”。";
+      feedback.className = `feedback ${state.videoWatched ? "good" : ""}`;
+      markComplete("video", state.videoWatched);
+    }
+
+    function renderCompareCards() {
+      const grid = document.getElementById("compareGrid");
+      grid.innerHTML = "";
+      compareItems.forEach((item) => {
+        const card = document.createElement("article");
+        card.className = "sort-card";
+        card.dataset.choice = state.compare[item.id] || "";
+        card.innerHTML = `
+          <div class="card-icon">${item.icon}</div>
+          <h3>${item.title}</h3>
+          <p>${item.desc}</p>
+          <div class="sort-actions">
+            <button type="button" data-choice="rule">规则</button>
+            <button type="button" data-choice="ai">AI</button>
+            <button type="button" data-choice="unsure">不确定</button>
+          </div>
+          <p class="answer-note">${item.note}</p>
+        `;
+        card.querySelectorAll("button").forEach((button) => {
+          button.classList.toggle("active", state.compare[item.id] === button.dataset.choice);
+          button.addEventListener("click", () => {
+            state.compare[item.id] = button.dataset.choice;
+            saveState();
+            renderCompareCards();
+            renderCompareStatus();
+          });
+        });
+        grid.appendChild(card);
+      });
+      document.getElementById("compareTask").classList.toggle("show-feedback", state.compareFeedbackShown);
+      renderCompareStatus();
+    }
+
+    function renderCompareStatus() {
+      const answered = Object.values(state.compare).filter(Boolean).length;
+      const correct = compareItems.filter((item) => state.compare[item.id] === item.answer).length;
+      const done = answered === compareItems.length;
+      const feedback = document.getElementById("compareFeedback");
+      feedback.textContent = done ? `完成 8 张卡。和参考答案相同 ${correct}/8，重点是说出理由。` : `已选择 ${answered}/8。`;
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("compare", done);
+    }
+
+    function initCompare() {
+      document.getElementById("showCompareFeedback").addEventListener("click", () => {
+        state.compareFeedbackShown = !state.compareFeedbackShown;
+        document.getElementById("compareTask").classList.toggle("show-feedback", state.compareFeedbackShown);
+        saveState();
+      });
+      renderCompareCards();
+    }
+
+    function initAlgorithm() {
+      const choices = document.getElementById("algorithmChoices");
+      choices.innerHTML = "";
+      algorithmOptions.forEach((step) => {
+        const button = document.createElement("button");
+        button.className = "choice-btn";
+        button.type = "button";
+        button.textContent = step;
+        button.addEventListener("click", () => {
+          state.sequence.push(step);
+          renderAlgorithm();
+          saveState();
+        });
+        choices.appendChild(button);
+      });
+      document.getElementById("undoAlgorithm").addEventListener("click", () => {
+        state.sequence.pop();
+        renderAlgorithm();
+        saveState();
+      });
+      document.getElementById("clearAlgorithm").addEventListener("click", () => {
+        state.sequence = [];
+        renderAlgorithm();
+        saveState();
+      });
+      document.getElementById("runRobot").addEventListener("click", runRobot);
+      renderAlgorithm();
+    }
+
+    function renderAlgorithm() {
+      const box = document.getElementById("sequenceBox");
+      box.innerHTML = "";
+      if (!state.sequence.length) {
+        box.innerHTML = "<p style='color:var(--muted);line-height:1.5;'>点击左边步骤，把它们放进这里。</p>";
+      }
+      state.sequence.forEach((step, index) => {
+        const item = document.createElement("div");
+        item.className = "sequence-item";
+        item.innerHTML = `<span>${index + 1}</span><strong>${step}</strong>`;
+        box.appendChild(item);
+      });
+      const done = state.sequence.length >= 5;
+      const feedback = document.getElementById("algorithmFeedback");
+      feedback.textContent = done ? "已经写出一个可执行的算法。现在可以让机器人执行，看看步骤是否合理。" : "算法要足够清楚，机器人才能照做。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("algorithm", done);
+    }
+
+    function runRobot() {
+      const needed = ["拿起牙刷", "打开牙膏盖", "挤牙膏", "刷牙", "漱口"];
+      const missing = needed.filter((step) => !state.sequence.includes(step));
+      const bad = state.sequence.includes("先去睡觉") || state.sequence.includes("把牙膏吃掉");
+      const result = document.getElementById("robotResult");
+      const explain = document.getElementById("robotExplain");
+      if (missing.length) {
+        result.textContent = "机器人卡住了";
+        explain.textContent = `缺少步骤：${missing.join("、")}。算法要写清楚。`;
+      } else if (bad) {
+        result.textContent = "机器人做歪了";
+        explain.textContent = "算法里混进了奇怪步骤。机器人会照做，所以人要检查。";
+      } else {
+        result.textContent = "机器人刷牙成功";
+        explain.textContent = "这就是固定算法：按步骤执行，不需要学习。";
+      }
+      showToast("机器人执行了一次算法。");
+    }
+
+    function initData() {
+      const grid = document.getElementById("dataGrid");
+      grid.innerHTML = "";
+      helpfulData.forEach((item) => {
+        const button = document.createElement("button");
+        button.className = `data-btn ${state.data[item.id] ? "selected" : ""}`;
+        button.type = "button";
+        button.textContent = item.text;
+        button.addEventListener("click", () => {
+          state.data[item.id] = !state.data[item.id];
+          renderData();
+          saveState();
+        });
+        grid.appendChild(button);
+      });
+      renderData();
+    }
+
+    function renderData() {
+      document.querySelectorAll("#dataGrid .data-btn").forEach((button, index) => {
+        button.classList.toggle("selected", Boolean(state.data[helpfulData[index].id]));
+      });
+      const chosen = helpfulData.filter((item) => state.data[item.id]);
+      const helpful = chosen.filter((item) => item.helpful).length;
+      const done = chosen.length >= 3;
+      const feedback = document.getElementById("dataFeedback");
+      feedback.textContent = done ? `你选了 ${chosen.length} 个数据，其中 ${helpful} 个很相关。AI 需要相关数据，不是什么数据都有用。` : "选择你觉得有帮助的数据。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("data", done);
+    }
+
+    function initMachine() {
+      document.getElementById("runRule").addEventListener("click", runRule);
+      document.getElementById("runGuess").addEventListener("click", runGuess);
+      document.querySelectorAll("#catFeatures .choice-btn").forEach((button) => {
+        button.classList.toggle("selected", Boolean(state.features[button.dataset.feature]));
+        button.addEventListener("click", () => {
+          state.features[button.dataset.feature] = !state.features[button.dataset.feature];
+          renderFeatures();
+          saveState();
+        });
+      });
+      renderMachine();
+    }
+
+    function renderFeatures() {
+      document.querySelectorAll("#catFeatures .choice-btn").forEach((button) => {
+        button.classList.toggle("selected", Boolean(state.features[button.dataset.feature]));
+      });
+    }
+
+    function runRule() {
+      const value = Number(document.getElementById("heightInput").value);
+      const result = document.getElementById("ruleResult");
+      if (!value) {
+        result.textContent = "请先输入身高。";
+        return;
+      }
+      result.textContent = value < 120 ? "规则结果：不能坐过山车。" : "规则结果：可以坐过山车。";
+      state.ruleRan = true;
+      renderMachine();
+      saveState();
+    }
+
+    function runGuess() {
+      const score = ["ears", "whiskers", "tail"].filter((feature) => state.features[feature]).length - (state.features.wheels ? 1 : 0);
+      document.getElementById("guessResult").textContent = score >= 2 ? "猜测结果：很像猫，但仍然可能错。" : "猜测结果：不太像猫，但也可能是画得特别。";
+      state.guessRan = true;
+      renderMachine();
+      saveState();
+    }
+
+    function renderMachine() {
+      renderFeatures();
+      const done = state.ruleRan && state.guessRan;
+      const feedback = document.getElementById("machineFeedback");
+      feedback.textContent = done ? "两台机器都运行了：规则机器很确定，AI 猜测机器会根据特征估计。" : "运行两台机器后，比较它们有什么不同。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("machine", done);
+    }
+
+    function initDefinition() {
+      const grid = document.getElementById("wordGrid");
+      grid.innerHTML = "";
+      words.forEach((word) => {
+        const button = document.createElement("button");
+        button.className = `word-btn ${state.words[word] ? "selected" : ""}`;
+        button.type = "button";
+        button.textContent = word;
+        button.addEventListener("click", () => {
+          state.words[word] = !state.words[word];
+          renderWords();
+          saveState();
+        });
+        grid.appendChild(button);
+      });
+      const input = document.getElementById("definitionInput");
+      input.value = state.definition;
+      input.addEventListener("input", () => {
+        state.definition = input.value.trim();
+        renderDefinition();
+        saveState();
+      });
+      document.getElementById("fillDefinition").addEventListener("click", () => {
+        state.definition = "AI 是一种会从很多例子和数据里学习规律，然后做判断或预测的电脑系统。";
+        input.value = state.definition;
+        renderDefinition();
+        saveState();
+      });
+      renderDefinition();
+    }
+
+    function renderWords() {
+      document.querySelectorAll("#wordGrid .word-btn").forEach((button) => {
+        button.classList.toggle("selected", Boolean(state.words[button.textContent]));
+      });
+    }
+
+    function renderDefinition() {
+      renderWords();
+      const done = Boolean(state.definition);
+      const feedback = document.getElementById("definitionFeedback");
+      feedback.textContent = done ? "已经写出自己的 AI 定义。" : "写出你自己的 AI 定义。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("definition", done);
+    }
+
+    function initReflection() {
+      ["r1", "r2", "r3"].forEach((id) => {
+        const input = document.getElementById(id);
+        input.value = state.reflection[id] || "";
+        input.addEventListener("input", () => {
+          state.reflection[id] = input.value.trim();
+          renderReflection();
+          saveState();
+        });
+      });
+      renderReflection();
+    }
+
+    function renderReflection() {
+      const done = ["r1", "r2", "r3"].every((id) => state.reflection[id]);
+      const feedback = document.getElementById("reflectionFeedback");
+      feedback.textContent = done ? "三句话都写好了。可以生成报告。" : "写完 3 个回答，就可以生成报告。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("reflection", done);
+    }
+
+    function renderSummary() {
+      const chosenData = helpfulData.filter((item) => state.data[item.id]).map((item) => item.text).join("、") || "还没选择";
+      document.getElementById("summaryList").innerHTML = `
+        <li>我复习了第一课：${state.recall || "AI 会根据例子来猜，也会猜错。"} </li>
+        <li>我看了 2:56 的 Code.org 视频，理解机器学习会从例子里找模式。</li>
+        <li>我判断了 ${Object.values(state.compare).filter(Boolean).length}/8 个工具是规则还是 AI。</li>
+        <li>我写了一个 ${state.sequence.length} 步算法：${state.sequence.slice(0, 6).join(" → ") || "还没写"}。</li>
+        <li>我知道推荐书籍需要相关数据，例如：${chosenData}。</li>
+        <li>我的 AI 定义：${state.definition || "还没填写"}。</li>
+        <li>我的三句话：${state.reflection.r1 || "未填写"}；${state.reflection.r2 || "未填写"}；${state.reflection.r3 || "未填写"}。</li>
+      `;
+    }
+
+    function hydrateFields() {
+      document.getElementById("recallInput").value = state.recall || "";
+      document.getElementById("definitionInput").value = state.definition || "";
+      ["r1", "r2", "r3"].forEach((id) => {
+        document.getElementById(id).value = state.reflection[id] || "";
+      });
+    }
+
+    function renderAll() {
+      renderIntro();
+      renderVideo();
+      renderCompareCards();
+      renderAlgorithm();
+      renderData();
+      renderMachine();
+      renderDefinition();
+      renderReflection();
+    }
+
+    initGlobalControls();
+    initTimer();
+    initIntro();
+    initVideo();
+    initCompare();
+    initAlgorithm();
+    initData();
+    initMachine();
+    initDefinition();
+    initReflection();
+    hydrateFields();
+    renderStages();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1801 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第七课：从想法到游戏</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #5d6878;
+      --paper: #fbfbf7;
+      --panel: #ffffff;
+      --line: #d9dfdc;
+      --teal: #0b8f8b;
+      --teal-soft: #ddf4f1;
+      --coral: #de6251;
+      --coral-soft: #ffe2dc;
+      --gold: #f1c64b;
+      --gold-soft: #fff1bd;
+      --green: #448f4b;
+      --green-soft: #e2f2df;
+      --blue: #436fc2;
+      --blue-soft: #e2ebff;
+      --violet: #725fb4;
+      --violet-soft: #ece7ff;
+      --shadow: 0 18px 44px rgba(23, 32, 51, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 9% 12%, rgba(241, 198, 75, 0.24), transparent 24%),
+        radial-gradient(circle at 88% 13%, rgba(114, 95, 180, 0.16), transparent 23%),
+        linear-gradient(180deg, #f7faf5 0%, #fbfbf7 48%, #f4f7fb 100%);
+    }
+
+    button, input, textarea, select { font: inherit; }
+    button { border: 0; cursor: pointer; }
+    a {
+      color: var(--teal);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+    h1, h2, h3, p { margin: 0; }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+    }
+
+    .side {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 22px;
+      border-right: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      overflow: auto;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 14px;
+      color: var(--violet);
+      font-size: 14px;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    .brand {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .brand-mark {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--ink);
+      box-shadow: var(--shadow);
+    }
+
+    .brand-mark svg { width: 36px; height: 36px; }
+
+    .eyebrow {
+      margin-bottom: 6px;
+      color: var(--coral);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .brand h1 {
+      font-size: 22px;
+      line-height: 1.16;
+      letter-spacing: 0;
+    }
+
+    .brand p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .progress-card, .timer-card, .parent-card {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 8px 22px rgba(23, 32, 51, 0.07);
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: 900;
+    }
+
+    .progress-track {
+      height: 12px;
+      border-radius: 999px;
+      background: #edf1ef;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), var(--gold));
+      transition: width 220ms ease;
+    }
+
+    .step-list {
+      display: grid;
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .step-tab {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 34px 1fr auto;
+      gap: 9px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--ink);
+      text-align: left;
+    }
+
+    .step-tab:hover, .step-tab:focus-visible {
+      outline: none;
+      border-color: var(--line);
+      background: #fff;
+    }
+
+    .step-tab.active {
+      background: var(--teal-soft);
+      border-color: #9bd8d1;
+    }
+
+    .step-tab.done { background: var(--green-soft); }
+
+    .step-num {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #eef2f4;
+      color: var(--ink);
+      font-weight: 950;
+    }
+
+    .step-tab.done .step-num {
+      color: #fff;
+      background: var(--green);
+    }
+
+    .step-title {
+      display: block;
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.24;
+    }
+
+    .step-time {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .step-status {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .timer-card {
+      margin: 14px 0;
+      color: #fff;
+      background: var(--ink);
+      border-color: transparent;
+    }
+
+    .timer {
+      margin-top: 8px;
+      font-size: 40px;
+      font-weight: 950;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .timer-actions button, .utility-btn {
+      min-height: 36px;
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .parent-card {
+      display: grid;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.46;
+    }
+
+    .parent-card strong { color: var(--ink); }
+
+    .content {
+      min-width: 0;
+      padding: clamp(18px, 4vw, 48px);
+    }
+
+    .mobile-top {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(14px);
+    }
+
+    .mobile-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .mobile-row select {
+      min-height: 42px;
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 0 10px;
+      font-weight: 900;
+    }
+
+    .stage {
+      min-height: calc(100vh - 96px);
+      display: none;
+      align-content: center;
+      gap: 22px;
+    }
+
+    .stage.active { display: grid; }
+
+    .stage-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .stage h2 {
+      max-width: 980px;
+      font-size: clamp(36px, 5.4vw, 72px);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .stage-lead {
+      max-width: 850px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 19px;
+      line-height: 1.65;
+    }
+
+    .time-pill, .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      border-radius: 8px;
+      padding: 0 12px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .time-pill {
+      color: var(--ink);
+      background: var(--gold-soft);
+      border: 1px solid #e0c55d;
+    }
+
+    .badge {
+      color: #244d97;
+      background: var(--blue-soft);
+      border: 1px solid #b8c8ef;
+      font-size: 13px;
+    }
+
+    .task-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.92fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .task-panel, .guide-panel, .answer-card, .report-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 10px 28px rgba(23, 32, 51, 0.08);
+    }
+
+    .task-panel, .guide-panel { padding: clamp(16px, 2.4vw, 24px); }
+
+    .guide-panel {
+      display: grid;
+      align-content: start;
+      gap: 12px;
+      color: var(--muted);
+      line-height: 1.62;
+    }
+
+    .guide-panel h3, .task-panel h3 {
+      font-size: 24px;
+      line-height: 1.22;
+    }
+
+    .guide-panel ul, .guide-panel ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .say-box, .prompt-box, .feedback {
+      padding: 14px;
+      border-radius: 8px;
+      line-height: 1.5;
+    }
+
+    .say-box {
+      background: var(--blue-soft);
+      border-left: 6px solid var(--blue);
+      color: var(--ink);
+      font-size: 21px;
+      font-weight: 900;
+    }
+
+    .prompt-box {
+      background: #f7faf5;
+      border: 1px solid var(--line);
+      color: var(--ink);
+    }
+
+    .prompt-box strong { color: var(--coral); }
+
+    .feedback {
+      min-height: 44px;
+      margin-top: 12px;
+      border: 1px solid var(--line);
+      background: #f7faf5;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+    }
+
+    .feedback.good {
+      color: #234a2a;
+      background: var(--green-soft);
+      border-color: #b8d9b8;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    .primary-btn, .secondary-btn, .quiet-btn {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 8px;
+      padding: 0 16px;
+      border: 1px solid transparent;
+      font-weight: 950;
+      text-decoration: none;
+    }
+
+    .primary-btn {
+      color: #fff;
+      background: var(--teal);
+    }
+
+    .secondary-btn {
+      color: var(--ink);
+      background: #fff;
+      border-color: var(--line);
+    }
+
+    .quiet-btn {
+      min-height: 38px;
+      color: var(--ink);
+      background: var(--gold-soft);
+      border-color: #e0c55d;
+      font-size: 14px;
+    }
+
+    .text-input, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fdfdfb;
+      color: var(--ink);
+      padding: 12px;
+      line-height: 1.55;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .idea-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .idea-card {
+      min-height: 92px;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      gap: 6px;
+      padding: 12px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      text-align: center;
+      font-weight: 950;
+      line-height: 1.3;
+    }
+
+    .idea-card .idea-emoji {
+      font-size: 30px;
+      line-height: 1;
+    }
+
+    .idea-card:hover, .idea-card:focus-visible {
+      outline: none;
+      border-color: var(--teal);
+      background: var(--teal-soft);
+    }
+
+    .idea-card.selected {
+      border-color: var(--violet);
+      background: var(--violet-soft);
+    }
+
+    .design-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .design-field label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 950;
+    }
+
+    .design-field span.hint {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .prompt-preview {
+      margin-top: 14px;
+      padding: 16px;
+      border: 2px dashed var(--violet);
+      border-radius: 8px;
+      background: var(--violet-soft);
+      color: var(--ink);
+      font-size: 17px;
+      line-height: 1.7;
+      font-weight: 700;
+    }
+
+    .prompt-preview .slot {
+      padding: 0 4px;
+      border-radius: 4px;
+      background: #fff;
+      color: var(--violet);
+      font-weight: 950;
+    }
+
+    .round-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .round-card {
+      padding: 14px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .round-card.lit {
+      border-color: #e0c55d;
+      background: var(--gold-soft);
+    }
+
+    .round-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-weight: 950;
+    }
+
+    .round-star {
+      font-size: 26px;
+      line-height: 1;
+      filter: grayscale(1) opacity(0.4);
+      transition: transform 200ms ease, filter 200ms ease;
+    }
+
+    .round-card.lit .round-star {
+      filter: none;
+      transform: scale(1.2) rotate(8deg);
+    }
+
+    .round-fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .round-fields label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .star-strip {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 12px;
+      font-size: 34px;
+    }
+
+    .readme-preview {
+      margin-top: 14px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fffdf4;
+      line-height: 1.7;
+    }
+
+    .readme-preview h4 {
+      margin: 0 0 8px;
+      font-size: 26px;
+      line-height: 1.2;
+    }
+
+    .readme-preview p { color: var(--ink); margin-bottom: 8px; }
+    .readme-preview .rp-label {
+      color: var(--coral);
+      font-weight: 950;
+    }
+
+    .publish-steps {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .publish-card {
+      display: grid;
+      grid-template-columns: 44px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      text-align: left;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .publish-card:hover, .publish-card:focus-visible {
+      outline: none;
+      border-color: var(--teal);
+      background: var(--teal-soft);
+    }
+
+    .publish-card.done {
+      border-color: #b8d9b8;
+      background: var(--green-soft);
+    }
+
+    .publish-num {
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: #244d97;
+      font-weight: 950;
+      font-size: 18px;
+    }
+
+    .publish-card.done .publish-num {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .publish-card strong { display: block; }
+    .publish-card span.who {
+      display: inline-block;
+      margin-bottom: 4px;
+      padding: 1px 8px;
+      border-radius: 999px;
+      background: var(--gold-soft);
+      border: 1px solid #e0c55d;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .publish-check {
+      font-size: 22px;
+      color: var(--muted);
+    }
+
+    .publish-card.done .publish-check { color: var(--green); }
+
+    .launch-btn {
+      width: 100%;
+      min-height: 66px;
+      margin-top: 14px;
+      border-radius: 12px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--coral), var(--violet));
+      font-size: 24px;
+      font-weight: 950;
+      box-shadow: var(--shadow);
+      transition: transform 150ms ease;
+    }
+
+    .launch-btn:hover { transform: scale(1.02); }
+    .launch-btn:disabled {
+      background: #c9ced6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .celebrate {
+      margin-top: 12px;
+      padding: 16px;
+      border-radius: 8px;
+      background: var(--gold-soft);
+      border: 2px solid #e0c55d;
+      font-size: 20px;
+      font-weight: 950;
+      text-align: center;
+      display: none;
+    }
+
+    .celebrate.show { display: block; }
+
+    .reflection-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .answer-card { padding: 14px; }
+
+    .answer-card label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 950;
+      line-height: 1.35;
+    }
+
+    .report-card {
+      display: grid;
+      gap: 14px;
+      padding: clamp(18px, 4vw, 34px);
+      border: 3px solid var(--ink);
+      background:
+        linear-gradient(135deg, rgba(255, 241, 189, 0.72), rgba(236, 231, 255, 0.8)),
+        #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .report-card h3 {
+      font-size: clamp(30px, 5vw, 54px);
+      line-height: 1.05;
+    }
+
+    .report-card p, .report-card li {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.65;
+    }
+
+    .report-list {
+      margin: 0;
+      padding-left: 22px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 50;
+      max-width: min(420px, calc(100vw - 36px));
+      padding: 12px 14px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--ink);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(14px);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1080px) {
+      .app { display: block; }
+      .side { display: none; }
+      .mobile-top { display: block; }
+      .content { padding: 20px; }
+      .stage {
+        min-height: auto;
+        padding: 18px 0 40px;
+      }
+      .task-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 760px) {
+      .content { padding: 16px; }
+      .stage-head, .split, .reflection-grid, .design-grid, .round-fields { grid-template-columns: 1fr; }
+      .stage h2 { font-size: 38px; }
+      .idea-grid { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      body { background: #fff; }
+      .side, .mobile-top, .action-row, .timer-card, .toast,
+      .primary-btn, .secondary-btn, .quiet-btn { display: none !important; }
+      .app { display: block; }
+      .content { padding: 0; }
+      .stage {
+        display: block !important;
+        min-height: auto;
+        break-after: page;
+      }
+      .stage:not([data-step="summary"]) { display: none !important; }
+      .report-card, .task-panel, .guide-panel, .answer-card { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-top">
+    <div class="mobile-row">
+      <select id="mobileStepSelect" aria-label="选择任务步骤"></select>
+      <button class="quiet-btn" type="button" id="mobileTimerButton">计时</button>
+    </div>
+  </div>
+
+  <div class="app">
+    <aside class="side" aria-label="任务导航">
+      <a class="back-link" href="day-of-ai-course-roadmap.html">← 返回冒险地图</a>
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img">
+            <rect x="6" y="14" width="36" height="22" rx="6" fill="none" stroke="currentColor" stroke-width="4"/>
+            <path d="M15 22v8M11 26h8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="32" cy="23" r="2.6" fill="currentColor"/>
+            <circle cx="37" cy="28" r="2.6" fill="currentColor"/>
+          </svg>
+        </div>
+        <div>
+          <div class="eyebrow">AI 冒险 第七课</div>
+          <h1>从想法到游戏</h1>
+          <p>今天你是游戏设计师：想点子、说清楚、一轮一轮改，最后把游戏发上网。</p>
+        </div>
+      </div>
+
+      <div class="progress-card">
+        <div class="progress-top">
+          <span>任务进度</span>
+          <span id="progressText">0/7</span>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="step-list" id="stepList"></div>
+
+      <div class="timer-card" id="timerCard">
+        <strong>课堂计时器</strong>
+        <div class="timer" id="timerDisplay">40:00</div>
+        <div class="timer-actions">
+          <button id="startTimer" type="button">开始</button>
+          <button id="pauseTimer" type="button">暂停</button>
+          <button id="resetTimer" type="button">重置</button>
+        </div>
+      </div>
+
+      <div class="parent-card">
+        <strong>第七课核心句</strong>
+        <span>好游戏不是一次做出来的，而是一轮一轮改出来的。发现问题、说清修改，就是迭代。</span>
+        <button class="utility-btn" type="button" id="resetAll">重新开始第七课</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="stage active" data-step="intro" aria-labelledby="intro-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 0</div>
+            <h2 id="intro-title">今天你是游戏设计师！</h2>
+            <p class="stage-lead">你玩过很多游戏，对吧？今天不一样——今天你要自己做一个！Claude 是你的程序员，你是老板。老板要做的事：想点子、下指令、试玩、提意见。</p>
+          </div>
+          <span class="time-pill">3 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>热身：设计师的第一个问题</h3>
+            <p class="stage-lead" style="font-size:16px; margin-top:8px;">你最喜欢的游戏是什么？它哪里最好玩？说一句就行。</p>
+            <label class="sr-only" for="recallInput">最喜欢的游戏和原因</label>
+            <textarea id="recallInput" placeholder="例如：我喜欢马里奥，因为跳来跳去很爽，还能吃蘑菇变大。"></textarea>
+            <div class="feedback" id="introFeedback">写一句，热身就完成啦。</div>
+            <div class="action-row">
+              <button class="primary-btn" type="button" data-next>去挑一个点子</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>家长开场白</h3>
+            <div class="say-box">“做游戏的人叫游戏设计师。今天你就是设计师，Claude 帮你写代码。设计师最重要的本领是：把想法说清楚。”</div>
+            <p>提示：孩子说，家长打字就行。答案没有对错，能说出“为什么好玩”就是设计师思维的开始。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="idea" aria-labelledby="idea-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 1</div>
+            <h2 id="idea-title">点子风暴：挑一张点子卡</h2>
+            <p class="stage-lead">这里有 9 张游戏点子卡。点一张你最想做的！也可以点最后一张，写你自己的点子。选一个就好——设计师一次只做一个游戏。</p>
+          </div>
+          <span class="time-pill">4 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <div class="idea-grid" id="ideaGrid"></div>
+            <div id="customIdeaWrap" style="display:none; margin-top:12px;">
+              <label class="sr-only" for="customIdeaInput">我自己的游戏点子</label>
+              <input class="text-input" id="customIdeaInput" placeholder="写下你的点子，例如：恐龙吃汉堡大赛" />
+            </div>
+            <div class="feedback" id="ideaFeedback">点一张卡片，选定今天要做的游戏。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="primary-btn" type="button" data-next>把点子说清楚</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>家长小贴士</h3>
+            <ul>
+              <li>孩子犹豫时可以问：“哪个游戏你想第一个玩到？”</li>
+              <li>点子没有好坏，简单的点子反而更容易做成。</li>
+              <li>自己的点子最棒，但要提醒：越简单越容易今天做完。</li>
+            </ul>
+            <div class="say-box">“点子就像种子。今天我们挑一颗，把它种出来。”</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="design" aria-labelledby="design-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 2</div>
+            <h2 id="design-title">把点子说清楚</h2>
+            <p class="stage-lead">Claude 看不见你脑袋里的画面。要把游戏做对，得先填好这张“游戏设计表”。填一格，下面的魔法提示词就长一点！</p>
+          </div>
+          <span class="time-pill">8 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>游戏设计表</h3>
+            <div class="design-grid">
+              <div class="design-field">
+                <label for="dHero">1. 主角是谁？</label>
+                <input class="text-input" id="dHero" placeholder="例如：一只戴帽子的小恐龙" />
+                <span class="hint">它长什么样？什么颜色？</span>
+              </div>
+              <div class="design-field">
+                <label for="dGoal">2. 目标是什么？</label>
+                <input class="text-input" id="dGoal" placeholder="例如：接住天上掉下来的水果" />
+                <span class="hint">怎样算赢？要拿多少分？</span>
+              </div>
+              <div class="design-field">
+                <label for="dControl">3. 怎么操作？</label>
+                <input class="text-input" id="dControl" placeholder="例如：用左右箭头键移动" />
+                <span class="hint">按什么键？还是用鼠标点？</span>
+              </div>
+              <div class="design-field">
+                <label for="dLose">4. 怎么算输？</label>
+                <input class="text-input" id="dLose" placeholder="例如：漏掉 3 个水果就输了" />
+                <span class="hint">碰到什么会输？有几条命？</span>
+              </div>
+            </div>
+            <div class="prompt-preview" id="promptPreview"></div>
+            <div class="feedback" id="designFeedback">四个格子都填好，提示词才完整。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="quiet-btn" type="button" id="copyPromptBtn">复制提示词</button>
+              <button class="primary-btn" type="button" data-next>进入迭代实验室</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>怎么用这段提示词？</h3>
+            <ol>
+              <li>孩子逐格口述，家长帮忙打字。</li>
+              <li>点“复制提示词”，粘贴给 Claude。</li>
+              <li>也可以让孩子直接对着麦克风念给 Claude 听！</li>
+            </ol>
+            <div class="say-box">“说得越具体，Claude 做得越像你想的那样。”</div>
+            <p>等 Claude 做出第一版，先别嫌它丑——第一版就像刚捏好的泥人，接下来我们一轮一轮把它变帅。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="iterate" aria-labelledby="iterate-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 3</div>
+            <h2 id="iterate-title">迭代实验室：改三轮，点亮三颗星</h2>
+            <p class="stage-lead">试玩你的游戏，然后当个挑剔的老板！每一轮：先说“我发现的问题”，再说“我要怎么改”。把修改意见告诉 Claude。写完一轮，点亮一颗星！</p>
+          </div>
+          <span class="time-pill">12 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <div class="star-strip" id="starStrip" aria-label="迭代进度星星"></div>
+            <div class="round-list" id="roundList"></div>
+            <div class="feedback" id="iterateFeedback">完成 3 轮迭代，游戏会越来越好玩。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="primary-btn" type="button" data-next>给游戏起名字</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>迭代小灵感</h3>
+            <ul>
+              <li>太简单了？让东西掉得更快、加一个会扣分的坏东西。</li>
+              <li>看不清楚？让主角变大、换个鲜艳的颜色。</li>
+              <li>不够酷？加音效文字、加分数、加“最高纪录”。</li>
+            </ul>
+            <div class="say-box">“程序员不怕你提意见，就怕你说‘随便’。”</div>
+            <p>把每轮的修改意见直接念给 Claude，例如：“水果掉得太慢了，请让它越来越快。”</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="readme" aria-labelledby="readme-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 4</div>
+            <h2 id="readme-title">README 工坊：给游戏起名字</h2>
+            <p class="stage-lead">每个真正的游戏都有名字和说明书。README 就是游戏的说明书，别人一看就知道怎么玩。你说，我来帮你拼成一份漂亮的草稿！</p>
+          </div>
+          <span class="time-pill">5 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <div class="design-grid">
+              <div class="design-field" style="grid-column: 1 / -1;">
+                <label for="gName">游戏叫什么名字？</label>
+                <input class="text-input" id="gName" placeholder="例如：超级接水果大作战" />
+              </div>
+              <div class="design-field">
+                <label for="gHow">怎么玩？（一两句话）</label>
+                <textarea id="gHow" placeholder="例如：按左右键移动篮子，接住掉下来的水果，漏 3 个就输。"></textarea>
+              </div>
+              <div class="design-field">
+                <label for="gBest">最好玩的地方是？</label>
+                <textarea id="gBest" placeholder="例如：水果会越掉越快，到后面手都忙不过来，超刺激！"></textarea>
+              </div>
+            </div>
+            <div class="readme-preview" id="readmePreview"></div>
+            <div class="feedback" id="readmeFeedback">三个格子都填好，说明书就完成了。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="quiet-btn" type="button" id="copyReadmeBtn">复制 README 草稿</button>
+              <button class="primary-btn" type="button" data-next>上线时刻！</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>为什么要写 README？</h3>
+            <p>爷爷奶奶打开游戏时，不知道按什么键。README 就是写给他们看的。</p>
+            <div class="say-box">“好的说明书，让不认识你的人也能玩你的游戏。”</div>
+            <p>复制这份草稿，请 Claude 把它做成 README.md 文件，和游戏放在一起。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="publish" aria-labelledby="publish-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 5</div>
+            <h2 id="publish-title">上线时刻：把游戏发到互联网</h2>
+            <p class="stage-lead">现在要用 GitHub Pages 把游戏变成一个真实网址！家长负责操作电脑，孩子负责按下最后的发布键。完成一步，点一下卡片打勾。</p>
+          </div>
+          <span class="time-pill">6 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <div class="publish-steps" id="publishSteps"></div>
+            <button class="launch-btn" type="button" id="launchBtn" disabled>🚀 发布我的游戏！</button>
+            <div class="celebrate" id="celebrateBox">🎉 游戏上线啦！它现在有了真实网址，可以发给爷爷奶奶、发给好朋友，全世界都能玩到你的游戏！</div>
+            <div class="feedback" id="publishFeedback">把上面的步骤一步步打勾，最后按发布键。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="primary-btn" type="button" data-next>三句话收尾</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>家长操作指引</h3>
+            <ul>
+              <li>GitHub Pages 是免费的。发布后网址长这样：<br />你的用户名.github.io/游戏名</li>
+              <li>不确定怎么操作？直接问 Claude：“请一步步教我把这个 HTML 文件发布到 GitHub Pages。”</li>
+              <li>网址生效可能要等一两分钟，正好喝口水。</li>
+            </ul>
+            <div class="say-box">“游戏会变成一个真实网址，手机、平板、电脑都能打开。”</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="reflection" aria-labelledby="reflection-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 6</div>
+            <h2 id="reflection-title">三句话收尾</h2>
+            <p class="stage-lead">孩子口头说，家长帮忙打字。写完就能生成第七课的学习报告。</p>
+          </div>
+          <span class="time-pill">3 分钟</span>
+        </div>
+        <div class="task-panel">
+          <div class="reflection-grid">
+            <div class="answer-card">
+              <label for="r1">1. 做游戏的第一步是什么？</label>
+              <textarea id="r1" placeholder="例如：先想好点子，把主角、目标、操作、输赢说清楚。"></textarea>
+            </div>
+            <div class="answer-card">
+              <label for="r2">2. 什么是迭代？</label>
+              <textarea id="r2" placeholder="例如：玩一玩，找问题，提意见，一轮一轮把游戏改得更好。"></textarea>
+            </div>
+            <div class="answer-card">
+              <label for="r3">3. 今天最自豪的一件事是？</label>
+              <textarea id="r3" placeholder="例如：我的游戏有了真实网址，可以发给爷爷奶奶玩！"></textarea>
+            </div>
+          </div>
+          <div class="feedback" id="reflectionFeedback">写完 3 个回答，就可以生成报告。</div>
+          <div class="action-row">
+            <button class="secondary-btn" type="button" data-prev>上一步</button>
+            <button class="primary-btn" type="button" data-next>生成第七课报告</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="summary" aria-labelledby="summary-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">完成</div>
+            <h2 id="summary-title">第七课学习报告</h2>
+            <p class="stage-lead">这页可以打印或截图保存。下一课我们要做“我的个人网页”，把作品都放进去！</p>
+          </div>
+          <span class="time-pill">已完成</span>
+        </div>
+        <div class="report-card">
+          <span class="badge">AI 冒险 第七课</span>
+          <h3>今天我知道：好游戏是一轮一轮改出来的。</h3>
+          <ol class="report-list" id="summaryList"></ol>
+          <div class="say-box">核心句：发现问题、说清修改，就是迭代。设计师最重要的本领是把想法说清楚。</div>
+          <div class="action-row">
+            <button class="primary-btn" type="button" onclick="window.print()">打印报告</button>
+            <a class="secondary-btn" href="day-of-ai-course-roadmap.html">返回冒险地图</a>
+            <button class="secondary-btn" type="button" id="resetAllEnd">重新开始第七课</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const STORAGE_KEY = "day-of-ai-seventh-lesson-v1";
+    const steps = [
+      { id: "intro", title: "热身", time: "3 分钟" },
+      { id: "idea", title: "点子风暴", time: "4 分钟" },
+      { id: "design", title: "游戏设计表", time: "8 分钟" },
+      { id: "iterate", title: "迭代实验室", time: "12 分钟" },
+      { id: "readme", title: "README 工坊", time: "5 分钟" },
+      { id: "publish", title: "上线时刻", time: "6 分钟" },
+      { id: "reflection", title: "三句话", time: "3 分钟" },
+      { id: "summary", title: "报告", time: "完成" }
+    ];
+
+    const ideas = [
+      { id: "fruit", emoji: "🍎", text: "接水果" },
+      { id: "maze", emoji: "🌀", text: "走迷宫" },
+      { id: "mole", emoji: "🔨", text: "打地鼠" },
+      { id: "race", emoji: "🏎️", text: "赛车" },
+      { id: "fly", emoji: "🚀", text: "飞行躲避" },
+      { id: "memory", emoji: "🃏", text: "记忆翻牌" },
+      { id: "snake", emoji: "🐍", text: "贪吃蛇" },
+      { id: "jump", emoji: "🦘", text: "跳跳乐" },
+      { id: "custom", emoji: "💡", text: "自己想一个！" }
+    ];
+
+    const publishItems = [
+      { id: "p1", who: "家长", text: "登录 GitHub（没有账号就注册一个，免费）" },
+      { id: "p2", who: "家长", text: "新建一个仓库，把游戏的 HTML 文件传上去（可以让 Claude 一步步教你）" },
+      { id: "p3", who: "家长", text: "打开仓库的 Settings → Pages，选择 main 分支，保存" },
+      { id: "p4", who: "一起", text: "等一两分钟，拿到你们的专属网址" },
+      { id: "p5", who: "孩子", text: "在手机或平板上打开网址试玩，确认游戏能跑起来" }
+    ];
+
+    const state = loadState();
+    let currentStep = initialStep();
+    let remainingSeconds = state.remainingSeconds || 40 * 60;
+    let timerId = null;
+
+    const stepList = document.getElementById("stepList");
+    const mobileStepSelect = document.getElementById("mobileStepSelect");
+    const progressText = document.getElementById("progressText");
+    const progressFill = document.getElementById("progressFill");
+    const timerDisplay = document.getElementById("timerDisplay");
+    const toast = document.getElementById("toast");
+
+    function defaultState() {
+      return {
+        currentStep: "intro",
+        completed: {},
+        recall: "",
+        idea: "",
+        customIdea: "",
+        design: { dHero: "", dGoal: "", dControl: "", dLose: "" },
+        rounds: [
+          { problem: "", fix: "" },
+          { problem: "", fix: "" },
+          { problem: "", fix: "" }
+        ],
+        readme: { gName: "", gHow: "", gBest: "" },
+        publish: {},
+        launched: false,
+        reflection: { r1: "", r2: "", r3: "" },
+        remainingSeconds: 40 * 60
+      };
+    }
+
+    function loadState() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        const merged = { ...defaultState(), ...saved };
+        merged.design = { ...defaultState().design, ...(saved.design || {}) };
+        merged.readme = { ...defaultState().readme, ...(saved.readme || {}) };
+        merged.reflection = { ...defaultState().reflection, ...(saved.reflection || {}) };
+        if (!Array.isArray(merged.rounds) || merged.rounds.length !== 3) {
+          merged.rounds = defaultState().rounds;
+        }
+        return merged;
+      } catch (error) {
+        return defaultState();
+      }
+    }
+
+    function initialStep() {
+      const requested = new URLSearchParams(window.location.search).get("step") || window.location.hash.replace("#", "");
+      if (steps.some((step) => step.id === requested)) return requested;
+      return state.currentStep || "intro";
+    }
+
+    function saveState() {
+      state.currentStep = currentStep;
+      state.remainingSeconds = remainingSeconds;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    function copyText(text, doneMessage) {
+      const finish = () => showToast(doneMessage);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(finish).catch(() => fallbackCopy(text, finish));
+      } else {
+        fallbackCopy(text, finish);
+      }
+    }
+
+    function fallbackCopy(text, finish) {
+      const helper = document.createElement("textarea");
+      helper.value = text;
+      helper.style.position = "fixed";
+      helper.style.opacity = "0";
+      document.body.appendChild(helper);
+      helper.select();
+      try { document.execCommand("copy"); } catch (error) { /* ignore */ }
+      document.body.removeChild(helper);
+      finish();
+    }
+
+    function renderNavigation() {
+      stepList.innerHTML = "";
+      mobileStepSelect.innerHTML = "";
+      steps.forEach((step, index) => {
+        const isDone = step.id === "summary" ? allDone() : Boolean(state.completed[step.id]);
+        const button = document.createElement("button");
+        button.className = `step-tab ${currentStep === step.id ? "active" : ""} ${isDone ? "done" : ""}`;
+        button.type = "button";
+        button.dataset.goStep = step.id;
+        button.innerHTML = `
+          <span class="step-num">${isDone ? "✓" : index}</span>
+          <span><span class="step-title">${step.title}</span><span class="step-time">${step.time}</span></span>
+          <span class="step-status">${currentStep === step.id ? "现在" : isDone ? "完成" : ""}</span>
+        `;
+        stepList.appendChild(button);
+
+        const option = document.createElement("option");
+        option.value = step.id;
+        option.textContent = `${index}. ${step.title}`;
+        option.selected = currentStep === step.id;
+        mobileStepSelect.appendChild(option);
+      });
+    }
+
+    function renderProgress() {
+      const taskSteps = steps.slice(0, -1);
+      const count = taskSteps.filter((step) => state.completed[step.id]).length;
+      progressText.textContent = `${count}/${taskSteps.length}`;
+      progressFill.style.width = `${Math.round((count / taskSteps.length) * 100)}%`;
+    }
+
+    function renderStages() {
+      document.querySelectorAll(".stage").forEach((stage) => {
+        stage.classList.toggle("active", stage.dataset.step === currentStep);
+      });
+      renderNavigation();
+      renderProgress();
+      mobileStepSelect.value = currentStep;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      saveState();
+    }
+
+    function goStep(id) {
+      currentStep = id;
+      if (id === "summary") renderSummary();
+      renderStages();
+    }
+
+    function nextStep() {
+      const index = steps.findIndex((step) => step.id === currentStep);
+      goStep(steps[Math.min(index + 1, steps.length - 1)].id);
+    }
+
+    function prevStep() {
+      const index = steps.findIndex((step) => step.id === currentStep);
+      goStep(steps[Math.max(index - 1, 0)].id);
+    }
+
+    function markComplete(id, done) {
+      state.completed[id] = done;
+      saveState();
+      renderProgress();
+      renderNavigation();
+    }
+
+    function allDone() {
+      return steps.slice(0, -1).every((step) => state.completed[step.id]);
+    }
+
+    function initGlobalControls() {
+      document.addEventListener("click", (event) => {
+        const go = event.target.closest("[data-go-step]");
+        if (go) goStep(go.dataset.goStep);
+        if (event.target.closest("[data-next]")) nextStep();
+        if (event.target.closest("[data-prev]")) prevStep();
+      });
+      mobileStepSelect.addEventListener("change", (event) => goStep(event.target.value));
+      document.getElementById("mobileTimerButton").addEventListener("click", () => {
+        document.getElementById("timerCard").scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+      document.getElementById("resetAll").addEventListener("click", resetAll);
+      document.getElementById("resetAllEnd").addEventListener("click", resetAll);
+    }
+
+    function resetAll() {
+      localStorage.removeItem(STORAGE_KEY);
+      Object.assign(state, defaultState());
+      currentStep = "intro";
+      remainingSeconds = 40 * 60;
+      hydrateFields();
+      renderAll();
+      renderStages();
+      renderTimer();
+      showToast("第七课已经重置。");
+    }
+
+    function initTimer() {
+      document.getElementById("startTimer").addEventListener("click", () => {
+        if (timerId) return;
+        timerId = window.setInterval(() => {
+          remainingSeconds = Math.max(0, remainingSeconds - 1);
+          renderTimer();
+          saveState();
+          if (remainingSeconds === 0) {
+            window.clearInterval(timerId);
+            timerId = null;
+            showToast("时间到啦，可以收尾咯。");
+          }
+        }, 1000);
+      });
+      document.getElementById("pauseTimer").addEventListener("click", () => {
+        window.clearInterval(timerId);
+        timerId = null;
+      });
+      document.getElementById("resetTimer").addEventListener("click", () => {
+        window.clearInterval(timerId);
+        timerId = null;
+        remainingSeconds = 40 * 60;
+        renderTimer();
+        saveState();
+      });
+      renderTimer();
+    }
+
+    function renderTimer() {
+      const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, "0");
+      const seconds = (remainingSeconds % 60).toString().padStart(2, "0");
+      timerDisplay.textContent = `${minutes}:${seconds}`;
+    }
+
+    function initIntro() {
+      const input = document.getElementById("recallInput");
+      input.addEventListener("input", () => {
+        state.recall = input.value.trim();
+        renderIntro();
+        saveState();
+      });
+      renderIntro();
+    }
+
+    function renderIntro() {
+      const done = Boolean(state.recall);
+      const feedback = document.getElementById("introFeedback");
+      feedback.textContent = done ? "太好了，设计师上岗！去挑一个点子吧。" : "写一句，热身就完成啦。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("intro", done);
+    }
+
+    function ideaName() {
+      if (state.idea === "custom") return state.customIdea || "";
+      const found = ideas.find((item) => item.id === state.idea);
+      return found ? found.text : "";
+    }
+
+    function initIdea() {
+      const grid = document.getElementById("ideaGrid");
+      grid.innerHTML = "";
+      ideas.forEach((item) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "idea-card";
+        button.dataset.idea = item.id;
+        button.innerHTML = `<span class="idea-emoji">${item.emoji}</span><span>${item.text}</span>`;
+        button.addEventListener("click", () => {
+          state.idea = item.id;
+          renderIdea();
+          saveState();
+          if (item.id !== "custom") showToast(`选好啦：${item.text}！`);
+        });
+        grid.appendChild(button);
+      });
+      const customInput = document.getElementById("customIdeaInput");
+      customInput.addEventListener("input", () => {
+        state.customIdea = customInput.value.trim();
+        renderIdea();
+        saveState();
+      });
+      renderIdea();
+    }
+
+    function renderIdea() {
+      document.querySelectorAll("#ideaGrid .idea-card").forEach((button) => {
+        button.classList.toggle("selected", button.dataset.idea === state.idea);
+      });
+      document.getElementById("customIdeaWrap").style.display = state.idea === "custom" ? "block" : "none";
+      const done = Boolean(state.idea) && (state.idea !== "custom" || Boolean(state.customIdea));
+      const feedback = document.getElementById("ideaFeedback");
+      if (done) {
+        feedback.textContent = `好点子！今天要做的游戏是：${ideaName()}。`;
+      } else if (state.idea === "custom") {
+        feedback.textContent = "在下面的格子里写出你的点子。";
+      } else {
+        feedback.textContent = "点一张卡片，选定今天要做的游戏。";
+      }
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("idea", done);
+    }
+
+    function initDesign() {
+      ["dHero", "dGoal", "dControl", "dLose"].forEach((id) => {
+        const input = document.getElementById(id);
+        input.addEventListener("input", () => {
+          state.design[id] = input.value.trim();
+          renderDesign();
+          saveState();
+        });
+      });
+      document.getElementById("copyPromptBtn").addEventListener("click", () => {
+        copyText(buildPrompt(), "提示词已复制，去粘贴给 Claude 吧！");
+      });
+      renderDesign();
+    }
+
+    function buildPrompt() {
+      const d = state.design;
+      const name = ideaName() || "一个小游戏";
+      return `请帮我做一个网页小游戏《${name}》。主角是${d.dHero || "（还没想好）"}。游戏目标：${d.dGoal || "（还没想好）"}。操作方式：${d.dControl || "（还没想好）"}。怎么算输：${d.dLose || "（还没想好）"}。请用一个 HTML 文件做完，画面颜色鲜艳，字大一点，适合 8 岁小朋友玩。`;
+    }
+
+    function renderDesign() {
+      const d = state.design;
+      const slot = (value, placeholder) => `<span class="slot">${value ? escapeHtml(value) : placeholder}</span>`;
+      document.getElementById("promptPreview").innerHTML =
+        `请帮我做一个网页小游戏《${slot(ideaName(), "＿＿")}》。主角是${slot(d.dHero, "＿＿＿")}。` +
+        `游戏目标：${slot(d.dGoal, "＿＿＿")}。操作方式：${slot(d.dControl, "＿＿＿")}。` +
+        `怎么算输：${slot(d.dLose, "＿＿＿")}。请用一个 HTML 文件做完，画面颜色鲜艳，字大一点，适合 8 岁小朋友玩。`;
+      const filled = ["dHero", "dGoal", "dControl", "dLose"].filter((id) => d[id]).length;
+      const done = filled === 4;
+      const feedback = document.getElementById("designFeedback");
+      feedback.textContent = done
+        ? "四格全满！提示词完整了，复制它，念给 Claude 听！"
+        : `已填 ${filled}/4 格。四个格子都填好，提示词才完整。`;
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("design", done);
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function initIterate() {
+      const list = document.getElementById("roundList");
+      list.innerHTML = "";
+      state.rounds.forEach((round, index) => {
+        const card = document.createElement("div");
+        card.className = "round-card";
+        card.id = `roundCard${index}`;
+        card.innerHTML = `
+          <div class="round-head">
+            <span>第 ${index + 1} 轮迭代</span>
+            <span class="round-star">⭐</span>
+          </div>
+          <div class="round-fields">
+            <div>
+              <label for="problem${index}">我发现的问题</label>
+              <input class="text-input" id="problem${index}" placeholder="例如：水果掉得太慢，不刺激。" />
+            </div>
+            <div>
+              <label for="fix${index}">我提的修改意见</label>
+              <input class="text-input" id="fix${index}" placeholder="例如：让水果越掉越快！" />
+            </div>
+          </div>
+        `;
+        list.appendChild(card);
+      });
+      state.rounds.forEach((round, index) => {
+        const problemInput = document.getElementById(`problem${index}`);
+        const fixInput = document.getElementById(`fix${index}`);
+        problemInput.addEventListener("input", () => {
+          state.rounds[index].problem = problemInput.value.trim();
+          renderIterate();
+          saveState();
+        });
+        fixInput.addEventListener("input", () => {
+          const wasLit = roundDone(index);
+          state.rounds[index].fix = fixInput.value.trim();
+          if (!wasLit && roundDone(index)) showToast(`第 ${index + 1} 颗星点亮！`);
+          renderIterate();
+          saveState();
+        });
+      });
+      renderIterate();
+    }
+
+    function roundDone(index) {
+      const round = state.rounds[index];
+      return Boolean(round.problem && round.fix);
+    }
+
+    function renderIterate() {
+      let litCount = 0;
+      state.rounds.forEach((round, index) => {
+        const lit = roundDone(index);
+        if (lit) litCount += 1;
+        document.getElementById(`roundCard${index}`).classList.toggle("lit", lit);
+      });
+      const strip = document.getElementById("starStrip");
+      strip.innerHTML = state.rounds
+        .map((round, index) => `<span style="filter:${roundDone(index) ? "none" : "grayscale(1) opacity(0.35)"};">⭐</span>`)
+        .join("") + `<span style="font-size:16px; color:var(--muted); font-weight:900;">${litCount}/3 颗星</span>`;
+      const done = litCount >= 3;
+      const feedback = document.getElementById("iterateFeedback");
+      feedback.textContent = done
+        ? "三颗星全亮！你已经会迭代了——这就是真正的做产品！"
+        : `已点亮 ${litCount}/3 颗星。每轮写下问题和修改意见，就能点亮一颗。`;
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("iterate", done);
+    }
+
+    function initReadme() {
+      ["gName", "gHow", "gBest"].forEach((id) => {
+        const input = document.getElementById(id);
+        input.addEventListener("input", () => {
+          state.readme[id] = input.value.trim();
+          renderReadme();
+          saveState();
+        });
+      });
+      document.getElementById("copyReadmeBtn").addEventListener("click", () => {
+        copyText(buildReadme(), "README 草稿已复制！");
+      });
+      renderReadme();
+    }
+
+    function buildReadme() {
+      const r = state.readme;
+      return `# ${r.gName || "（游戏名字）"}\n\n## 怎么玩\n${r.gHow || "（怎么玩）"}\n\n## 最好玩的地方\n${r.gBest || "（最好玩的地方）"}\n\n—— 设计师：我（8 岁）＋ 程序员：Claude`;
+    }
+
+    function renderReadme() {
+      const r = state.readme;
+      document.getElementById("readmePreview").innerHTML = `
+        <h4>${r.gName ? escapeHtml(r.gName) : "🎮 （游戏名字）"}</h4>
+        <p><span class="rp-label">怎么玩：</span>${r.gHow ? escapeHtml(r.gHow) : "……"}</p>
+        <p><span class="rp-label">最好玩的地方：</span>${r.gBest ? escapeHtml(r.gBest) : "……"}</p>
+        <p style="color:var(--muted); font-size:14px;">—— 设计师：我（8 岁）＋ 程序员：Claude</p>
+      `;
+      const filled = ["gName", "gHow", "gBest"].filter((id) => r[id]).length;
+      const done = filled === 3;
+      const feedback = document.getElementById("readmeFeedback");
+      feedback.textContent = done
+        ? "说明书写好了！复制草稿，请 Claude 把它变成 README.md 文件。"
+        : `已填 ${filled}/3 格。三个格子都填好，说明书就完成了。`;
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("readme", done);
+    }
+
+    function initPublish() {
+      const wrap = document.getElementById("publishSteps");
+      wrap.innerHTML = "";
+      publishItems.forEach((item, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "publish-card";
+        button.dataset.publish = item.id;
+        button.innerHTML = `
+          <span class="publish-num">${index + 1}</span>
+          <span><span class="who">${item.who}</span><strong>${item.text}</strong></span>
+          <span class="publish-check">✓</span>
+        `;
+        button.addEventListener("click", () => {
+          state.publish[item.id] = !state.publish[item.id];
+          renderPublish();
+          saveState();
+        });
+        wrap.appendChild(button);
+      });
+      document.getElementById("launchBtn").addEventListener("click", () => {
+        state.launched = true;
+        renderPublish();
+        saveState();
+        showToast("🎉 3、2、1——发布！");
+      });
+      renderPublish();
+    }
+
+    function renderPublish() {
+      document.querySelectorAll("#publishSteps .publish-card").forEach((button) => {
+        button.classList.toggle("done", Boolean(state.publish[button.dataset.publish]));
+      });
+      const checked = publishItems.filter((item) => state.publish[item.id]).length;
+      const allChecked = checked === publishItems.length;
+      const launchBtn = document.getElementById("launchBtn");
+      launchBtn.disabled = !allChecked;
+      launchBtn.textContent = state.launched ? "🚀 已发布！" : "🚀 发布我的游戏！";
+      document.getElementById("celebrateBox").classList.toggle("show", state.launched);
+      const done = allChecked && state.launched;
+      const feedback = document.getElementById("publishFeedback");
+      if (done) {
+        feedback.textContent = "上线成功！把网址发给爷爷奶奶，让他们也玩一玩。";
+      } else if (allChecked) {
+        feedback.textContent = "步骤全部完成！轮到孩子按下发布键！";
+      } else {
+        feedback.textContent = `已完成 ${checked}/${publishItems.length} 步。把步骤一步步打勾，最后按发布键。`;
+      }
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("publish", done);
+    }
+
+    function initReflection() {
+      ["r1", "r2", "r3"].forEach((id) => {
+        const input = document.getElementById(id);
+        input.addEventListener("input", () => {
+          state.reflection[id] = input.value.trim();
+          renderReflection();
+          saveState();
+        });
+      });
+      renderReflection();
+    }
+
+    function renderReflection() {
+      const done = ["r1", "r2", "r3"].every((id) => state.reflection[id]);
+      const feedback = document.getElementById("reflectionFeedback");
+      feedback.textContent = done ? "三句话都写好了。可以生成报告。" : "写完 3 个回答，就可以生成报告。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("reflection", done);
+    }
+
+    function renderSummary() {
+      const stars = state.rounds.filter((round, index) => roundDone(index)).length;
+      const fixes = state.rounds
+        .filter((round) => round.fix)
+        .map((round) => round.fix)
+        .join("；");
+      document.getElementById("summaryList").innerHTML = `
+        <li>我最喜欢的游戏：${escapeHtml(state.recall || "未填写")}</li>
+        <li>我选的游戏点子：${escapeHtml(ideaName() || "未选择")}</li>
+        <li>我的游戏设计：主角是${escapeHtml(state.design.dHero || "未填写")}，目标是${escapeHtml(state.design.dGoal || "未填写")}，操作方式是${escapeHtml(state.design.dControl || "未填写")}，${escapeHtml(state.design.dLose || "未填写")}算输。</li>
+        <li>我完成了 ${stars}/3 轮迭代${fixes ? `，我的修改意见有：${escapeHtml(fixes)}` : ""}。</li>
+        <li>我的游戏叫《${escapeHtml(state.readme.gName || "未命名")}》${state.launched ? "，而且已经发布到了真实网址！" : "。"}</li>
+        <li>我的三句话：${escapeHtml(state.reflection.r1 || "未填写")}；${escapeHtml(state.reflection.r2 || "未填写")}；${escapeHtml(state.reflection.r3 || "未填写")}。</li>
+      `;
+    }
+
+    function hydrateFields() {
+      document.getElementById("recallInput").value = state.recall || "";
+      document.getElementById("customIdeaInput").value = state.customIdea || "";
+      ["dHero", "dGoal", "dControl", "dLose"].forEach((id) => {
+        document.getElementById(id).value = state.design[id] || "";
+      });
+      state.rounds.forEach((round, index) => {
+        const problemInput = document.getElementById(`problem${index}`);
+        const fixInput = document.getElementById(`fix${index}`);
+        if (problemInput) problemInput.value = round.problem || "";
+        if (fixInput) fixInput.value = round.fix || "";
+      });
+      ["gName", "gHow", "gBest"].forEach((id) => {
+        document.getElementById(id).value = state.readme[id] || "";
+      });
+      ["r1", "r2", "r3"].forEach((id) => {
+        document.getElementById(id).value = state.reflection[id] || "";
+      });
+    }
+
+    function renderAll() {
+      renderIntro();
+      renderIdea();
+      renderDesign();
+      renderIterate();
+      renderReadme();
+      renderPublish();
+      renderReflection();
+    }
+
+    initGlobalControls();
+    initTimer();
+    initIntro();
+    initIdea();
+    initDesign();
+    initIterate();
+    initReadme();
+    initPublish();
+    initReflection();
+    hydrateFields();
+    renderStages();
+  </script>
+</body>
+</html>

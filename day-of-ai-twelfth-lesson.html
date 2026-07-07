@@ -1,0 +1,1095 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Day of AI 第十二课：作品发布会 🎉</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #5d6878;
+      --paper: #fbfbf7;
+      --panel: #ffffff;
+      --line: #d9dfdc;
+      --teal: #0b8f8b;
+      --teal-soft: #ddf4f1;
+      --coral: #de6251;
+      --coral-soft: #ffe2dc;
+      --gold: #f1c64b;
+      --gold-soft: #fff1bd;
+      --green: #448f4b;
+      --green-soft: #e2f2df;
+      --blue: #436fc2;
+      --blue-soft: #e2ebff;
+      --violet: #725fb4;
+      --violet-soft: #ece7ff;
+      --shadow: 0 18px 44px rgba(23, 32, 51, 0.12);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100vh; margin: 0; color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 9% 12%, rgba(241, 198, 75, 0.28), transparent 24%),
+        radial-gradient(circle at 88% 13%, rgba(222, 98, 81, 0.18), transparent 23%),
+        radial-gradient(circle at 50% 90%, rgba(11, 143, 139, 0.14), transparent 26%),
+        linear-gradient(180deg, #fdfaf3 0%, #fbfbf7 48%, #f7faf5 100%);
+    }
+
+    button, input, textarea, select { font: inherit; }
+    button { border: 0; cursor: pointer; }
+    a { color: var(--teal); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+    h1, h2, h3, p { margin: 0; }
+
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    .app { min-height: 100vh; display: grid; grid-template-columns: 310px minmax(0, 1fr); }
+    .side { position: sticky; top: 0; height: 100vh; padding: 22px; border-right: 1px solid var(--line); background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(16px); overflow: auto; }
+    .map-link { display: grid; place-items: center; min-height: 40px; margin-bottom: 14px; border: 1px solid #e0c55d; border-radius: 8px; background: var(--gold-soft); color: var(--ink); font-weight: 950; font-size: 14px; text-decoration: none; }
+    .brand { display: grid; grid-template-columns: 58px 1fr; gap: 12px; align-items: center; margin-bottom: 18px; }
+    .brand-mark { width: 58px; height: 58px; display: grid; place-items: center; border-radius: 8px; color: #fff; background: var(--gold); box-shadow: var(--shadow); font-size: 30px; }
+    .eyebrow { margin-bottom: 6px; color: var(--coral); font-size: 12px; font-weight: 900; text-transform: uppercase; }
+    .brand h1 { font-size: 22px; line-height: 1.16; }
+    .brand p { margin-top: 6px; color: var(--muted); font-size: 13px; line-height: 1.45; }
+
+    .progress-card, .timer-card, .parent-card { padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); box-shadow: 0 8px 22px rgba(23, 32, 51, 0.07); }
+    .progress-top { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 10px; font-weight: 900; }
+    .progress-track { height: 12px; border-radius: 999px; background: #edf1ef; overflow: hidden; }
+    .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, var(--gold), var(--coral)); transition: width 220ms ease; }
+
+    .step-list { display: grid; gap: 8px; margin: 16px 0; }
+    .step-tab { width: 100%; display: grid; grid-template-columns: 34px 1fr auto; gap: 9px; align-items: center; padding: 10px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--ink); text-align: left; }
+    .step-tab:hover, .step-tab:focus-visible { outline: none; border-color: var(--line); background: #fff; }
+    .step-tab.active { background: var(--gold-soft); border-color: #e0c55d; }
+    .step-tab.done { background: var(--green-soft); }
+    .step-num { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 8px; background: #eef2f4; color: var(--ink); font-weight: 950; }
+    .step-tab.done .step-num { color: #fff; background: var(--green); }
+    .step-title { display: block; font-size: 14px; font-weight: 900; line-height: 1.24; }
+    .step-time { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; }
+    .step-status { color: var(--muted); font-size: 12px; font-weight: 900; }
+
+    .timer-card { margin: 14px 0; color: #fff; background: var(--ink); border-color: transparent; }
+    .timer { margin-top: 8px; font-size: 40px; font-weight: 950; line-height: 1; font-variant-numeric: tabular-nums; }
+    .timer-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 12px; }
+    .timer-actions button, .utility-btn { min-height: 36px; border-radius: 8px; background: #fff; color: var(--ink); font-size: 13px; font-weight: 900; }
+    .parent-card { display: grid; gap: 10px; color: var(--muted); font-size: 13px; line-height: 1.46; }
+    .parent-card strong { color: var(--ink); }
+
+    .content { min-width: 0; padding: clamp(18px, 4vw, 48px); }
+    .mobile-top { display: none; position: sticky; top: 0; z-index: 30; padding: 10px; border-bottom: 1px solid var(--line); background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(14px); }
+    .mobile-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+    .mobile-row select { min-height: 42px; width: 100%; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: var(--ink); padding: 0 10px; font-weight: 900; }
+
+    .stage { min-height: calc(100vh - 96px); display: none; align-content: center; gap: 22px; }
+    .stage.active { display: grid; }
+    .stage-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px; align-items: start; }
+    .stage h2 { max-width: 980px; font-size: clamp(34px, 5vw, 64px); line-height: 1.0; }
+    .stage-lead { max-width: 850px; margin-top: 16px; color: var(--muted); font-size: 19px; line-height: 1.65; }
+
+    .time-pill, .badge { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; border-radius: 8px; padding: 0 12px; font-weight: 950; white-space: nowrap; }
+    .time-pill { color: var(--ink); background: var(--gold-soft); border: 1px solid #e0c55d; }
+    .badge { color: #244d97; background: var(--blue-soft); border: 1px solid #b8c8ef; font-size: 13px; }
+
+    .task-grid { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(300px, 0.92fr); gap: 18px; align-items: stretch; }
+    .task-panel, .guide-panel, .answer-card, .report-card { border: 1px solid var(--line); border-radius: 8px; background: rgba(255, 255, 255, 0.94); box-shadow: 0 10px 28px rgba(23, 32, 51, 0.08); }
+    .task-panel, .guide-panel { padding: clamp(16px, 2.4vw, 24px); }
+    .guide-panel { display: grid; align-content: start; gap: 12px; color: var(--muted); line-height: 1.62; }
+    .guide-panel h3, .task-panel h3 { font-size: 22px; line-height: 1.22; }
+    .guide-panel ul, .guide-panel ol { margin: 0; padding-left: 20px; }
+
+    .say-box, .prompt-box, .feedback { padding: 14px; border-radius: 8px; line-height: 1.5; }
+    .say-box { background: var(--gold-soft); border-left: 6px solid var(--gold); color: var(--ink); font-size: 20px; font-weight: 900; }
+    .prompt-box { background: #f7faf5; border: 1px solid var(--line); color: var(--ink); }
+    .feedback { min-height: 44px; margin-top: 12px; border: 1px solid var(--line); background: #f7faf5; color: var(--muted); display: flex; align-items: center; }
+    .feedback.good { color: #234a2a; background: var(--green-soft); border-color: #b8d9b8; }
+
+    .action-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 18px; }
+    .primary-btn, .secondary-btn, .quiet-btn { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 8px; padding: 0 16px; border: 1px solid transparent; font-weight: 950; text-decoration: none; }
+    .primary-btn { color: var(--ink); background: var(--gold); }
+    .secondary-btn { color: var(--ink); background: #fff; border-color: var(--line); }
+    .quiet-btn { min-height: 38px; color: var(--ink); background: var(--gold-soft); border-color: #e0c55d; font-size: 14px; }
+
+    .text-input, textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; background: #fdfdfb; color: var(--ink); padding: 12px; line-height: 1.55; }
+    textarea { min-height: 80px; resize: vertical; }
+
+    .checklist { display: grid; gap: 10px; margin-top: 12px; }
+    .check-item { display: grid; grid-template-columns: 32px 1fr; gap: 10px; align-items: center; padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: #fff; text-align: left; font-weight: 800; }
+    .check-item:hover { border-color: var(--teal); }
+    .check-item.checked { border-color: var(--green); background: var(--green-soft); }
+    .check-box { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 8px; background: #eef2f4; font-weight: 950; color: var(--muted); }
+    .check-item.checked .check-box { background: var(--green); color: #fff; }
+
+    /* order list */
+    .order-list { display: grid; gap: 10px; margin-top: 12px; }
+    .order-item { display: grid; grid-template-columns: 44px 1fr auto; gap: 10px; align-items: center; padding: 12px; border: 2px solid var(--line); border-radius: 8px; background: #fff; font-weight: 850; }
+    .order-item .num { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; background: var(--gold-soft); border: 2px solid #e0c55d; font-weight: 950; font-size: 18px; }
+    .order-item .num.unset { background: #eef2f4; border-color: var(--line); color: var(--muted); }
+    .order-item .pick { min-height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--line); background: #fff; font-weight: 900; }
+
+    /* speech */
+    .speech-fields { display: grid; gap: 12px; margin-top: 12px; }
+    .speech-fields label { display: block; font-weight: 900; margin-bottom: 6px; }
+    .speech-preview { margin-top: 14px; padding: 20px; border-radius: 12px; background: var(--blue-soft); border: 1px solid #b8c8ef; font-size: 22px; font-weight: 900; line-height: 1.6; }
+
+    /* show timer */
+    .show-timer-card { margin-top: 14px; padding: 20px; border-radius: 12px; background: var(--ink); color: #fff; text-align: center; }
+    .show-timer { font-size: 56px; font-weight: 950; font-variant-numeric: tabular-nums; }
+    .show-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 14px; }
+    .show-actions button { min-height: 42px; border-radius: 8px; background: #fff; color: var(--ink); font-weight: 900; }
+
+    /* ribbon cut */
+    .ribbon-zone { margin-top: 14px; padding: 30px; border-radius: 14px; text-align: center; background: linear-gradient(135deg, rgba(255,241,189,0.8), rgba(255,226,220,0.8)); border: 2px dashed var(--coral); }
+    .ribbon-btn { min-height: 64px; font-size: 22px; padding: 0 30px; border-radius: 12px; color: #fff; background: var(--coral); font-weight: 950; box-shadow: var(--shadow); }
+    .ribbon-btn:disabled { opacity: 0.6; }
+    .ribbon-done { margin-top: 14px; font-size: 22px; font-weight: 950; color: var(--green); }
+
+    /* certificate */
+    .cert {
+      margin-top: 14px; padding: 30px; border-radius: 12px; text-align: center;
+      border: 6px double var(--gold); background: linear-gradient(135deg, #fffdf5, #fff9e8);
+    }
+    .cert .seal { font-size: 54px; }
+    .cert h3 { font-size: clamp(24px, 4vw, 34px); margin-top: 6px; }
+    .cert .name-line { margin: 14px 0; font-size: 30px; font-weight: 950; color: var(--coral); border-bottom: 2px solid var(--gold); display: inline-block; padding: 0 20px 6px; min-width: 220px; }
+    .cert .courses { list-style: none; padding: 0; margin: 16px 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; text-align: left; font-size: 13px; font-weight: 700; }
+    .cert .courses li { padding: 6px 10px; border-radius: 6px; background: rgba(241,198,75,0.16); }
+    .cert .date-line { margin-top: 10px; color: var(--muted); font-weight: 800; }
+
+    .reflection-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+    .answer-card { padding: 14px; }
+    .answer-card label { display: block; margin-bottom: 10px; font-weight: 950; line-height: 1.35; }
+
+    .report-card { display: grid; gap: 14px; padding: clamp(18px, 4vw, 34px); border: 3px solid var(--ink); background: linear-gradient(135deg, rgba(255, 241, 189, 0.75), rgba(226, 242, 223, 0.8)), #fff; box-shadow: var(--shadow); }
+    .report-card h3 { font-size: clamp(28px, 5vw, 48px); line-height: 1.05; }
+    .report-card p, .report-card li { color: var(--muted); font-size: 17px; line-height: 1.65; }
+    .report-list { margin: 0; padding-left: 22px; }
+
+    .toast { position: fixed; right: 18px; bottom: 18px; z-index: 50; max-width: min(420px, calc(100vw - 36px)); padding: 12px 14px; border-radius: 8px; color: #fff; background: var(--ink); box-shadow: var(--shadow); opacity: 0; transform: translateY(14px); pointer-events: none; transition: opacity 180ms ease, transform 180ms ease; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* confetti */
+    .confetti { position: fixed; top: -20px; width: 12px; height: 12px; z-index: 60; pointer-events: none; border-radius: 2px; }
+
+    @media (max-width: 1080px) {
+      .app { display: block; }
+      .side { display: none; }
+      .mobile-top { display: block; }
+      .content { padding: 20px; }
+      .stage { min-height: auto; padding: 18px 0 40px; }
+      .task-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      .content { padding: 16px; }
+      .stage-head, .reflection-grid { grid-template-columns: 1fr; }
+      .stage h2 { font-size: 34px; }
+      .cert .courses { grid-template-columns: 1fr; }
+    }
+    @media print {
+      body { background: #fff; }
+      .side, .mobile-top, .action-row, .timer-card, .toast, .primary-btn, .secondary-btn, .quiet-btn, .confetti { display: none !important; }
+      .app { display: block; }
+      .content { padding: 0; }
+      .stage { display: block !important; min-height: auto; break-after: page; }
+      .report-card, .task-panel, .guide-panel, .answer-card, .cert { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-top">
+    <div class="mobile-row">
+      <select id="mobileStepSelect" aria-label="选择任务步骤"></select>
+      <button class="quiet-btn" type="button" id="mobileTimerButton">计时</button>
+    </div>
+  </div>
+
+  <div class="app">
+    <aside class="side" aria-label="任务导航">
+      <a class="map-link" href="day-of-ai-course-roadmap.html">&larr; 返回冒险地图</a>
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">🎉</div>
+        <div>
+          <div class="eyebrow">Day of AI 第十二课</div>
+          <h1>作品发布会</h1>
+          <p>向全家展示这一路的所有作品，为第一季 AI 冒险毕业！</p>
+        </div>
+      </div>
+
+      <div class="progress-card">
+        <div class="progress-top">
+          <span>发布会进度</span>
+          <span id="progressText">0/7</span>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="step-list" id="stepList"></div>
+
+      <div class="timer-card" id="timerCard">
+        <strong>发布会计时器</strong>
+        <div class="timer" id="timerDisplay">60:00</div>
+        <div class="timer-actions">
+          <button id="startTimer" type="button">开始</button>
+          <button id="pauseTimer" type="button">暂停</button>
+          <button id="resetTimer" type="button">重置</button>
+        </div>
+      </div>
+
+      <div class="parent-card">
+        <strong>第十二课核心句</strong>
+        <span>今天不上课，今天开发布会！把学过的、做过的，都讲给最爱你的人听。</span>
+        <a class="utility-btn" href="day-of-ai-eleventh-lesson.html" style="display:grid;place-items:center;text-decoration:none;">回到第十一课</a>
+        <button class="utility-btn" type="button" id="resetAll">重新开始第十二课</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <!-- STEP 0 intro -->
+      <section class="stage active" data-step="intro" aria-labelledby="intro-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 0</div>
+            <h2 id="intro-title">今天不上课，今天开发布会！🎉</h2>
+            <p class="stage-lead">从第一课到现在，你学了好多、做了好多。今天把家人请过来，办一场属于你的作品发布会，展示这一季所有的成果！</p>
+          </div>
+          <span class="time-pill">3 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>发布会前，先想一想</h3>
+            <label class="sr-only" for="warmup">孩子的心情</label>
+            <textarea id="warmup" placeholder="这一季你最想给家人看哪一件作品？为什么？"></textarea>
+            <div class="feedback" id="introFeedback">写一句你的想法，发布会就正式开始筹备啦。</div>
+            <div class="action-row">
+              <button class="primary-btn" type="button" data-next>开始盘点作品</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>家长开场白</h3>
+            <div class="say-box">“今天你是主角。这几个月你学的每样东西、做的每件作品，都要让大家看到。准备好当发布会主持人了吗？”</div>
+            <p>提前请家人：认真看、多提问、别敷衍。孩子第一次公开展示的反馈，会决定他想不想继续。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 1 inventory -->
+      <section class="stage" data-step="inventory" aria-labelledby="inventory-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 1</div>
+            <h2 id="inventory-title">作品大盘点</h2>
+            <p class="stage-lead">这是你这一季做过的所有作品。一件一件检查，准备好一件就打个勾。</p>
+          </div>
+          <span class="time-pill">8 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>我的作品清单（准备好就打勾）</h3>
+            <div class="checklist" id="inventoryList"></div>
+            <div class="feedback" id="inventoryFeedback">把准备好的作品都勾上。没做完的也没关系，勾上做过的就行。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="primary-btn" type="button" data-next>排演出顺序</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>找不到某件作品？</h3>
+            <ul>
+              <li>游戏和网页：打开 GitHub 作品博物馆就能找到。</li>
+              <li>模型、画、故事：翻翻每课存的截图和记录。</li>
+              <li>哪件没做，就当成“第二季再来做”，不用有压力。</li>
+            </ul>
+            <div class="say-box">“每一件作品，都是你动手做出来的，都值得骄傲。”</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2 order -->
+      <section class="stage" data-step="order" aria-labelledby="order-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 2</div>
+            <h2 id="order-title">编排演出顺序</h2>
+            <p class="stage-lead">发布会要有节目单！给每件作品选一个出场号码，排出你想要的顺序。</p>
+          </div>
+          <span class="time-pill">7 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>给作品排出场顺序</h3>
+            <div class="order-list" id="orderList"></div>
+            <div class="feedback" id="orderFeedback">给你选好的作品各排一个号码，就有节目单啦。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="primary-btn" type="button" data-next>练开场白</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>排序小技巧</h3>
+            <ul>
+              <li>把最得意的作品放最后，压轴登场。</li>
+              <li>第一个选个简单好懂的，暖暖场。</li>
+              <li>号码可以重排，想怎么调都行。</li>
+            </ul>
+            <div class="say-box">“好的发布会，像讲一个越来越精彩的故事。”</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3 speech -->
+      <section class="stage" data-step="speech" aria-labelledby="speech-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 3</div>
+            <h2 id="speech-title">练一段开场白</h2>
+            <p class="stage-lead">主持人要有开场白！填一填，下面会自动拼出你的开场白，对着它大声练两遍。</p>
+          </div>
+          <span class="time-pill">7 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <div class="speech-fields">
+              <div>
+                <label for="sp_name">大家好，我是……</label>
+                <input class="text-input" id="sp_name" placeholder="你的名字或昵称" />
+              </div>
+              <div>
+                <label for="sp_learn">这几个月我学会了……</label>
+                <input class="text-input" id="sp_learn" placeholder="例如：训练 AI、和 AI 一起做游戏、写提示词" />
+              </div>
+              <div>
+                <label for="sp_fun">最好玩的是……</label>
+                <input class="text-input" id="sp_fun" placeholder="例如：做出我自己的小游戏" />
+              </div>
+            </div>
+            <div class="speech-preview" id="speechPreview">填一填上面三格，你的开场白会出现在这里。</div>
+            <div class="feedback" id="speechFeedback">三格都填好，开场白就完成啦。对着它大声练一练！</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="primary-btn" type="button" data-next>发布会进行时</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>练习小提示</h3>
+            <ul>
+              <li>站直，看着大家，慢慢说。</li>
+              <li>先小声练一遍，再大声练一遍。</li>
+              <li>说错了没关系，笑一笑接着说。</li>
+            </ul>
+            <div class="say-box">“大家好，我是 ___。请看我的作品！”</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4 showtime -->
+      <section class="stage" data-step="showtime" aria-labelledby="showtime-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 4</div>
+            <h2 id="showtime-title">发布会进行时 🎤</h2>
+            <p class="stage-lead">灯光准备好，主持人上台！按节目单一件件展示。每件作品用这个计时器，控制在 3 分钟左右。</p>
+          </div>
+          <span class="time-pill">现场</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>观众须知（请家人先读一读）</h3>
+            <div class="prompt-box">
+              🎧 认真看每一件作品<br>
+              🙋 至少问一个问题：“这是怎么做的？”“最难的是哪里？”<br>
+              👏 每讲完一件，用力鼓掌<br>
+              ❤️ 别敷衍——你的认真，是给他最好的礼物
+            </div>
+            <div class="show-timer-card">
+              <div style="font-weight:900;opacity:0.85;">每件作品计时（3 分钟）</div>
+              <div class="show-timer" id="showTimer">3:00</div>
+              <div class="show-actions">
+                <button type="button" id="showStart">开始</button>
+                <button type="button" id="showPause">暂停</button>
+                <button type="button" id="showReset">下一件</button>
+              </div>
+            </div>
+            <div class="feedback" id="showFeedback">展示完至少一件作品后，点下面继续。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="primary-btn" type="button" id="showDone" data-next>展示完了，去剪彩</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>主持人小抄</h3>
+            <ul>
+              <li>每件作品说三句：这是什么、怎么玩、我学到了什么。</li>
+              <li>可以让家人上手玩一玩你的游戏。</li>
+              <li>被问到不会的，就说“这是个好问题，我们一起看看”。</li>
+            </ul>
+            <div class="say-box">“慢慢来，你比你以为的更棒。”</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 5 ribbon -->
+      <section class="stage" data-step="ribbon" aria-labelledby="ribbon-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 5</div>
+            <h2 id="ribbon-title">作品集主页剪彩 ✂️</h2>
+            <p class="stage-lead">你的 GitHub 作品博物馆，今天正式开馆！和爸爸妈妈一起，按下这个大大的剪彩按钮。</p>
+          </div>
+          <span class="time-pill">5 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>准备好了吗？</h3>
+            <p style="color:var(--muted);line-height:1.6;margin-top:8px;">和家长一起打开你的 GitHub 作品集主页（那个有你卡通头像、一句话介绍和作品列表的页面）。全家一起数“三、二、一”，然后按下按钮！</p>
+            <div class="ribbon-zone">
+              <button class="ribbon-btn" type="button" id="ribbonBtn">✂️ 三、二、一，剪彩！</button>
+              <div class="ribbon-done" id="ribbonDone" style="display:none;">🎊 作品博物馆正式开馆！🎊</div>
+            </div>
+            <div class="feedback" id="ribbonFeedback">和家人一起数三下，再按剪彩按钮。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="primary-btn" type="button" data-next>领毕业证书</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>这一刻的意义</h3>
+            <ul>
+              <li>孩子的作品，从此有了一个真正属于他的“家”。</li>
+              <li>把网址发给爷爷奶奶、好朋友——让更多人看到。</li>
+              <li>钥匙先由你保管，13 岁生日再郑重交给他。</li>
+            </ul>
+            <div class="say-box">“这是你的博物馆。以后每做一件新作品，我们就来这里添一件收藏。”</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 6 certificate -->
+      <section class="stage" data-step="cert" aria-labelledby="cert-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 6</div>
+            <h2 id="cert-title">颁发毕业证书 🏅</h2>
+            <p class="stage-lead">写上你的名字，领取属于你的“AI 冒险第一季毕业证书”。可以打印出来贴在墙上！</p>
+          </div>
+          <span class="time-pill">5 分钟</span>
+        </div>
+        <div class="task-grid">
+          <div class="task-panel">
+            <label for="certName" style="font-weight:900;">我的名字：</label>
+            <input class="text-input" id="certName" placeholder="写上你的名字或昵称" style="margin-top:6px;" />
+            <label for="certDate" style="font-weight:900;display:block;margin-top:12px;">今天的日期：</label>
+            <input class="text-input" id="certDate" placeholder="例如：2026 年 8 月 30 日" style="margin-top:6px;" />
+            <div class="cert" id="cert">
+              <div class="seal">🏅</div>
+              <h3>AI 冒险第一季 · 毕业证书</h3>
+              <div>这张证书授予勇敢又好学的</div>
+              <div class="name-line" id="certNameLine">你的名字</div>
+              <div>恭喜你完成 12 课 AI 冒险，成为一名小小 AI 创造者！</div>
+              <ul class="courses">
+                <li>1 · AI 侦探任务</li>
+                <li>2 · 什么是 AI</li>
+                <li>3 · 机器如何学习</li>
+                <li>4 · 数据越多越聪明？</li>
+                <li>5 · AI 与创作</li>
+                <li>6 · 我是产品经理</li>
+                <li>7 · 从想法到游戏</li>
+                <li>8 · 我的个人网页</li>
+                <li>9 · 提示词魔法</li>
+                <li>10 · AI 会犯错</li>
+                <li>11 · AI 当我的老师</li>
+                <li>12 · 作品发布会</li>
+              </ul>
+              <div class="date-line" id="certDateLine">日期：____________</div>
+            </div>
+            <div class="feedback" id="certFeedback">写上名字和日期，证书就属于你啦。点“打印证书”可以保存。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="secondary-btn" type="button" onclick="window.print()">打印证书</button>
+              <button class="primary-btn" type="button" data-next>最后三句话</button>
+            </div>
+          </div>
+          <div class="guide-panel">
+            <h3>一个小仪式</h3>
+            <ul>
+              <li>由家长郑重地把证书“颁发”给孩子，握手或拥抱。</li>
+              <li>拍一张孩子拿着证书的照片（家庭内部留念）。</li>
+              <li>打印出来贴在他的房间墙上。</li>
+            </ul>
+            <div class="say-box">“我们为你骄傲——不是因为你做得完美，而是因为你一直在动手、在尝试。”</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 7 reflection -->
+      <section class="stage" data-step="reflection" aria-labelledby="reflection-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 7</div>
+            <h2 id="reflection-title">最后三句话</h2>
+            <p class="stage-lead">这一季的收官三句话，比平时更重要。慢慢想，好好说。</p>
+          </div>
+          <span class="time-pill">4 分钟</span>
+        </div>
+        <div class="task-panel">
+          <div class="reflection-grid">
+            <div class="answer-card">
+              <label for="r1">1. 这一季我最骄傲的是……</label>
+              <textarea id="r1" placeholder="例如：我做出了自己想的游戏，还发给了朋友玩。"></textarea>
+            </div>
+            <div class="answer-card">
+              <label for="r2">2. 最难、但我坚持下来的是……</label>
+              <textarea id="r2" placeholder="例如：一开始 AI 老做错，我学会了把要求说清楚。"></textarea>
+            </div>
+            <div class="answer-card">
+              <label for="r3">3. 第二季我最想做的是……</label>
+              <textarea id="r3" placeholder="例如：学会自己改代码，做一个更大的游戏。"></textarea>
+            </div>
+          </div>
+          <div class="feedback" id="reflectionFeedback">写完 3 句话，就可以生成毕业报告啦。</div>
+          <div class="action-row">
+            <button class="secondary-btn" type="button" data-prev>上一步</button>
+            <button class="primary-btn" type="button" data-next>生成毕业报告</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 8 summary -->
+      <section class="stage" data-step="summary" aria-labelledby="summary-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">毕业啦</div>
+            <h2 id="summary-title">第一季 AI 冒险 · 毕业报告</h2>
+            <p class="stage-lead">这页可以打印或截图，永远保存。你已经是一名小小 AI 创造者了。第二季，我们再出发！</p>
+          </div>
+          <span class="time-pill">🎓 已毕业</span>
+        </div>
+        <div class="report-card">
+          <span class="badge">Day of AI 第一季 · 全部完成</span>
+          <h3>恭喜毕业！你走完了 12 课 AI 冒险。</h3>
+          <ol class="report-list" id="summaryList"></ol>
+          <div class="say-box">核心句：今天不上课，今天开发布会！你学过的、做过的，都值得被看见、被记住。</div>
+          <div class="action-row">
+            <button class="primary-btn" type="button" onclick="window.print()">打印毕业报告</button>
+            <a class="secondary-btn" href="day-of-ai-course-roadmap.html">返回冒险地图</a>
+            <button class="secondary-btn" type="button" id="resetAllEnd">重新开始第十二课</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const STORAGE_KEY = "day-of-ai-twelfth-lesson-v1";
+    const steps = [
+      { id: "intro", title: "开场", time: "3 分钟" },
+      { id: "inventory", title: "作品盘点", time: "8 分钟" },
+      { id: "order", title: "排顺序", time: "7 分钟" },
+      { id: "speech", title: "开场白", time: "7 分钟" },
+      { id: "showtime", title: "发布会现场", time: "现场" },
+      { id: "ribbon", title: "剪彩", time: "5 分钟" },
+      { id: "cert", title: "毕业证书", time: "5 分钟" },
+      { id: "reflection", title: "三句话", time: "4 分钟" },
+      { id: "summary", title: "毕业报告", time: "完成" }
+    ];
+
+    const works = [
+      { id: "w1", text: "🧱 俄罗斯方块 v1（我做的第一个游戏）" },
+      { id: "w2", text: "✨ 俄罗斯方块 v2（我当产品经理改进的版本）" },
+      { id: "w3", text: "🤖 Teachable Machine 模型（我训练的识别器）" },
+      { id: "w4", text: "🎨 AI 合作画 & 接龙故事" },
+      { id: "w5", text: "💡 我的原创游戏（第七课从零做的）" },
+      { id: "w6", text: "🏠 我的个人网页" },
+      { id: "w7", text: "🪄 我的提示词秘诀卡" },
+      { id: "w8", text: "🕵️ AI 犯错收集册" }
+    ];
+
+    const state = loadState();
+    let currentStep = initialStep();
+    let remainingSeconds = state.remainingSeconds || 60 * 60;
+    let timerId = null;
+
+    let showSeconds = 180;
+    let showTimerId = null;
+
+    const stepList = document.getElementById("stepList");
+    const mobileStepSelect = document.getElementById("mobileStepSelect");
+    const progressText = document.getElementById("progressText");
+    const progressFill = document.getElementById("progressFill");
+    const timerDisplay = document.getElementById("timerDisplay");
+    const toast = document.getElementById("toast");
+
+    function defaultState() {
+      return {
+        currentStep: "intro",
+        completed: {},
+        warmup: "",
+        inventory: {},
+        order: {},
+        speech: { sp_name: "", sp_learn: "", sp_fun: "" },
+        showShown: false,
+        ribbonCut: false,
+        cert: { certName: "", certDate: "" },
+        reflection: { r1: "", r2: "", r3: "" },
+        remainingSeconds: 60 * 60
+      };
+    }
+
+    function loadState() {
+      try {
+        return { ...defaultState(), ...JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") };
+      } catch (error) {
+        return defaultState();
+      }
+    }
+
+    function initialStep() {
+      const requested = new URLSearchParams(window.location.search).get("step") || window.location.hash.replace("#", "");
+      if (steps.some((step) => step.id === requested)) return requested;
+      return state.currentStep || "intro";
+    }
+
+    function saveState() {
+      state.currentStep = currentStep;
+      state.remainingSeconds = remainingSeconds;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    function renderNavigation() {
+      stepList.innerHTML = "";
+      mobileStepSelect.innerHTML = "";
+      steps.forEach((step, index) => {
+        const isDone = step.id === "summary" ? allDone() : Boolean(state.completed[step.id]);
+        const button = document.createElement("button");
+        button.className = `step-tab ${currentStep === step.id ? "active" : ""} ${isDone ? "done" : ""}`;
+        button.type = "button";
+        button.dataset.goStep = step.id;
+        button.innerHTML = `
+          <span class="step-num">${isDone ? "✓" : index}</span>
+          <span><span class="step-title">${step.title}</span><span class="step-time">${step.time}</span></span>
+          <span class="step-status">${currentStep === step.id ? "现在" : isDone ? "完成" : ""}</span>
+        `;
+        stepList.appendChild(button);
+
+        const option = document.createElement("option");
+        option.value = step.id;
+        option.textContent = `${index}. ${step.title}`;
+        option.selected = currentStep === step.id;
+        mobileStepSelect.appendChild(option);
+      });
+    }
+
+    function renderProgress() {
+      const taskSteps = steps.slice(0, -1);
+      const count = taskSteps.filter((step) => state.completed[step.id]).length;
+      progressText.textContent = `${count}/${taskSteps.length}`;
+      progressFill.style.width = `${Math.round((count / taskSteps.length) * 100)}%`;
+    }
+
+    function renderStages() {
+      document.querySelectorAll(".stage").forEach((stage) => {
+        stage.classList.toggle("active", stage.dataset.step === currentStep);
+      });
+      renderNavigation();
+      renderProgress();
+      mobileStepSelect.value = currentStep;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      saveState();
+    }
+
+    function goStep(id) {
+      currentStep = id;
+      if (id === "summary") renderSummary();
+      renderStages();
+    }
+    function nextStep() {
+      const index = steps.findIndex((step) => step.id === currentStep);
+      goStep(steps[Math.min(index + 1, steps.length - 1)].id);
+    }
+    function prevStep() {
+      const index = steps.findIndex((step) => step.id === currentStep);
+      goStep(steps[Math.max(index - 1, 0)].id);
+    }
+    function markComplete(id, done) {
+      state.completed[id] = done;
+      saveState();
+      renderProgress();
+      renderNavigation();
+    }
+    function allDone() {
+      return steps.slice(0, -1).every((step) => state.completed[step.id]);
+    }
+
+    function initGlobalControls() {
+      document.addEventListener("click", (event) => {
+        const go = event.target.closest("[data-go-step]");
+        if (go) goStep(go.dataset.goStep);
+        if (event.target.closest("[data-next]")) nextStep();
+        if (event.target.closest("[data-prev]")) prevStep();
+      });
+      mobileStepSelect.addEventListener("change", (event) => goStep(event.target.value));
+      document.getElementById("mobileTimerButton").addEventListener("click", () => {
+        document.getElementById("timerCard").scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+      document.getElementById("resetAll").addEventListener("click", resetAll);
+      document.getElementById("resetAllEnd").addEventListener("click", resetAll);
+    }
+
+    function resetAll() {
+      localStorage.removeItem(STORAGE_KEY);
+      Object.assign(state, defaultState());
+      currentStep = "intro";
+      remainingSeconds = 60 * 60;
+      hydrateFields();
+      renderAll();
+      renderStages();
+      renderTimer();
+      showToast("第十二课已经重置。");
+    }
+
+    function initTimer() {
+      document.getElementById("startTimer").addEventListener("click", () => {
+        if (timerId) return;
+        timerId = window.setInterval(() => {
+          remainingSeconds = Math.max(0, remainingSeconds - 1);
+          renderTimer();
+          saveState();
+          if (remainingSeconds === 0) {
+            window.clearInterval(timerId);
+            timerId = null;
+            showToast("时间到了，可以收尾啦。");
+          }
+        }, 1000);
+      });
+      document.getElementById("pauseTimer").addEventListener("click", () => {
+        window.clearInterval(timerId);
+        timerId = null;
+      });
+      document.getElementById("resetTimer").addEventListener("click", () => {
+        window.clearInterval(timerId);
+        timerId = null;
+        remainingSeconds = 60 * 60;
+        renderTimer();
+        saveState();
+      });
+      renderTimer();
+    }
+    function renderTimer() {
+      const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, "0");
+      const seconds = (remainingSeconds % 60).toString().padStart(2, "0");
+      timerDisplay.textContent = `${minutes}:${seconds}`;
+    }
+
+    // ---- intro ----
+    function initIntro() {
+      const input = document.getElementById("warmup");
+      input.value = state.warmup;
+      input.addEventListener("input", () => {
+        state.warmup = input.value.trim();
+        renderIntro();
+        saveState();
+      });
+      renderIntro();
+    }
+    function renderIntro() {
+      const done = Boolean(state.warmup);
+      const feedback = document.getElementById("introFeedback");
+      feedback.textContent = done ? "筹备开始！我们先把所有作品盘点一遍。" : "写一句你的想法，发布会就正式开始筹备啦。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("intro", done);
+    }
+
+    // ---- inventory ----
+    function initInventory() {
+      renderInventory();
+    }
+    function renderInventory() {
+      const grid = document.getElementById("inventoryList");
+      grid.innerHTML = "";
+      works.forEach((work) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `check-item ${state.inventory[work.id] ? "checked" : ""}`;
+        button.innerHTML = `<span class="check-box">${state.inventory[work.id] ? "✓" : ""}</span><span>${work.text}</span>`;
+        button.addEventListener("click", () => {
+          state.inventory[work.id] = !state.inventory[work.id];
+          saveState();
+          renderInventory();
+          renderOrder();
+        });
+        grid.appendChild(button);
+      });
+      const count = works.filter((w) => state.inventory[w.id]).length;
+      const done = count >= 1;
+      const feedback = document.getElementById("inventoryFeedback");
+      feedback.textContent = done ? `你准备了 ${count} 件作品！都是你亲手做的。` : "把准备好的作品都勾上。没做完的也没关系，勾上做过的就行。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("inventory", done);
+    }
+
+    // ---- order ----
+    function initOrder() {
+      renderOrder();
+    }
+    function renderOrder() {
+      const list = document.getElementById("orderList");
+      list.innerHTML = "";
+      const chosen = works.filter((w) => state.inventory[w.id]);
+      if (!chosen.length) {
+        list.innerHTML = `<div class="prompt-box">先回上一步，勾选你要展示的作品，这里就会出现节目单。</div>`;
+        markComplete("order", false);
+        document.getElementById("orderFeedback").textContent = "还没有勾选作品哦。";
+        document.getElementById("orderFeedback").className = "feedback";
+        return;
+      }
+      chosen.forEach((work) => {
+        const row = document.createElement("div");
+        row.className = "order-item";
+        const num = state.order[work.id];
+        const options = ["—"].concat(chosen.map((_, i) => String(i + 1)));
+        row.innerHTML = `
+          <span class="num ${num ? "" : "unset"}">${num || "?"}</span>
+          <span>${work.text}</span>
+          <select class="pick" data-work="${work.id}">
+            ${options.map((o) => `<option value="${o === "—" ? "" : o}" ${String(num || "") === (o === "—" ? "" : o) ? "selected" : ""}>${o}</option>`).join("")}
+          </select>
+        `;
+        list.appendChild(row);
+      });
+      list.querySelectorAll(".pick").forEach((sel) => {
+        sel.addEventListener("change", () => {
+          const id = sel.dataset.work;
+          if (sel.value) state.order[id] = Number(sel.value);
+          else delete state.order[id];
+          saveState();
+          renderOrder();
+        });
+      });
+      const numbered = chosen.filter((w) => state.order[w.id]).length;
+      const done = numbered === chosen.length && chosen.length >= 1;
+      const feedback = document.getElementById("orderFeedback");
+      feedback.textContent = done ? "节目单排好了！按这个顺序上台展示。" : `已排 ${numbered}/${chosen.length} 件作品的顺序。`;
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("order", done);
+    }
+
+    // ---- speech ----
+    function initSpeech() {
+      ["sp_name", "sp_learn", "sp_fun"].forEach((id) => {
+        const input = document.getElementById(id);
+        input.value = state.speech[id] || "";
+        input.addEventListener("input", () => {
+          state.speech[id] = input.value.trim();
+          saveState();
+          renderSpeech();
+        });
+      });
+      renderSpeech();
+    }
+    function renderSpeech() {
+      const s = state.speech;
+      const preview = document.getElementById("speechPreview");
+      if (s.sp_name || s.sp_learn || s.sp_fun) {
+        preview.textContent = `“大家好，我是${s.sp_name || "＿＿"}。这几个月我学会了${s.sp_learn || "＿＿"}。最好玩的是${s.sp_fun || "＿＿"}。请看我的作品！”`;
+      } else {
+        preview.textContent = "填一填上面三格，你的开场白会出现在这里。";
+      }
+      const done = Boolean(s.sp_name && s.sp_learn && s.sp_fun);
+      const feedback = document.getElementById("speechFeedback");
+      feedback.textContent = done ? "开场白完成！对着它大声练两遍。" : "三格都填好，开场白就完成啦。对着它大声练一练！";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("speech", done);
+    }
+
+    // ---- showtime ----
+    function initShow() {
+      document.getElementById("showStart").addEventListener("click", () => {
+        if (showTimerId) return;
+        showTimerId = window.setInterval(() => {
+          showSeconds = Math.max(0, showSeconds - 1);
+          renderShowTimer();
+          if (showSeconds === 0) {
+            window.clearInterval(showTimerId);
+            showTimerId = null;
+            showToast("这件作品的 3 分钟到啦，换下一件～");
+          }
+        }, 1000);
+      });
+      document.getElementById("showPause").addEventListener("click", () => {
+        window.clearInterval(showTimerId);
+        showTimerId = null;
+      });
+      document.getElementById("showReset").addEventListener("click", () => {
+        window.clearInterval(showTimerId);
+        showTimerId = null;
+        showSeconds = 180;
+        renderShowTimer();
+      });
+      document.getElementById("showDone").addEventListener("click", () => {
+        state.showShown = true;
+        saveState();
+        renderShow();
+      });
+      renderShowTimer();
+      renderShow();
+    }
+    function renderShowTimer() {
+      const m = Math.floor(showSeconds / 60);
+      const s = (showSeconds % 60).toString().padStart(2, "0");
+      document.getElementById("showTimer").textContent = `${m}:${s}`;
+    }
+    function renderShow() {
+      const done = Boolean(state.showShown);
+      const feedback = document.getElementById("showFeedback");
+      feedback.textContent = done ? "展示完成！掌声送给你。现在去给作品博物馆剪彩。" : "展示完至少一件作品后，点下面继续。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("showtime", done);
+    }
+
+    // ---- ribbon ----
+    function initRibbon() {
+      document.getElementById("ribbonBtn").addEventListener("click", () => {
+        state.ribbonCut = true;
+        saveState();
+        fireConfetti();
+        renderRibbon();
+      });
+      renderRibbon();
+    }
+    function renderRibbon() {
+      const done = Boolean(state.ribbonCut);
+      document.getElementById("ribbonDone").style.display = done ? "block" : "none";
+      document.getElementById("ribbonBtn").disabled = done;
+      const feedback = document.getElementById("ribbonFeedback");
+      feedback.textContent = done ? "🎊 剪彩成功！你的作品博物馆正式开馆啦。" : "和家人一起数三下，再按剪彩按钮。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("ribbon", done);
+    }
+
+    // ---- certificate ----
+    function initCert() {
+      const nameInput = document.getElementById("certName");
+      const dateInput = document.getElementById("certDate");
+      nameInput.value = state.cert.certName || "";
+      dateInput.value = state.cert.certDate || "";
+      nameInput.addEventListener("input", () => {
+        state.cert.certName = nameInput.value.trim();
+        saveState();
+        renderCert();
+      });
+      dateInput.addEventListener("input", () => {
+        state.cert.certDate = dateInput.value.trim();
+        saveState();
+        renderCert();
+      });
+      renderCert();
+    }
+    function renderCert() {
+      document.getElementById("certNameLine").textContent = state.cert.certName || "你的名字";
+      document.getElementById("certDateLine").textContent = `日期：${state.cert.certDate || "____________"}`;
+      const done = Boolean(state.cert.certName && state.cert.certDate);
+      const feedback = document.getElementById("certFeedback");
+      feedback.textContent = done ? "证书完成！点“打印证书”保存，贴在墙上吧。" : "写上名字和日期，证书就属于你啦。点“打印证书”可以保存。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("cert", done);
+    }
+
+    // ---- reflection ----
+    function initReflection() {
+      ["r1", "r2", "r3"].forEach((id) => {
+        const input = document.getElementById(id);
+        input.value = state.reflection[id] || "";
+        input.addEventListener("input", () => {
+          state.reflection[id] = input.value.trim();
+          renderReflection();
+          saveState();
+        });
+      });
+      renderReflection();
+    }
+    function renderReflection() {
+      const done = ["r1", "r2", "r3"].every((id) => state.reflection[id]);
+      const feedback = document.getElementById("reflectionFeedback");
+      feedback.textContent = done ? "三句话都写好了。生成你的毕业报告吧！" : "写完 3 句话，就可以生成毕业报告啦。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      markComplete("reflection", done);
+    }
+
+    function renderSummary() {
+      const count = works.filter((w) => state.inventory[w.id]).length;
+      document.getElementById("summaryList").innerHTML = `
+        <li>我在发布会上展示了 ${count} 件亲手做的作品。</li>
+        <li>我的开场白：${state.speech.sp_name ? "大家好，我是" + state.speech.sp_name : "未填写"}。</li>
+        <li>我给作品博物馆剪了彩：${state.ribbonCut ? "已开馆 🎊" : "还没剪彩"}。</li>
+        <li>我最骄傲的：${state.reflection.r1 || "未填写"}。</li>
+        <li>最难但我坚持了：${state.reflection.r2 || "未填写"}。</li>
+        <li>第二季我想做：${state.reflection.r3 || "未填写"}。</li>
+      `;
+    }
+
+    function hydrateFields() {
+      document.getElementById("warmup").value = state.warmup || "";
+      ["sp_name", "sp_learn", "sp_fun"].forEach((id) => { document.getElementById(id).value = state.speech[id] || ""; });
+      document.getElementById("certName").value = state.cert.certName || "";
+      document.getElementById("certDate").value = state.cert.certDate || "";
+      ["r1", "r2", "r3"].forEach((id) => { document.getElementById(id).value = state.reflection[id] || ""; });
+    }
+
+    function fireConfetti() {
+      const colors = ["#f1c64b", "#de6251", "#0b8f8b", "#436fc2", "#725fb4", "#448f4b"];
+      for (let i = 0; i < 60; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti";
+        piece.style.left = ((i * 37) % 100) + "vw";
+        piece.style.background = colors[i % colors.length];
+        piece.style.transform = `rotate(${(i * 47) % 360}deg)`;
+        document.body.appendChild(piece);
+        const duration = 1800 + (i % 10) * 160;
+        piece.animate(
+          [
+            { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
+            { transform: `translateY(100vh) rotate(${(i % 2 ? 1 : -1) * 540}deg)`, opacity: 0.9 }
+          ],
+          { duration: duration, easing: "cubic-bezier(.3,.6,.5,1)" }
+        );
+        window.setTimeout(function (el) { return function () { el.remove(); }; }(piece), duration);
+      }
+    }
+
+    function renderAll() {
+      renderIntro();
+      renderInventory();
+      renderOrder();
+      renderSpeech();
+      renderShow();
+      renderRibbon();
+      renderCert();
+      renderReflection();
+    }
+
+    initGlobalControls();
+    initTimer();
+    initIntro();
+    initInventory();
+    initOrder();
+    initSpeech();
+    initShow();
+    initRibbon();
+    initCert();
+    initReflection();
+    hydrateFields();
+    renderStages();
+  </script>
+</body>
+</html>

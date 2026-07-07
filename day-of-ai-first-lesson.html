@@ -1,0 +1,2052 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Day of AI 第一次亲子课：AI 侦探任务</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #5a6678;
+      --paper: #fbfbf7;
+      --panel: #ffffff;
+      --line: #d9dfdc;
+      --teal: #0b8f8b;
+      --teal-soft: #ddf4f1;
+      --coral: #df614f;
+      --coral-soft: #ffe2dc;
+      --gold: #f2c84b;
+      --gold-soft: #fff2bd;
+      --green: #438f4a;
+      --green-soft: #e1f2df;
+      --blue: #426fc2;
+      --blue-soft: #e2ebff;
+      --lilac: #7762b5;
+      --lilac-soft: #ece6ff;
+      --shadow: 0 18px 42px rgba(23, 32, 51, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 8% 12%, rgba(242, 200, 75, 0.22), transparent 24%),
+        radial-gradient(circle at 86% 10%, rgba(11, 143, 139, 0.20), transparent 22%),
+        linear-gradient(180deg, #f7faf5 0%, #fbfbf7 48%, #f4f7fb 100%);
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    a {
+      color: var(--teal);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 3px;
+    }
+
+    .next-lesson-float {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 80;
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      padding: 0 16px;
+      color: #fff;
+      background: var(--coral);
+      box-shadow: var(--shadow);
+      font-weight: 950;
+      text-decoration: none;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+    }
+
+    .side {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 22px;
+      border-right: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      overflow: auto;
+    }
+
+    .brand {
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .brand-mark {
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--ink);
+      box-shadow: var(--shadow);
+    }
+
+    .brand-mark svg {
+      width: 36px;
+      height: 36px;
+    }
+
+    .eyebrow {
+      margin-bottom: 6px;
+      color: var(--coral);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .brand h1 {
+      font-size: 22px;
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+
+    .brand p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .progress-card,
+    .timer-card,
+    .parent-card {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 8px 22px rgba(23, 32, 51, 0.07);
+    }
+
+    .progress-card {
+      margin-bottom: 12px;
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: 900;
+    }
+
+    .progress-track {
+      height: 12px;
+      border-radius: 999px;
+      background: #edf1ef;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), var(--gold));
+      transition: width 240ms ease;
+    }
+
+    .step-list {
+      display: grid;
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .step-tab {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 34px 1fr auto;
+      gap: 9px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 8px;
+      color: var(--ink);
+      background: transparent;
+      text-align: left;
+      border: 1px solid transparent;
+    }
+
+    .step-tab:hover,
+    .step-tab:focus-visible {
+      outline: none;
+      border-color: var(--line);
+      background: #fff;
+    }
+
+    .step-tab.active {
+      background: var(--teal-soft);
+      border-color: #9fd9d2;
+    }
+
+    .step-tab.done {
+      background: var(--green-soft);
+    }
+
+    .step-num {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: #eef2f4;
+      color: var(--ink);
+      font-weight: 950;
+    }
+
+    .step-tab.done .step-num {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .step-title {
+      display: block;
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .step-time {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .step-status {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .timer-card {
+      margin: 14px 0;
+      color: #fff;
+      background: var(--ink);
+      border-color: transparent;
+    }
+
+    .timer-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .timer {
+      margin-top: 8px;
+      font-size: 40px;
+      font-weight: 950;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .timer-actions button,
+    .utility-btn {
+      min-height: 36px;
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .parent-card {
+      display: grid;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .parent-card strong {
+      color: var(--ink);
+    }
+
+    .content {
+      min-width: 0;
+      padding: clamp(18px, 4vw, 48px);
+    }
+
+    .mobile-top {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(14px);
+    }
+
+    .mobile-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .mobile-row select {
+      min-height: 42px;
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 0 10px;
+      font-weight: 900;
+    }
+
+    .stage {
+      min-height: calc(100vh - 96px);
+      display: none;
+      align-content: center;
+      gap: 22px;
+    }
+
+    .stage.active {
+      display: grid;
+    }
+
+    .stage-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .stage h2 {
+      max-width: 920px;
+      font-size: clamp(36px, 5.4vw, 72px);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .stage-lead {
+      max-width: 820px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 19px;
+      line-height: 1.65;
+    }
+
+    .time-pill,
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      border-radius: 8px;
+      padding: 0 12px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+
+    .time-pill {
+      color: var(--ink);
+      background: var(--gold-soft);
+      border: 1px solid #e3c350;
+    }
+
+    .badge {
+      background: var(--blue-soft);
+      color: #234d97;
+      border: 1px solid #b8c8ef;
+      font-size: 13px;
+    }
+
+    .task-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .task-panel,
+    .guide-panel,
+    .card,
+    .answer-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 10px 28px rgba(23, 32, 51, 0.08);
+    }
+
+    .task-panel,
+    .guide-panel {
+      padding: clamp(16px, 2.4vw, 24px);
+    }
+
+    .guide-panel {
+      display: grid;
+      align-content: start;
+      gap: 12px;
+      color: var(--muted);
+      line-height: 1.62;
+    }
+
+    .guide-panel h3,
+    .task-panel h3 {
+      font-size: 24px;
+      line-height: 1.22;
+    }
+
+    .guide-panel ul,
+    .guide-panel ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .say-box {
+      padding: 14px;
+      border-radius: 8px;
+      background: var(--blue-soft);
+      border-left: 6px solid var(--blue);
+      color: var(--ink);
+      font-size: 21px;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+
+    .prompt-box {
+      padding: 14px;
+      border-radius: 8px;
+      background: #f7faf5;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      line-height: 1.55;
+    }
+
+    .prompt-box strong {
+      color: var(--coral);
+    }
+
+    .check-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .overview-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .overview-card {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      text-align: left;
+    }
+
+    .overview-card:hover,
+    .overview-card:focus-visible {
+      outline: none;
+      border-color: var(--teal);
+      background: var(--teal-soft);
+    }
+
+    .overview-card span:first-child {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 950;
+    }
+
+    .overview-card strong {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 16px;
+    }
+
+    .overview-card em {
+      color: var(--muted);
+      font-style: normal;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .check-item {
+      display: grid;
+      grid-template-columns: 26px 1fr;
+      gap: 10px;
+      align-items: start;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .check-item input {
+      width: 19px;
+      height: 19px;
+      margin-top: 2px;
+      accent-color: var(--teal);
+    }
+
+    .text-input,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fdfdfb;
+      color: var(--ink);
+      padding: 12px;
+      line-height: 1.55;
+    }
+
+    .text-input {
+      min-height: 48px;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .big-input {
+      margin-top: 12px;
+      min-height: 120px;
+      font-size: 18px;
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .choice-btn {
+      min-height: 58px;
+      padding: 12px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      text-align: left;
+      font-weight: 950;
+      line-height: 1.35;
+    }
+
+    .choice-btn:hover,
+    .choice-btn:focus-visible,
+    .choice-btn.selected {
+      outline: none;
+      border-color: var(--teal);
+      background: var(--teal-soft);
+    }
+
+    .sort-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .sort-card {
+      min-height: 206px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 10px;
+      padding: 14px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .sort-card[data-choice="ai"] {
+      border-color: var(--teal);
+      background: var(--teal-soft);
+    }
+
+    .sort-card[data-choice="not"] {
+      border-color: var(--coral);
+      background: var(--coral-soft);
+    }
+
+    .sort-card[data-choice="maybe"] {
+      border-color: #d0aa22;
+      background: var(--gold-soft);
+    }
+
+    .card-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--ink);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 950;
+    }
+
+    .sort-card h3 {
+      font-size: 19px;
+      line-height: 1.18;
+    }
+
+    .sort-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .sort-actions button {
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .sort-actions button.active {
+      color: #fff;
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .answer-note {
+      display: none;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .show-feedback .answer-note {
+      display: block;
+    }
+
+    .mini-result {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .mini-result strong {
+      font-size: 22px;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .quiet-btn {
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 8px;
+      padding: 0 16px;
+      font-weight: 950;
+      text-decoration: none;
+      border: 1px solid transparent;
+    }
+
+    .primary-btn {
+      color: #fff;
+      background: var(--teal);
+    }
+
+    .primary-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
+    }
+
+    .secondary-btn {
+      color: var(--ink);
+      background: #fff;
+      border-color: var(--line);
+    }
+
+    .quiet-btn {
+      min-height: 38px;
+      color: var(--ink);
+      background: var(--gold-soft);
+      border-color: #e0c55d;
+      font-size: 14px;
+    }
+
+    .feedback {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: var(--muted);
+      background: #f7faf5;
+      border: 1px solid var(--line);
+      line-height: 1.45;
+    }
+
+    .feedback.good {
+      color: #234a2a;
+      background: var(--green-soft);
+      border-color: #b9d9b8;
+    }
+
+    .feedback.warn {
+      color: #6b4428;
+      background: var(--gold-soft);
+      border-color: #e0c55d;
+    }
+
+    .draw-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.85fr);
+      gap: 16px;
+      margin-top: 14px;
+    }
+
+    .draw-card {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .canvas-wrap {
+      display: grid;
+      gap: 10px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 330px;
+      border: 2px dashed var(--teal);
+      border-radius: 8px;
+      background:
+        linear-gradient(#edf6f5 1px, transparent 1px),
+        linear-gradient(90deg, #edf6f5 1px, transparent 1px),
+        #fff;
+      background-size: 28px 28px;
+      touch-action: none;
+    }
+
+    .guess-box {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .guess-display {
+      min-height: 122px;
+      display: grid;
+      align-content: center;
+      gap: 8px;
+      padding: 16px;
+      border-radius: 8px;
+      background: var(--lilac-soft);
+      border: 1px solid #c8bdeb;
+    }
+
+    .guess-display strong {
+      font-size: 30px;
+      line-height: 1.12;
+    }
+
+    .guess-display span {
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .round-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .round-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+
+    .round-item strong {
+      color: var(--ink);
+    }
+
+    .reverse-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .object-choice {
+      min-height: 94px;
+      padding: 14px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      text-align: left;
+    }
+
+    .object-choice.selected {
+      border-color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .object-choice strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 20px;
+    }
+
+    .object-choice span {
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .reflection-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .answer-card {
+      padding: 14px;
+    }
+
+    .answer-card label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 950;
+      line-height: 1.35;
+    }
+
+    .certificate {
+      display: grid;
+      gap: 14px;
+      padding: clamp(18px, 4vw, 34px);
+      border: 3px solid var(--ink);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(255, 242, 189, 0.72), rgba(221, 244, 241, 0.8)),
+        #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .certificate h3 {
+      font-size: clamp(30px, 5vw, 54px);
+      line-height: 1.05;
+    }
+
+    .certificate p,
+    .report-list li {
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.65;
+    }
+
+    .report-list {
+      margin: 0;
+      padding-left: 22px;
+    }
+
+    .sources {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 50;
+      max-width: min(420px, calc(100vw - 36px));
+      padding: 12px 14px;
+      border-radius: 8px;
+      color: #fff;
+      background: var(--ink);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(14px);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1080px) {
+      .next-lesson-float {
+        right: 12px;
+        bottom: 12px;
+        top: auto;
+      }
+
+      .app {
+        display: block;
+      }
+
+      .side {
+        display: none;
+      }
+
+      .mobile-top {
+        display: block;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .stage {
+        min-height: auto;
+        padding: 18px 0 40px;
+      }
+
+      .task-grid,
+      .draw-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .content {
+        padding: 16px;
+      }
+
+      .stage-head {
+        grid-template-columns: 1fr;
+      }
+
+      .stage h2 {
+        font-size: 38px;
+      }
+
+      .choice-grid,
+      .sort-grid,
+      .reverse-grid,
+      .reflection-grid {
+        grid-template-columns: 1fr;
+      }
+
+      canvas {
+        height: 260px;
+      }
+
+      .round-item {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .side,
+      .mobile-top,
+      .action-row,
+      .timer-card,
+      .toast,
+      .primary-btn,
+      .secondary-btn,
+      .quiet-btn,
+      .sort-actions {
+        display: none !important;
+      }
+
+      .app {
+        display: block;
+      }
+
+      .content {
+        padding: 0;
+      }
+
+      .stage {
+        display: block !important;
+        min-height: auto;
+        break-after: page;
+      }
+
+      .stage:not([data-step="summary"]) {
+        display: none !important;
+      }
+
+      .certificate,
+      .task-panel,
+      .guide-panel,
+      .answer-card {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="next-lesson-float" href="day-of-ai-second-lesson.html">进入第二课</a>
+
+  <div class="mobile-top">
+    <div class="mobile-row">
+      <select id="mobileStepSelect" aria-label="选择任务步骤"></select>
+      <button class="quiet-btn" type="button" id="mobileTimerButton">计时</button>
+    </div>
+  </div>
+
+  <div class="app">
+    <aside class="side" aria-label="任务导航">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" role="img">
+            <path d="M18 7h12a8 8 0 0 1 8 8v14a8 8 0 0 1-8 8H18a8 8 0 0 1-8-8V15a8 8 0 0 1 8-8Z" fill="none" stroke="currentColor" stroke-width="4"/>
+            <path d="M16 20h16M16 28h9M20 2v8M28 2v8M20 38v8M28 38v8M2 20h8M2 28h8M38 20h8M38 28h8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <div class="eyebrow">Day of AI 亲子课</div>
+          <h1>AI 侦探任务</h1>
+          <p>30 分钟互动向导。跟着网页做，不需要额外讲义。</p>
+        </div>
+      </div>
+
+      <div class="progress-card">
+        <div class="progress-top">
+          <span>任务进度</span>
+          <span id="progressText">0/7</span>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="step-list" id="stepList"></div>
+
+      <div class="timer-card" id="timerCard">
+        <div class="timer-row">
+          <strong>课堂计时器</strong>
+          <span>30 分钟</span>
+        </div>
+        <div class="timer" id="timerDisplay">30:00</div>
+        <div class="timer-actions">
+          <button id="startTimer" type="button">开始</button>
+          <button id="pauseTimer" type="button">暂停</button>
+          <button id="resetTimer" type="button">重置</button>
+        </div>
+      </div>
+
+      <div class="parent-card">
+        <strong>家长只记这句</strong>
+        <span>AI 是根据很多例子来猜答案的，它会猜错，所以人要检查。</span>
+        <button class="utility-btn" type="button" id="resetAll">重新开始整节课</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="stage active" data-step="welcome" aria-labelledby="welcome-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 0</div>
+            <h2 id="welcome-title">准备成为 AI 侦探</h2>
+            <p class="stage-lead">这节课会一步一步带你完成：先猜 AI 是什么，再判断生活里的工具，接着抓到 AI 犯错，最后拿到一张 AI 侦探报告。</p>
+          </div>
+          <span class="time-pill">2 分钟</span>
+        </div>
+
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>开始前先点选</h3>
+            <div class="check-grid" id="prepChecks">
+              <label class="check-item"><input type="checkbox" data-prep="paper" />有纸和笔，或者直接在网页里填写。</label>
+              <label class="check-item"><input type="checkbox" data-prep="objects" />身边有 4 个小物品：文具、玩具都可以。</label>
+              <label class="check-item"><input type="checkbox" data-prep="privacy" />今天不上传姓名、学校、正脸照片、家庭地址。</label>
+            </div>
+            <div class="feedback" id="prepFeedback">可以先勾选准备项，也可以直接开始第 1 个任务。</div>
+            <div class="action-row">
+              <button class="primary-btn" type="button" data-next>开始第 1 个任务</button>
+            </div>
+          </div>
+
+          <div class="guide-panel">
+            <h3>今天会做这些任务</h3>
+            <div class="overview-grid">
+              <button class="overview-card" type="button" data-go-step="opening"><span>1</span><span><strong>先猜 AI</strong><em>记录孩子自己的理解</em></span></button>
+              <button class="overview-card" type="button" data-go-step="sort"><span>2</span><span><strong>AI 寻宝</strong><em>判断生活工具是不是 AI</em></span></button>
+              <button class="overview-card" type="button" data-go-step="quickdraw"><span>3</span><span><strong>抓到犯错</strong><em>画一画，看“AI”怎么猜</em></span></button>
+              <button class="overview-card" type="button" data-go-step="summary"><span>✓</span><span><strong>侦探报告</strong><em>最后自动生成学习总结</em></span></button>
+            </div>
+            <h3 style="margin-top:8px;">家长开场白</h3>
+            <div class="say-box">“今天我们不考试。我们做一个侦探任务：看看电脑助手怎么猜答案，也看看它什么时候会猜错。”</div>
+            <p>今天不用讲复杂术语。孩子能说出“AI 靠例子来猜，也会猜错”，就已经成功。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="opening" aria-labelledby="opening-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 1</div>
+            <h2 id="opening-title">先让孩子猜：AI 是什么？</h2>
+            <p class="stage-lead">先记录孩子自己的想法。不要急着纠正，之后再回头看他的理解有没有变。</p>
+          </div>
+          <span class="time-pill">3 分钟</span>
+        </div>
+
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>孩子回答区</h3>
+            <label for="kidGuess" class="sr-only">孩子对 AI 的初始理解</label>
+            <textarea id="kidGuess" class="big-input" placeholder="孩子可以说：AI 是机器人 / 很聪明的电脑 / ChatGPT / 会回答问题的东西..."></textarea>
+            <div class="choice-grid" id="openingMood">
+              <button class="choice-btn" type="button" data-mood="机器人">我觉得 AI 像机器人</button>
+              <button class="choice-btn" type="button" data-mood="电脑助手">我觉得 AI 像电脑助手</button>
+              <button class="choice-btn" type="button" data-mood="会聊天">我觉得 AI 会聊天</button>
+              <button class="choice-btn" type="button" data-mood="还不确定">我还不确定</button>
+            </div>
+            <div class="feedback" id="openingFeedback">写一句或点一个想法，就能进入下一步。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="primary-btn" type="button" data-next disabled>去判断生活里的 AI</button>
+            </div>
+          </div>
+
+          <div class="guide-panel">
+            <h3>家长只问</h3>
+            <div class="prompt-box"><strong>问题：</strong>“你觉得 AI 是什么？你先随便猜，没有标准答案。”</div>
+            <p>孩子说得越天马行空越好。你可以把他的原话写进左边，不用改成标准答案。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="sort" aria-labelledby="sort-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 2</div>
+            <h2 id="sort-title">AI 寻宝：这些是 AI 吗？</h2>
+            <p class="stage-lead">每张卡都要做一个选择。完成后网页会给参考解释，但重点是孩子要说出“为什么”。</p>
+          </div>
+          <span class="time-pill">7 分钟</span>
+        </div>
+
+        <div class="task-panel" id="sortTask">
+          <div class="prompt-box"><strong>判断线索：</strong>它有没有根据以前的数据来猜？它是在固定执行命令，还是在做判断？它会不会猜错？</div>
+          <div class="sort-grid" id="sortGrid"></div>
+          <div class="feedback" id="sortFeedback">请选择全部 8 张卡片。</div>
+          <div class="action-row">
+            <button class="secondary-btn" type="button" data-prev>上一步</button>
+            <button class="secondary-btn" type="button" id="showSortFeedback" disabled>查看参考解释</button>
+            <button class="primary-btn" type="button" data-next disabled>去抓 AI 犯错</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="quickdraw" aria-labelledby="quickdraw-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 3</div>
+            <h2 id="quickdraw-title">抓到 AI 犯错</h2>
+            <p class="stage-lead">你可以打开 Google Quick Draw 玩真实 AI，也可以用这个页面里的“课堂模拟器”先做一遍。猜错时，不要沮丧，那正是学习时刻。</p>
+          </div>
+          <span class="time-pill">8 分钟</span>
+        </div>
+
+        <div class="task-panel">
+          <div class="action-row" style="margin-top:0;">
+            <a class="secondary-btn" href="https://quickdraw.withgoogle.com/" target="_blank" rel="noreferrer">打开 Quick Draw</a>
+            <span class="badge">也可以直接用下面的模拟器</span>
+          </div>
+
+          <div class="draw-layout">
+            <div class="draw-card">
+              <div class="canvas-wrap">
+                <div class="prompt-box"><strong>画画任务：</strong><span id="drawPrompt">请画：鱼</span></div>
+                <canvas id="drawCanvas" width="900" height="520" aria-label="画图区域"></canvas>
+                <div class="action-row" style="margin-top:0;">
+                  <button class="secondary-btn" type="button" id="clearCanvas">擦掉重画</button>
+                  <button class="primary-btn" type="button" id="simulateGuess">让课堂模拟器猜</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="guess-box">
+              <div class="guess-display">
+                <span>课堂模拟器的猜测</span>
+                <strong id="guessText">还没开始猜</strong>
+                <span id="guessExplain">画完后点“让课堂模拟器猜”。这不是真 AI，只是帮孩子体验“猜对/猜错”的讨论。</span>
+              </div>
+              <div class="choice-grid">
+                <button class="choice-btn" type="button" id="markGuessRight" disabled>它猜对了</button>
+                <button class="choice-btn" type="button" id="markGuessWrong" disabled>它猜错了</button>
+              </div>
+              <div class="round-list" id="guessRounds"></div>
+            </div>
+          </div>
+
+          <div class="feedback" id="quickdrawFeedback">至少记录 2 次猜测结果，其中最好有 1 次猜错。</div>
+          <div class="action-row">
+            <button class="secondary-btn" type="button" data-prev>上一步</button>
+            <button class="primary-btn" type="button" data-next disabled>去当训练老师</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="reverse" aria-labelledby="reverse-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 4</div>
+            <h2 id="reverse-title">孩子做训练老师</h2>
+            <p class="stage-lead">现在让孩子教“家长 AI”分类。先选清楚例子，再处理一个模糊例子。</p>
+          </div>
+          <span class="time-pill">6 分钟</span>
+        </div>
+
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>先给家长 AI 三个例子</h3>
+            <p class="stage-lead" style="margin-top:8px;font-size:16px;">请选择哪些是“文具”。选完后，再判断模糊物品。</p>
+            <div class="reverse-grid" id="reverseGrid">
+              <button class="object-choice" type="button" data-object="铅笔"><strong>铅笔</strong><span>通常是文具。</span></button>
+              <button class="object-choice" type="button" data-object="橡皮"><strong>橡皮</strong><span>通常是文具。</span></button>
+              <button class="object-choice" type="button" data-object="玩具车"><strong>玩具车</strong><span>通常是玩具。</span></button>
+              <button class="object-choice" type="button" data-object="积木"><strong>积木</strong><span>通常是玩具。</span></button>
+            </div>
+            <div class="prompt-box" style="margin-top:14px;"><strong>模糊挑战：</strong>“乐高铅笔”算文具，还是玩具？</div>
+            <div class="choice-grid" id="trickyChoice">
+              <button class="choice-btn" type="button" data-tricky="文具">我判断它是文具</button>
+              <button class="choice-btn" type="button" data-tricky="玩具">我判断它是玩具</button>
+            </div>
+            <div class="feedback" id="reverseFeedback">至少选 2 个训练例子，再处理模糊挑战。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="primary-btn" type="button" data-next disabled>去总结今天学到什么</button>
+            </div>
+          </div>
+
+          <div class="guide-panel">
+            <h3>家长追问</h3>
+            <div class="say-box">“如果一个东西同时像两类怎么办？AI 会不会也遇到这种难题？”</div>
+            <p>这一关的结论是：例子、规则和边界都会影响判断。AI 不是永远确定的。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="reflection" aria-labelledby="reflection-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 5</div>
+            <h2 id="reflection-title">三句话总结</h2>
+            <p class="stage-lead">孩子口头说，家长可以帮他打字。三句话写完，网页会生成最后的 AI 侦探报告。</p>
+          </div>
+          <span class="time-pill">4 分钟</span>
+        </div>
+
+        <div class="task-panel">
+          <div class="reflection-grid">
+            <div class="answer-card">
+              <label for="r1">1. 今天 AI 做了什么？</label>
+              <textarea id="r1" placeholder="例如：AI 猜我画的东西，也帮我们判断生活里的工具。"></textarea>
+            </div>
+            <div class="answer-card">
+              <label for="r2">2. AI 靠什么来猜？</label>
+              <textarea id="r2" placeholder="例如：AI 靠很多例子和数据来猜。"></textarea>
+            </div>
+            <div class="answer-card">
+              <label for="r3">3. AI 什么时候可能会错？</label>
+              <textarea id="r3" placeholder="例如：例子太少、画得太特别、情况太模糊时会错。"></textarea>
+            </div>
+          </div>
+          <div class="feedback" id="reflectionFeedback">写完 3 个回答，就可以生成报告。</div>
+          <div class="action-row">
+            <button class="secondary-btn" type="button" data-prev>上一步</button>
+            <button class="primary-btn" type="button" data-next disabled>生成 AI 侦探报告</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="mission" aria-labelledby="mission-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">任务 6</div>
+            <h2 id="mission-title">课后 AI 侦探任务</h2>
+            <p class="stage-lead">把学习带到生活里。请孩子写下这周要观察的 3 个 AI 候选。</p>
+          </div>
+          <span class="time-pill">2 分钟</span>
+        </div>
+
+        <div class="task-grid">
+          <div class="task-panel">
+            <h3>本周找 3 个 AI 候选</h3>
+            <div class="check-grid">
+              <label class="check-item"><span>1</span><input class="text-input mission-input" placeholder="例如：视频推荐" /></label>
+              <label class="check-item"><span>2</span><input class="text-input mission-input" placeholder="例如：地图导航" /></label>
+              <label class="check-item"><span>3</span><input class="text-input mission-input" placeholder="例如：语音助手" /></label>
+            </div>
+            <div class="feedback" id="missionFeedback">写下至少 1 个候选，就能完成今天的学习。</div>
+            <div class="action-row">
+              <button class="secondary-btn" type="button" data-prev>上一步</button>
+              <button class="primary-btn" type="button" data-next disabled>完成今天的课</button>
+            </div>
+          </div>
+
+          <div class="guide-panel">
+            <h3>收尾仪式</h3>
+            <div class="say-box">“这周你就是 AI 侦探。看到一个聪明工具，就问：它是不是在根据数据猜答案？”</div>
+            <p>下一次课可以从这 3 个候选开始，进入 Day of AI 的 “What is Artificial Intelligence?”。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="stage" data-step="summary" aria-labelledby="summary-title">
+        <div class="stage-head">
+          <div>
+            <div class="eyebrow">完成</div>
+            <h2 id="summary-title">AI 侦探报告</h2>
+            <p class="stage-lead">这页可以打印或截图保存。它记录了孩子第一次 AI 学习的核心发现。</p>
+          </div>
+          <span class="time-pill">已完成</span>
+        </div>
+
+        <div class="certificate">
+          <span class="badge">Day of AI 第一次亲子课</span>
+          <h3>今天我发现：AI 会猜，也会错。</h3>
+          <p id="summaryOpening">我的初始想法：还没有记录。</p>
+          <ol class="report-list" id="summaryList"></ol>
+          <div class="say-box">核心句：AI 是根据很多例子来猜答案的，它会猜错，所以人要检查。</div>
+          <div class="action-row">
+            <button class="primary-btn" type="button" onclick="window.print()">打印这张报告</button>
+            <button class="secondary-btn" type="button" data-go-step="welcome">回到开始页</button>
+            <button class="secondary-btn" type="button" id="resetAllEnd">重新开始</button>
+          </div>
+        </div>
+
+        <div class="guide-panel sources">
+          <h3>参考来源</h3>
+          <ul>
+            <li>Day of AI：<a href="https://dayofai.org/" target="_blank" rel="noreferrer">https://dayofai.org/</a></li>
+            <li>Day of AI 15 分钟 AI 素养活动：<a href="https://dayofai.org/units/ai-literacy-in-15-minutes-or-less" target="_blank" rel="noreferrer">AI Literacy in 15 Minutes or Less</a></li>
+            <li>Day of AI “What is Artificial Intelligence?”：<a href="https://dayofai.org/units/what-is-artificial-intelligence" target="_blank" rel="noreferrer">What is Artificial Intelligence?</a></li>
+            <li>Google Quick Draw：<a href="https://quickdraw.withgoogle.com/" target="_blank" rel="noreferrer">https://quickdraw.withgoogle.com/</a></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const STORAGE_KEY = "day-of-ai-first-lesson-v2";
+    const steps = [
+      { id: "welcome", title: "准备", time: "2 分钟" },
+      { id: "opening", title: "先猜 AI", time: "3 分钟" },
+      { id: "sort", title: "AI 寻宝", time: "7 分钟" },
+      { id: "quickdraw", title: "抓到犯错", time: "8 分钟" },
+      { id: "reverse", title: "训练老师", time: "6 分钟" },
+      { id: "reflection", title: "三句话", time: "4 分钟" },
+      { id: "mission", title: "课后任务", time: "2 分钟" },
+      { id: "summary", title: "报告", time: "完成" }
+    ];
+
+    const sortItems = [
+      { id: "voice", icon: "声", title: "语音助手", answer: "ai", note: "通常是 AI。它要识别声音和语言，再猜你的意图。" },
+      { id: "video", icon: "荐", title: "视频推荐", answer: "ai", note: "通常是 AI。它根据你看过、点过、停留过的内容来猜。" },
+      { id: "calculator", icon: "算", title: "计算器", answer: "not", note: "一般不是 AI。它按固定规则计算，不需要从很多例子中学习。" },
+      { id: "switch", icon: "灯", title: "电灯开关", answer: "not", note: "不是 AI。你按下去，它打开或关闭，没有自己判断。" },
+      { id: "map", icon: "路", title: "地图导航", answer: "ai", note: "常常包含 AI。它根据路线、速度、拥堵等信息来预测。" },
+      { id: "face", icon: "脸", title: "相机人脸识别", answer: "ai", note: "通常是 AI。它要从图片中识别脸部特征。" },
+      { id: "washer", icon: "定", title: "洗衣机定时", answer: "not", note: "普通定时一般不是 AI。高级自动识别衣物的洗衣机可能包含 AI。" },
+      { id: "quickdraw", icon: "画", title: "Quick Draw", answer: "ai", note: "是 AI。它根据以前看过的大量涂鸦来猜你画的是什么。" }
+    ];
+
+    const drawingPrompts = ["鱼", "房子", "树", "太阳", "杯子", "自行车"];
+    const guesses = ["鱼", "房子", "树", "太阳", "杯子", "自行车", "云", "船", "帽子", "眼镜"];
+
+    const state = loadState();
+    let currentStep = initialStep();
+    let remainingSeconds = state.remainingSeconds || 30 * 60;
+    let timerId = null;
+    let drawing = false;
+    let lastGuess = "";
+    let currentPromptIndex = state.currentPromptIndex || 0;
+
+    const stepList = document.getElementById("stepList");
+    const mobileStepSelect = document.getElementById("mobileStepSelect");
+    const progressText = document.getElementById("progressText");
+    const progressFill = document.getElementById("progressFill");
+    const timerDisplay = document.getElementById("timerDisplay");
+    const toast = document.getElementById("toast");
+
+    function defaultState() {
+      return {
+        currentStep: "welcome",
+        completed: {},
+        prep: {},
+        kidGuess: "",
+        openingMood: "",
+        sortChoices: {},
+        sortFeedbackShown: false,
+        guessRounds: [],
+        reverseExamples: [],
+        trickyChoice: "",
+        reflection: { r1: "", r2: "", r3: "" },
+        mission: ["", "", ""],
+        currentPromptIndex: 0,
+        remainingSeconds: 30 * 60
+      };
+    }
+
+    function loadState() {
+      try {
+        return { ...defaultState(), ...JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") };
+      } catch (error) {
+        return defaultState();
+      }
+    }
+
+    function initialStep() {
+      const requested = new URLSearchParams(window.location.search).get("step") || window.location.hash.replace("#", "");
+      if (steps.some((step) => step.id === requested)) return requested;
+      return state.currentStep && state.currentStep !== "welcome" ? state.currentStep : "opening";
+    }
+
+    function saveState() {
+      state.currentStep = currentStep;
+      state.remainingSeconds = remainingSeconds;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 1800);
+    }
+
+    function renderNavigation() {
+      stepList.innerHTML = "";
+      mobileStepSelect.innerHTML = "";
+      steps.forEach((step, index) => {
+        const isSummary = step.id === "summary";
+        const isDone = isSummary ? allLessonTasksDone() : Boolean(state.completed[step.id]);
+        const button = document.createElement("button");
+        button.className = `step-tab ${currentStep === step.id ? "active" : ""} ${isDone ? "done" : ""}`;
+        button.type = "button";
+        button.dataset.goStep = step.id;
+        button.innerHTML = `
+          <span class="step-num">${isDone ? "✓" : index}</span>
+          <span><span class="step-title">${step.title}</span><span class="step-time">${step.time}</span></span>
+          <span class="step-status">${currentStep === step.id ? "现在" : isDone ? "完成" : ""}</span>
+        `;
+        stepList.appendChild(button);
+
+        const option = document.createElement("option");
+        option.value = step.id;
+        option.textContent = `${index}. ${step.title}`;
+        option.selected = currentStep === step.id;
+        mobileStepSelect.appendChild(option);
+      });
+    }
+
+    function renderProgress() {
+      const count = steps.slice(0, 7).filter((step) => state.completed[step.id]).length;
+      progressText.textContent = `${count}/7`;
+      progressFill.style.width = `${Math.round((count / 7) * 100)}%`;
+    }
+
+    function renderStages() {
+      document.querySelectorAll(".stage").forEach((stage) => {
+        stage.classList.toggle("active", stage.dataset.step === currentStep);
+      });
+      renderNavigation();
+      renderProgress();
+      mobileStepSelect.value = currentStep;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      saveState();
+    }
+
+    function welcomePrepared() {
+      return ["paper", "objects", "privacy"].every((key) => state.prep[key]);
+    }
+
+    function moveToOpeningIfWelcomeIsDone() {
+      if (currentStep === "welcome" && (state.completed.welcome || welcomePrepared())) {
+        currentStep = "opening";
+      }
+    }
+
+    function goStep(id) {
+      currentStep = id;
+      if (id === "summary") renderSummary();
+      renderStages();
+    }
+
+    function nextStep() {
+      const index = steps.findIndex((step) => step.id === currentStep);
+      if (currentStep === "welcome") {
+        state.completed.welcome = true;
+        saveState();
+      }
+      goStep(steps[Math.min(index + 1, steps.length - 1)].id);
+    }
+
+    function prevStep() {
+      const index = steps.findIndex((step) => step.id === currentStep);
+      goStep(steps[Math.max(index - 1, 0)].id);
+    }
+
+    function markComplete(id, done) {
+      state.completed[id] = done;
+      saveState();
+      renderProgress();
+      renderNavigation();
+    }
+
+    function allLessonTasksDone() {
+      return steps.slice(0, 7).every((step) => state.completed[step.id]);
+    }
+
+    function setNextEnabled(stepId, enabled) {
+      const stage = document.querySelector(`[data-step="${stepId}"]`);
+      const button = stage && stage.querySelector("[data-next]");
+      if (button) button.disabled = !enabled;
+    }
+
+    function initGlobalControls() {
+      document.addEventListener("click", (event) => {
+        const go = event.target.closest("[data-go-step]");
+        if (go) goStep(go.dataset.goStep);
+        if (event.target.closest("[data-next]")) nextStep();
+        if (event.target.closest("[data-prev]")) prevStep();
+      });
+
+      mobileStepSelect.addEventListener("change", (event) => goStep(event.target.value));
+      document.getElementById("mobileTimerButton").addEventListener("click", () => {
+        const timer = document.getElementById("timerCard");
+        timer.scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+
+      document.getElementById("resetAll").addEventListener("click", resetAll);
+      document.getElementById("resetAllEnd").addEventListener("click", resetAll);
+    }
+
+    function resetAll() {
+      localStorage.removeItem(STORAGE_KEY);
+      Object.assign(state, defaultState());
+      currentStep = "welcome";
+      currentPromptIndex = 0;
+      lastGuess = "";
+      remainingSeconds = 30 * 60;
+      renderTimer();
+      hydrateFields();
+      clearCanvas();
+      renderAllChecks();
+      renderSortCards();
+      renderGuessRounds();
+      renderStages();
+      showToast("已经重置，可以重新开始。");
+    }
+
+    function initTimer() {
+      document.getElementById("startTimer").addEventListener("click", () => {
+        if (timerId) return;
+        timerId = window.setInterval(() => {
+          remainingSeconds = Math.max(0, remainingSeconds - 1);
+          renderTimer();
+          saveState();
+          if (remainingSeconds === 0) {
+            window.clearInterval(timerId);
+            timerId = null;
+            showToast("30 分钟到了，可以收尾啦。");
+          }
+        }, 1000);
+      });
+      document.getElementById("pauseTimer").addEventListener("click", () => {
+        window.clearInterval(timerId);
+        timerId = null;
+      });
+      document.getElementById("resetTimer").addEventListener("click", () => {
+        window.clearInterval(timerId);
+        timerId = null;
+        remainingSeconds = 30 * 60;
+        renderTimer();
+        saveState();
+      });
+      renderTimer();
+    }
+
+    function renderTimer() {
+      const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, "0");
+      const seconds = (remainingSeconds % 60).toString().padStart(2, "0");
+      timerDisplay.textContent = `${minutes}:${seconds}`;
+    }
+
+    function initWelcome() {
+      document.querySelectorAll("[data-prep]").forEach((input) => {
+        input.checked = Boolean(state.prep[input.dataset.prep]);
+        input.addEventListener("change", () => {
+          state.prep[input.dataset.prep] = input.checked;
+          renderWelcome();
+          saveState();
+        });
+      });
+      renderWelcome();
+    }
+
+    function renderWelcome() {
+      document.querySelectorAll("[data-prep]").forEach((input) => {
+        input.checked = Boolean(state.prep[input.dataset.prep]);
+      });
+      const prepared = welcomePrepared();
+      const done = prepared || Boolean(state.completed.welcome);
+      document.getElementById("prepFeedback").textContent = prepared
+        ? "任务 0 已完成。现在可以进入任务 1。"
+        : "可以先勾选准备项，也可以直接开始第 1 个任务。";
+      document.getElementById("prepFeedback").className = `feedback ${done ? "good" : ""}`;
+      setNextEnabled("welcome", true);
+      if (prepared || state.completed.welcome) {
+        markComplete("welcome", true);
+      } else {
+        markComplete("welcome", false);
+      }
+    }
+
+    function initOpening() {
+      const input = document.getElementById("kidGuess");
+      input.value = state.kidGuess;
+      input.addEventListener("input", () => {
+        state.kidGuess = input.value.trim();
+        renderOpening();
+        saveState();
+      });
+
+      document.querySelectorAll("#openingMood .choice-btn").forEach((button) => {
+        button.classList.toggle("selected", button.dataset.mood === state.openingMood);
+        button.addEventListener("click", () => {
+          state.openingMood = button.dataset.mood;
+          if (!state.kidGuess) {
+            state.kidGuess = button.dataset.mood;
+            input.value = state.kidGuess;
+          }
+          renderOpening();
+          saveState();
+        });
+      });
+      renderOpening();
+    }
+
+    function renderOpening() {
+      document.querySelectorAll("#openingMood .choice-btn").forEach((button) => {
+        button.classList.toggle("selected", button.dataset.mood === state.openingMood);
+      });
+      const done = Boolean(state.kidGuess || state.openingMood);
+      document.getElementById("openingFeedback").textContent = done ? "已经记录孩子的初始想法。之后可以回来对比。" : "写一句或点一个想法，就能进入下一步。";
+      document.getElementById("openingFeedback").className = `feedback ${done ? "good" : ""}`;
+      setNextEnabled("opening", done);
+      markComplete("opening", done);
+    }
+
+    function renderSortCards() {
+      const grid = document.getElementById("sortGrid");
+      grid.innerHTML = "";
+      sortItems.forEach((item) => {
+        const card = document.createElement("article");
+        card.className = "sort-card";
+        card.dataset.choice = state.sortChoices[item.id] || "";
+        card.innerHTML = `
+          <div class="card-icon">${item.icon}</div>
+          <h3>${item.title}</h3>
+          <div class="sort-actions">
+            <button type="button" data-choice="ai">是 AI</button>
+            <button type="button" data-choice="not">不是</button>
+            <button type="button" data-choice="maybe">不确定</button>
+          </div>
+          <p class="answer-note">${item.note}</p>
+        `;
+        card.querySelectorAll("button").forEach((button) => {
+          button.classList.toggle("active", state.sortChoices[item.id] === button.dataset.choice);
+          button.addEventListener("click", () => {
+            state.sortChoices[item.id] = button.dataset.choice;
+            saveState();
+            renderSortCards();
+            renderSortStatus();
+          });
+        });
+        grid.appendChild(card);
+      });
+      document.getElementById("sortTask").classList.toggle("show-feedback", state.sortFeedbackShown);
+      renderSortStatus();
+    }
+
+    function renderSortStatus() {
+      const answered = Object.keys(state.sortChoices).filter((key) => state.sortChoices[key]).length;
+      const done = answered === sortItems.length;
+      const correct = sortItems.filter((item) => state.sortChoices[item.id] === item.answer).length;
+      const feedback = document.getElementById("sortFeedback");
+      document.getElementById("showSortFeedback").disabled = !done;
+      setNextEnabled("sort", done);
+      markComplete("sort", done);
+      if (!done) {
+        feedback.textContent = `已选择 ${answered}/8。每张卡都要判断一次。`;
+        feedback.className = "feedback";
+      } else {
+        feedback.textContent = `完成 8 张卡。和参考答案相同 ${correct}/8，但更重要的是说出理由。`;
+        feedback.className = "feedback good";
+      }
+    }
+
+    function initSort() {
+      document.getElementById("showSortFeedback").addEventListener("click", () => {
+        state.sortFeedbackShown = !state.sortFeedbackShown;
+        document.getElementById("sortTask").classList.toggle("show-feedback", state.sortFeedbackShown);
+        saveState();
+      });
+      renderSortCards();
+    }
+
+    function initCanvas() {
+      const canvas = document.getElementById("drawCanvas");
+      const context = canvas.getContext("2d");
+      context.lineWidth = 8;
+      context.lineCap = "round";
+      context.strokeStyle = "#172033";
+
+      function getPoint(event) {
+        const rect = canvas.getBoundingClientRect();
+        const pointer = event.touches ? event.touches[0] : event;
+        return {
+          x: (pointer.clientX - rect.left) * (canvas.width / rect.width),
+          y: (pointer.clientY - rect.top) * (canvas.height / rect.height)
+        };
+      }
+
+      function start(event) {
+        drawing = true;
+        const point = getPoint(event);
+        context.beginPath();
+        context.moveTo(point.x, point.y);
+        event.preventDefault();
+      }
+
+      function move(event) {
+        if (!drawing) return;
+        const point = getPoint(event);
+        context.lineTo(point.x, point.y);
+        context.stroke();
+        event.preventDefault();
+      }
+
+      function stop() {
+        drawing = false;
+      }
+
+      canvas.addEventListener("mousedown", start);
+      canvas.addEventListener("mousemove", move);
+      window.addEventListener("mouseup", stop);
+      canvas.addEventListener("touchstart", start, { passive: false });
+      canvas.addEventListener("touchmove", move, { passive: false });
+      window.addEventListener("touchend", stop);
+
+      document.getElementById("clearCanvas").addEventListener("click", clearCanvas);
+      document.getElementById("simulateGuess").addEventListener("click", simulateGuess);
+      document.getElementById("markGuessRight").addEventListener("click", () => markGuess(true));
+      document.getElementById("markGuessWrong").addEventListener("click", () => markGuess(false));
+
+      renderPrompt();
+      renderGuessRounds();
+      renderQuickdrawStatus();
+    }
+
+    function clearCanvas() {
+      const canvas = document.getElementById("drawCanvas");
+      const context = canvas.getContext("2d");
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function renderPrompt() {
+      document.getElementById("drawPrompt").textContent = `请画：${drawingPrompts[currentPromptIndex % drawingPrompts.length]}`;
+    }
+
+    function simulateGuess() {
+      const prompt = drawingPrompts[currentPromptIndex % drawingPrompts.length];
+      const shouldBeRight = state.guessRounds.length === 0 || Math.random() > 0.45;
+      if (shouldBeRight) {
+        lastGuess = prompt;
+      } else {
+        const options = guesses.filter((guess) => guess !== prompt);
+        lastGuess = options[Math.floor(Math.random() * options.length)];
+      }
+      document.getElementById("guessText").textContent = `我猜是：${lastGuess}`;
+      document.getElementById("guessExplain").textContent = "现在请孩子判断：它猜对了吗？如果猜错了，为什么会错？";
+      document.getElementById("markGuessRight").disabled = false;
+      document.getElementById("markGuessWrong").disabled = false;
+    }
+
+    function markGuess(isRight) {
+      if (!lastGuess) return;
+      const prompt = drawingPrompts[currentPromptIndex % drawingPrompts.length];
+      state.guessRounds.push({ prompt, guess: lastGuess, right: isRight });
+      currentPromptIndex += 1;
+      state.currentPromptIndex = currentPromptIndex;
+      lastGuess = "";
+      document.getElementById("guessText").textContent = "还没开始猜";
+      document.getElementById("guessExplain").textContent = "画完后点“让课堂模拟器猜”。这不是真 AI，只是帮孩子体验“猜对/猜错”的讨论。";
+      document.getElementById("markGuessRight").disabled = true;
+      document.getElementById("markGuessWrong").disabled = true;
+      clearCanvas();
+      renderPrompt();
+      renderGuessRounds();
+      renderQuickdrawStatus();
+      saveState();
+    }
+
+    function renderGuessRounds() {
+      const list = document.getElementById("guessRounds");
+      list.innerHTML = "";
+      state.guessRounds.slice(-4).forEach((round, index) => {
+        const item = document.createElement("div");
+        item.className = "round-item";
+        item.innerHTML = `<strong>第 ${index + 1} 次</strong><span>画“${round.prompt}”，猜成“${round.guess}”。</span><span>${round.right ? "猜对" : "猜错"}</span>`;
+        list.appendChild(item);
+      });
+    }
+
+    function renderQuickdrawStatus() {
+      const count = state.guessRounds.length;
+      const hasWrong = state.guessRounds.some((round) => !round.right);
+      const done = count >= 2;
+      const feedback = document.getElementById("quickdrawFeedback");
+      if (done) {
+        feedback.textContent = hasWrong ? "很好，你已经抓到 AI 猜错的时刻。" : "已经记录 2 次。可以继续问：如果它一直猜对，是不是因为例子很常见？";
+        feedback.className = "feedback good";
+      } else {
+        feedback.textContent = `已记录 ${count}/2。至少记录 2 次猜测结果。`;
+        feedback.className = "feedback";
+      }
+      setNextEnabled("quickdraw", done);
+      markComplete("quickdraw", done);
+    }
+
+    function initReverse() {
+      document.querySelectorAll("#reverseGrid .object-choice").forEach((button) => {
+        button.classList.toggle("selected", state.reverseExamples.includes(button.dataset.object));
+        button.addEventListener("click", () => {
+          const object = button.dataset.object;
+          if (state.reverseExamples.includes(object)) {
+            state.reverseExamples = state.reverseExamples.filter((item) => item !== object);
+          } else {
+            state.reverseExamples.push(object);
+          }
+          renderReverse();
+          saveState();
+        });
+      });
+
+      document.querySelectorAll("#trickyChoice .choice-btn").forEach((button) => {
+        button.classList.toggle("selected", state.trickyChoice === button.dataset.tricky);
+        button.addEventListener("click", () => {
+          state.trickyChoice = button.dataset.tricky;
+          renderReverse();
+          saveState();
+        });
+      });
+      renderReverse();
+    }
+
+    function renderReverse() {
+      document.querySelectorAll("#reverseGrid .object-choice").forEach((button) => {
+        button.classList.toggle("selected", state.reverseExamples.includes(button.dataset.object));
+      });
+      document.querySelectorAll("#trickyChoice .choice-btn").forEach((button) => {
+        button.classList.toggle("selected", state.trickyChoice === button.dataset.tricky);
+      });
+      const done = state.reverseExamples.length >= 2 && Boolean(state.trickyChoice);
+      const feedback = document.getElementById("reverseFeedback");
+      feedback.textContent = done ? `完成。你用 ${state.reverseExamples.length} 个例子训练，再把模糊物品判断为“${state.trickyChoice}”。` : "至少选 2 个训练例子，再处理模糊挑战。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      setNextEnabled("reverse", done);
+      markComplete("reverse", done);
+    }
+
+    function initReflection() {
+      ["r1", "r2", "r3"].forEach((id) => {
+        const input = document.getElementById(id);
+        input.value = state.reflection[id] || "";
+        input.addEventListener("input", () => {
+          state.reflection[id] = input.value.trim();
+          renderReflection();
+          saveState();
+        });
+      });
+      renderReflection();
+    }
+
+    function renderReflection() {
+      const done = ["r1", "r2", "r3"].every((id) => state.reflection[id]);
+      const feedback = document.getElementById("reflectionFeedback");
+      feedback.textContent = done ? "三句话都写好了。下一步会生成报告。" : "写完 3 个回答，就可以生成报告。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      setNextEnabled("reflection", done);
+      markComplete("reflection", done);
+    }
+
+    function initMission() {
+      document.querySelectorAll(".mission-input").forEach((input, index) => {
+        input.value = state.mission[index] || "";
+        input.addEventListener("input", () => {
+          state.mission[index] = input.value.trim();
+          renderMission();
+          saveState();
+        });
+      });
+      renderMission();
+    }
+
+    function renderMission() {
+      const count = state.mission.filter(Boolean).length;
+      const done = count >= 1;
+      const feedback = document.getElementById("missionFeedback");
+      feedback.textContent = done ? `已经记录 ${count} 个候选。今天的任务完成。` : "写下至少 1 个候选，就能完成今天的学习。";
+      feedback.className = `feedback ${done ? "good" : ""}`;
+      setNextEnabled("mission", done);
+      markComplete("mission", done);
+    }
+
+    function renderSummary() {
+      document.getElementById("summaryOpening").textContent = `我的初始想法：${state.kidGuess || state.openingMood || "还没有记录。"}`;
+      const list = document.getElementById("summaryList");
+      const sorted = Object.keys(state.sortChoices).length;
+      const wrongCount = state.guessRounds.filter((round) => !round.right).length;
+      const missions = state.mission.filter(Boolean).join("、") || "下次再找";
+      list.innerHTML = `
+        <li>我判断了 ${sorted}/8 个生活工具是不是 AI。</li>
+        <li>我记录了 ${state.guessRounds.length} 次猜测，其中 ${wrongCount} 次发现“猜错”。</li>
+        <li>我当过训练老师，用例子帮助“家长 AI”分类。</li>
+        <li>我的三句话：${state.reflection.r1 || "未填写"}；${state.reflection.r2 || "未填写"}；${state.reflection.r3 || "未填写"}。</li>
+        <li>我的课后 AI 候选：${missions}。</li>
+      `;
+    }
+
+    function hydrateFields() {
+      document.getElementById("kidGuess").value = state.kidGuess || "";
+      ["r1", "r2", "r3"].forEach((id) => {
+        document.getElementById(id).value = state.reflection[id] || "";
+      });
+      document.querySelectorAll(".mission-input").forEach((input, index) => {
+        input.value = state.mission[index] || "";
+      });
+    }
+
+    function renderAllChecks() {
+      renderWelcome();
+      renderOpening();
+      renderSortStatus();
+      renderQuickdrawStatus();
+      renderReverse();
+      renderReflection();
+      renderMission();
+    }
+
+    initGlobalControls();
+    initTimer();
+    initWelcome();
+    initOpening();
+    initSort();
+    initCanvas();
+    initReverse();
+    initReflection();
+    initMission();
+    hydrateFields();
+    moveToOpeningIfWelcomeIsDone();
+    renderStages();
+  </script>
+</body>
+</html>

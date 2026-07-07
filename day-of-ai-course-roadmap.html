@@ -1,0 +1,1150 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aiden 的 AI 冒险地图：第 3–12 课总览</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #5d6878;
+      --paper: #fbfbf7;
+      --panel: #ffffff;
+      --line: #d9dfdc;
+      --teal: #0b8f8b;
+      --teal-soft: #ddf4f1;
+      --coral: #de6251;
+      --coral-soft: #ffe2dc;
+      --gold: #f1c64b;
+      --gold-soft: #fff1bd;
+      --green: #448f4b;
+      --green-soft: #e2f2df;
+      --blue: #436fc2;
+      --blue-soft: #e2ebff;
+      --violet: #725fb4;
+      --violet-soft: #ece7ff;
+      --shadow: 0 18px 44px rgba(23, 32, 51, 0.12);
+      --shadow-sm: 0 8px 20px rgba(23, 32, 51, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background:
+        radial-gradient(circle at 8% 6%, rgba(241, 198, 75, 0.22), transparent 22%),
+        radial-gradient(circle at 92% 10%, rgba(11, 143, 139, 0.16), transparent 24%),
+        radial-gradient(circle at 12% 88%, rgba(114, 95, 180, 0.12), transparent 26%),
+        linear-gradient(180deg, #f7faf5 0%, #fbfbf7 48%, #f4f7fb 100%);
+    }
+    h1, h2, h3, h4, p { margin: 0; }
+    button { font: inherit; border: 0; cursor: pointer; background: none; }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 34px 22px 90px;
+    }
+
+    /* ---------- hero ---------- */
+    .hero {
+      position: relative;
+      padding: 34px 34px 30px;
+      border-radius: 26px;
+      background: var(--ink);
+      color: #fff;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      animation: rise 0.7s ease both;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 85% 20%, rgba(241, 198, 75, 0.35), transparent 34%),
+        radial-gradient(circle at 70% 90%, rgba(11, 143, 139, 0.45), transparent 40%);
+      pointer-events: none;
+    }
+    .hero .eyebrow {
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+    .hero h1 {
+      margin-top: 10px;
+      font-size: clamp(30px, 5vw, 44px);
+      line-height: 1.15;
+      font-weight: 900;
+    }
+    .hero p.sub {
+      margin-top: 12px;
+      max-width: 560px;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 15px;
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
+    }
+    .hero .done-badges {
+      position: relative;
+      z-index: 1;
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .done-badges span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 13px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .done-badges span.won { background: rgba(68, 143, 75, 0.55); }
+
+    /* progress */
+    .progress-panel {
+      position: relative;
+      z-index: 1;
+      margin-top: 24px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    #progressCount { color: var(--gold); font-size: 20px; }
+    .bar {
+      margin-top: 10px;
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      overflow: hidden;
+    }
+    .bar i {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--teal), var(--gold));
+      transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .progress-hint {
+      margin-top: 9px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.66);
+    }
+
+    /* ---------- section headers ---------- */
+    .section { margin-top: 46px; }
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 6px;
+    }
+    .section-head .mark {
+      flex: none;
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      font-size: 23px;
+      color: #fff;
+      box-shadow: var(--shadow-sm);
+    }
+    .section-head h2 { font-size: 24px; font-weight: 900; }
+    .section-head p { margin-top: 3px; color: var(--muted); font-size: 13.5px; }
+
+    /* ---------- roadmap ---------- */
+    .module {
+      position: relative;
+      margin-top: 26px;
+      padding: 22px 22px 14px;
+      border-radius: 22px;
+      border: 2px solid var(--mod-line, var(--line));
+      background: var(--mod-bg, var(--panel));
+      box-shadow: var(--shadow-sm);
+    }
+    .module.mod-a { --mod-line: rgba(11,143,139,.4); --mod-bg: linear-gradient(180deg, #ffffff, var(--teal-soft)); --mod-color: var(--teal); }
+    .module.mod-b { --mod-line: rgba(222,98,81,.4);  --mod-bg: linear-gradient(180deg, #ffffff, var(--coral-soft)); --mod-color: var(--coral); }
+    .module.mod-c { --mod-line: rgba(114,95,180,.4); --mod-bg: linear-gradient(180deg, #ffffff, var(--violet-soft)); --mod-color: var(--violet); }
+
+    .module-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .module-head .tag {
+      padding: 5px 13px;
+      border-radius: 999px;
+      background: var(--mod-color);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+    .module-head h3 { font-size: 20px; font-weight: 900; }
+    .module-head .star {
+      color: var(--coral);
+      font-size: 13px;
+      font-weight: 900;
+      background: var(--gold-soft);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .module > p.module-note {
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.65;
+      margin-bottom: 14px;
+    }
+
+    /* lesson stop */
+    .stops { position: relative; }
+    .stops::before {
+      content: "";
+      position: absolute;
+      left: 27px;
+      top: 14px;
+      bottom: 26px;
+      width: 4px;
+      border-radius: 4px;
+      background: repeating-linear-gradient(
+        180deg,
+        var(--mod-color) 0 10px,
+        transparent 10px 20px
+      );
+      opacity: 0.45;
+    }
+    .stop {
+      position: relative;
+      margin-bottom: 14px;
+      padding-left: 66px;
+    }
+    .stop-num {
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 56px;
+      height: 56px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #fff;
+      border: 3px solid var(--mod-color);
+      color: var(--mod-color);
+      font-size: 21px;
+      font-weight: 900;
+      box-shadow: var(--shadow-sm);
+      z-index: 1;
+      transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+    }
+    .stop.checked .stop-num {
+      background: var(--mod-color);
+      color: #fff;
+      transform: scale(1.06) rotate(-6deg);
+    }
+    .stop.checked .stop-num::after {
+      content: "✓";
+      position: absolute;
+      right: -4px;
+      bottom: -4px;
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--green);
+      color: #fff;
+      font-size: 13px;
+      border: 2px solid #fff;
+    }
+
+    .card {
+      border-radius: 18px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+    .card-top {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px 18px;
+      text-align: left;
+    }
+    .card-top .emoji { font-size: 26px; flex: none; }
+    .card-top .titles { flex: 1; min-width: 0; }
+    .card-top h4 { font-size: 17px; font-weight: 900; }
+    .card-top .concept {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .card-top .chev {
+      flex: none;
+      color: var(--muted);
+      font-size: 18px;
+      transition: transform 0.3s ease;
+    }
+    .stop.open .card-top .chev { transform: rotate(180deg); }
+
+    .card-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .stop.open .card-body { grid-template-rows: 1fr; }
+    .card-body > div { overflow: hidden; }
+    .card-body-inner {
+      padding: 2px 18px 16px;
+      display: grid;
+      gap: 10px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 84px 1fr;
+      gap: 10px;
+      align-items: start;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+    .row b {
+      display: inline-block;
+      padding: 3px 0;
+      text-align: center;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 900;
+    }
+    .row.do b   { background: var(--blue-soft); color: var(--blue); }
+    .row.make b { background: var(--green-soft); color: var(--green); }
+    .row.tip b  { background: var(--gold-soft); color: #8a6d1c; }
+
+    .check-line {
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: var(--paper);
+      border: 1px dashed var(--line);
+    }
+    .check-line span { font-size: 13px; color: var(--muted); font-weight: 700; }
+    .check-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: #fff;
+      border: 2px solid var(--mod-color, var(--teal));
+      color: var(--mod-color, var(--teal));
+      font-size: 14px;
+      font-weight: 900;
+      transition: all 0.2s ease;
+    }
+    .check-btn:hover { transform: scale(1.04); }
+    .stop.checked .check-btn {
+      background: var(--mod-color);
+      color: #fff;
+    }
+
+    .lesson-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 16px;
+      border-radius: 12px;
+      background: var(--mod-color, var(--teal));
+      color: #fff;
+      font-size: 15px;
+      font-weight: 900;
+      text-decoration: none;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .lesson-link:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+    .lesson-link.pending {
+      background: var(--paper);
+      color: var(--muted);
+      border: 2px dashed var(--line);
+      box-shadow: none;
+      cursor: default;
+      font-size: 13.5px;
+      font-weight: 800;
+    }
+    .lesson-link.pending:hover { transform: none; box-shadow: none; }
+
+    .tool-links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    .tool-links .t-label {
+      font-size: 12.5px;
+      font-weight: 900;
+      color: var(--muted);
+    }
+    .tool-links a {
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 800;
+      background: #fff;
+      border: 1.5px solid var(--line);
+      color: var(--blue);
+      text-decoration: none;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .tool-links a:hover { border-color: var(--blue); transform: translateY(-1px); }
+
+    .done-badges a.won {
+      text-decoration: none;
+      color: #fff;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .done-badges a.won:hover {
+      transform: translateY(-2px);
+      background: rgba(68, 143, 75, 0.8);
+    }
+
+    /* star pop */
+    .star-pop {
+      position: fixed;
+      font-size: 30px;
+      pointer-events: none;
+      z-index: 99;
+      animation: pop 0.9s ease-out forwards;
+    }
+    @keyframes pop {
+      0%   { transform: translate(0, 0) scale(0.4) rotate(0deg); opacity: 1; }
+      100% { transform: translate(var(--dx), -110px) scale(1.4) rotate(var(--rot)); opacity: 0; }
+    }
+
+    /* ---------- github steps ---------- */
+    .warn {
+      margin: 14px 0 20px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: var(--gold-soft);
+      border: 2px solid rgba(241, 198, 75, 0.7);
+      font-size: 14px;
+      line-height: 1.75;
+    }
+    .warn b { color: #8a6d1c; }
+
+    .gh-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+      gap: 14px;
+    }
+    .gh-step {
+      position: relative;
+      padding: 20px 18px 16px;
+      border-radius: 18px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .gh-step:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .gh-step .step-n {
+      position: absolute;
+      top: -13px;
+      left: 16px;
+      padding: 4px 13px;
+      border-radius: 999px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 900;
+      box-shadow: var(--shadow-sm);
+    }
+    .gh-step:nth-child(1) .step-n { background: var(--muted); }
+    .gh-step:nth-child(2) .step-n { background: var(--teal); }
+    .gh-step:nth-child(3) .step-n { background: var(--coral); }
+    .gh-step:nth-child(4) .step-n { background: var(--blue); }
+    .gh-step:nth-child(5) .step-n { background: var(--violet); }
+    .gh-step .g-emoji { font-size: 30px; }
+    .gh-step h4 { margin-top: 8px; font-size: 16px; font-weight: 900; }
+    .gh-step p { margin-top: 7px; font-size: 13.5px; line-height: 1.7; color: var(--muted); }
+    .gh-step p b { color: var(--ink); }
+
+    /* ---------- ritual / template ---------- */
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+    }
+    .panel-card {
+      padding: 22px;
+      border-radius: 20px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+    }
+    .panel-card h3 { font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 9px; }
+
+    .timeline {
+      margin-top: 16px;
+      display: flex;
+      border-radius: 12px;
+      overflow: hidden;
+      height: 52px;
+      font-size: 12.5px;
+      font-weight: 900;
+      color: #fff;
+      text-align: center;
+    }
+    .timeline div {
+      display: grid;
+      place-items: center;
+      line-height: 1.3;
+      padding: 4px;
+    }
+    .timeline .t1 { flex: 5;  background: var(--muted); }
+    .timeline .t2 { flex: 15; background: var(--teal); }
+    .timeline .t3 { flex: 25; background: var(--coral); }
+    .timeline .t4 { flex: 10; background: var(--violet); }
+    .panel-card .small { margin-top: 12px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+
+    .q-list { margin-top: 14px; display: grid; gap: 9px; }
+    .q-list div {
+      padding: 12px 15px;
+      border-radius: 12px;
+      font-size: 14.5px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+    .q-list div:nth-child(1) { background: var(--teal-soft); color: #075f5c; }
+    .q-list div:nth-child(2) { background: var(--coral-soft); color: #93362a; }
+    .q-list div:nth-child(3) { background: var(--blue-soft); color: #2b4a89; }
+
+    /* ---------- rules & reminders ---------- */
+    .rules {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .rule {
+      padding: 18px;
+      border-radius: 16px;
+      background: var(--panel);
+      border-top: 5px solid var(--teal);
+      border-left: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+    }
+    .rule:nth-child(2) { border-top-color: var(--coral); }
+    .rule:nth-child(3) { border-top-color: var(--gold); }
+    .rule h4 { font-size: 15.5px; font-weight: 900; }
+    .rule p { margin-top: 7px; font-size: 13.5px; color: var(--muted); line-height: 1.7; }
+
+    .reminders { margin-top: 16px; display: grid; gap: 10px; }
+    .reminder {
+      display: flex;
+      gap: 13px;
+      align-items: flex-start;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .reminder .r-ico {
+      flex: none;
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--blue-soft);
+      font-size: 17px;
+    }
+    .reminder b { color: var(--ink); }
+    .reminder span { color: var(--muted); }
+
+    footer {
+      margin-top: 56px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .section { animation: rise 0.6s ease both; }
+    .section:nth-of-type(2) { animation-delay: 0.05s; }
+    .section:nth-of-type(3) { animation-delay: 0.1s; }
+
+    @media (max-width: 560px) {
+      .stop { padding-left: 54px; }
+      .stop-num { width: 44px; height: 44px; font-size: 17px; }
+      .stops::before { left: 21px; }
+      .hero { padding: 26px 22px; }
+      .row { grid-template-columns: 1fr; gap: 4px; }
+      .row b { width: 84px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- ============ HERO ============ -->
+    <header class="hero">
+      <div class="eyebrow">DAY OF AI · 亲子学习计划</div>
+      <h1>Aiden 的 AI 冒险地图 🗺️</h1>
+      <p class="sub">
+        第 3–12 课的完整路线。每一课 = 一个概念 + 一次动手 + 一件可保存的作品。
+        每周 1 次、每次 45–60 分钟。完成一课，就点亮一颗星！
+      </p>
+      <div class="done-badges">
+        <a class="won" href="day-of-ai-first-lesson.html">🏅 第 1 课 · AI 侦探任务 已通关 ↗</a>
+        <a class="won" href="day-of-ai-second-lesson.html">🏅 第 2 课 · 什么是 AI 已通关 ↗</a>
+        <span>🎮 实践作品 1 号 · 俄罗斯方块</span>
+      </div>
+      <div class="progress-panel">
+        <div class="progress-top">
+          <span>冒险进度</span>
+          <span><span id="progressCount">0</span> / 10 课</span>
+        </div>
+        <div class="bar"><i id="progressBar"></i></div>
+        <p class="progress-hint">进度保存在这台电脑的浏览器里，每次打开都还在。</p>
+      </div>
+    </header>
+
+    <!-- ============ MODULE A ============ -->
+    <section class="section">
+      <div class="section-head">
+        <div class="mark" style="background: var(--teal);">🧭</div>
+        <div>
+          <h2>课程路线：三个模块</h2>
+          <p>点击每一课可以展开细节；上完课点「完成打卡」。</p>
+        </div>
+      </div>
+
+      <div class="module mod-a">
+        <div class="module-head">
+          <span class="tag">模块 A</span>
+          <h3>机器学习入门</h3>
+        </div>
+        <p class="module-note">机器是怎么"学会"的？亲手训练模型，再亲手把它教笨。</p>
+        <div class="stops">
+
+          <div class="stop" data-lesson="3">
+            <div class="stop-num">3</div>
+            <div class="card">
+              <button class="card-top" type="button">
+                <span class="emoji">🤖</span>
+                <span class="titles">
+                  <h4>机器如何学习？</h4>
+                  <p class="concept">训练数据 · 测试 · 偏差（课件已备好）</p>
+                </span>
+                <span class="chev">▾</span>
+              </button>
+              <div class="card-body"><div><div class="card-body-inner">
+                <div class="row do"><b>动手</b><span>用 Teachable Machine 训练一个「石头剪刀布」手势识别器，自己当训练数据。</span></div>
+                <div class="row make"><b>作品</b><span>模型链接 + 一段演示录屏。</span></div>
+                <div class="row tip"><b>提示</b><span>Teachable Machine 是 Google 产品，课前一天先确认网络能打开！</span></div>
+                <div class="tool-links">
+                  <span class="t-label">课上要用：</span>
+                  <a href="https://teachablemachine.withgoogle.com" target="_blank" rel="noopener">🔗 Teachable Machine</a>
+                </div>
+                <a class="lesson-link" href="day-of-ai-third-lesson.html">📖 课件已备好 · 打开第 3 课开始上课 →</a>
+                <div class="check-line">
+                  <span>上完这课了吗？</span>
+                  <button class="check-btn" type="button">⭐ 完成打卡</button>
+                </div>
+              </div></div></div>
+            </div>
+          </div>
+
+          <div class="stop" data-lesson="4">
+            <div class="stop-num">4</div>
+            <div class="card">
+              <button class="card-top" type="button">
+                <span class="emoji">📊</span>
+                <span class="titles">
+                  <h4>数据越多越聪明？</h4>
+                  <p class="concept">数据质量决定模型好坏</p>
+                </span>
+                <span class="chev">▾</span>
+              </button>
+              <div class="card-body"><div><div class="card-body-inner">
+                <div class="row do"><b>动手</b><span>训练「家人表情识别」或声音分类器；然后故意喂差数据（模糊的、错的），亲眼看模型变笨。</span></div>
+                <div class="row make"><b>作品</b><span>好模型 vs 笨模型的对比截图 + 孩子自己的一句结论。</span></div>
+                <div class="row tip"><b>提示</b><span>这一课是第 10 课「AI 偏见」的伏笔，记得存好截图。</span></div>
+                <div class="tool-links">
+                  <span class="t-label">课上要用：</span>
+                  <a href="https://teachablemachine.withgoogle.com" target="_blank" rel="noopener">🔗 Teachable Machine</a>
+                  <a href="https://machinelearningforkids.co.uk" target="_blank" rel="noopener">🔗 ML for Kids（备选）</a>
+                </div>
+                <a class="lesson-link" href="day-of-ai-fourth-lesson.html">📖 打开第 4 课开始上课 →</a>
+                <div class="check-line">
+                  <span>上完这课了吗？</span>
+                  <button class="check-btn" type="button">⭐ 完成打卡</button>
+                </div>
+              </div></div></div>
+            </div>
+          </div>
+
+          <div class="stop" data-lesson="5">
+            <div class="stop-num">5</div>
+            <div class="card">
+              <button class="card-top" type="button">
+                <span class="emoji">🎨</span>
+                <span class="titles">
+                  <h4>AI 与创作</h4>
+                  <p class="concept">AI 是工具，创意在人</p>
+                </span>
+                <span class="chev">▾</span>
+              </button>
+              <div class="card-body"><div><div class="card-body-inner">
+                <div class="row do"><b>动手</b><span>玩 Quick Draw（AI 猜画）和 AutoDraw；让 AI 接龙写一个孩子开头的故事。</span></div>
+                <div class="row make"><b>作品</b><span>一幅 AI 合作画 / 一篇人机接龙故事。</span></div>
+                <div class="row tip"><b>提示</b><span>讨论一句话：这幅画到底是谁画的？——引出「AI 是工具」。</span></div>
+                <div class="tool-links">
+                  <span class="t-label">课上要用：</span>
+                  <a href="https://quickdraw.withgoogle.com" target="_blank" rel="noopener">🔗 Quick Draw</a>
+                  <a href="https://www.autodraw.com" target="_blank" rel="noopener">🔗 AutoDraw</a>
+                </div>
+                <a class="lesson-link" href="day-of-ai-fifth-lesson.html">📖 打开第 5 课开始上课 →</a>
+                <div class="check-line">
+                  <span>上完这课了吗？</span>
+                  <button class="check-btn" type="button">⭐ 完成打卡</button>
+                </div>
+              </div></div></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ============ MODULE B ============ -->
+      <div class="module mod-b">
+        <div class="module-head">
+          <span class="tag">模块 B</span>
+          <h3>和 AI 一起做东西</h3>
+          <span class="star">★ 实践重点</span>
+        </div>
+        <p class="module-note">从「玩别人的 AI」升级到「用 AI 做自己的东西」。键盘在孩子手上，提示词由孩子口述。</p>
+        <div class="stops">
+
+          <div class="stop" data-lesson="6">
+            <div class="stop-num">6</div>
+            <div class="card">
+              <button class="card-top" type="button">
+                <span class="emoji">🕹️</span>
+                <span class="titles">
+                  <h4>我是产品经理</h4>
+                  <p class="concept">把想法讲清楚，是最重要的 AI 技能</p>
+                </span>
+                <span class="chev">▾</span>
+              </button>
+              <div class="card-body"><div><div class="card-body-inner">
+                <div class="row do"><b>动手</b><span>回到俄罗斯方块：孩子提 3 个改进需求（换配色 / 加计分 / 加音效），口述给 Claude，看着它改，自己试玩验收。</span></div>
+                <div class="row make"><b>作品</b><span>俄罗斯方块 v2！同时这一课引入 GitHub「作品博物馆」（见下方第 1 步）。</span></div>
+                <div class="row tip"><b>提示</b><span>需求不清 AI 就会做错——这本身就是最好的教学时刻。</span></div>
+                <a class="lesson-link" href="day-of-ai-sixth-lesson.html">📖 打开第 6 课开始上课 →</a>
+                <div class="check-line">
+                  <span>上完这课了吗？</span>
+                  <button class="check-btn" type="button">⭐ 完成打卡</button>
+                </div>
+              </div></div></div>
+            </div>
+          </div>
+
+          <div class="stop" data-lesson="7">
+            <div class="stop-num">7</div>
+            <div class="card">
+              <button class="card-top" type="button">
+                <span class="emoji">💡</span>
+                <span class="titles">
+                  <h4>从想法到游戏</h4>
+                  <p class="concept">想法 → 口述需求 → 生成 → 试玩 → 迭代</p>
+                </span>
+                <span class="chev">▾</span>
+              </button>
+              <div class="card-body"><div><div class="card-body-inner">
+                <div class="row do"><b>动手</b><span>从零做一个<b>他自己想的</b>小游戏（接水果、走迷宫都行），完整走 2–3 轮「提意见 → 改」的迭代。</span></div>
+                <div class="row make"><b>作品</b><span>原创游戏 1 号！之后开通 GitHub Pages，变成能发给爷爷奶奶玩的真实网址。</span></div>
+                <div class="row tip"><b>提示</b><span>如果孩子这课上头了，就在这里多停几周——兴趣比课表重要。</span></div>
+                <a class="lesson-link" href="day-of-ai-seventh-lesson.html">📖 打开第 7 课开始上课 →</a>
+                <div class="check-line">
+                  <span>上完这课了吗？</span>
+                  <button class="check-btn" type="button">⭐ 完成打卡</button>
+                </div>
+              </div></div></div>
+            </div>
+          </div>
+
+          <div class="stop" data-lesson="8">
+            <div class="stop-num">8</div>
+            <div class="card">
+              <button class="card-top" type="button">
+                <span class="emoji">🏠</span>
+                <span class="titles">
+                  <h4>我的个人网页</h4>
+                  <p class="concept">在互联网上拥有自己的一页</p>
+                </span>
+                <span class="chev">▾</span>
+              </button>
+              <div class="card-body"><div><div class="card-body-inner">
+                <div class="row do"><b>动手</b><span>做一个「关于我」介绍页：自我介绍、爱好、作品列表，内容全部由他自己定。</span></div>
+                <div class="row make"><b>作品</b><span>个人主页——将来作为 GitHub Pages 的作品集入口，链到每个游戏。</span></div>
+                <div class="row tip"><b>提示</b><span>隐私红线：不放真实全名、学校、正脸照片；头像用卡通图。</span></div>
+                <a class="lesson-link" href="day-of-ai-eighth-lesson.html">📖 打开第 8 课开始上课 →</a>
+                <div class="check-line">
+                  <span>上完这课了吗？</span>
+                  <button class="check-btn" type="button">⭐ 完成打卡</button>
+                </div>
+              </div></div></div>
+            </div>
+          </div>
+
+          <div class="stop" data-lesson="9">
+            <div class="stop-num">9</div>
+            <div class="card">
+              <button class="card-top" type="button">
+                <span class="emoji">🪄</span>
+                <span class="titles">
+                  <h4>提示词魔法</h4>
+                  <p class="concept">怎么说，AI 才听得懂？</p>
+                </span>
+                <span class="chev">▾</span>
+              </button>
+              <div class="card-body"><div><div class="card-body-inner">
+                <div class="row do"><b>动手</b><span>同一个要求换三种说法给 AI，对比结果差多少；总结规律：具体 &gt; 模糊，举例 &gt; 形容。</span></div>
+                <div class="row make"><b>作品</b><span>一张「我的提示词秘诀」卡片。</span></div>
+                <div class="row tip"><b>提示</b><span>可以拿第 7 课游戏里改坏过的提示词当反面教材。</span></div>
+                <a class="lesson-link" href="day-of-ai-ninth-lesson.html">📖 打开第 9 课开始上课 →</a>
+                <div class="check-line">
+                  <span>上完这课了吗？</span>
+                  <button class="check-btn" type="button">⭐ 完成打卡</button>
+                </div>
+              </div></div></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ============ MODULE C ============ -->
+      <div class="module mod-c">
+        <div class="module-head">
+          <span class="tag">模块 C</span>
+          <h3>AI 思维与责任</h3>
+        </div>
+        <p class="module-note">会用 AI 之后，更要懂 AI：它会错、会骗、也能帮你变强。</p>
+        <div class="stops">
+
+          <div class="stop" data-lesson="10">
+            <div class="stop-num">10</div>
+            <div class="card">
+              <button class="card-top" type="button">
+                <span class="emoji">🕵️</span>
+                <span class="titles">
+                  <h4>AI 会犯错、会有偏见</h4>
+                  <p class="concept">幻觉 · 偏见 · 不能全信</p>
+                </span>
+                <span class="chev">▾</span>
+              </button>
+              <div class="card-body"><div><div class="card-body-inner">
+                <div class="row do"><b>动手</b><span>让 AI 一本正经地答错题（幻觉演示）；翻出第 4 课「差数据教出笨模型」的截图做回顾。</span></div>
+                <div class="row make"><b>作品</b><span>「AI 犯错收集册」——把抓到的错误都记下来。</span></div>
+                <div class="row tip"><b>提示</b><span>正好呼应 AI 家规：AI 说的话要核实，不能全信。</span></div>
+                <a class="lesson-link" href="day-of-ai-tenth-lesson.html">📖 打开第 10 课开始上课 →</a>
+                <div class="check-line">
+                  <span>上完这课了吗？</span>
+                  <button class="check-btn" type="button">⭐ 完成打卡</button>
+                </div>
+              </div></div></div>
+            </div>
+          </div>
+
+          <div class="stop" data-lesson="11">
+            <div class="stop-num">11</div>
+            <div class="card">
+              <button class="card-top" type="button">
+                <span class="emoji">🎓</span>
+                <span class="titles">
+                  <h4>AI 当我的老师</h4>
+                  <p class="concept">用 AI 学习，而不是替我学习</p>
+                </span>
+                <span class="chev">▾</span>
+              </button>
+              <div class="card-body"><div><div class="card-body-inner">
+                <div class="row do"><b>动手</b><span>让 AI 出题考自己（数学 / 英语 / 百科），孩子也出刁钻题反考 AI。</span></div>
+                <div class="row make"><b>作品</b><span>一次「人机互考」记录：谁赢了？哪题 AI 答错了？</span></div>
+                <div class="row tip"><b>提示</b><span>强化家规：AI 帮我们做不会的事，不代替正在练的事。</span></div>
+                <a class="lesson-link" href="day-of-ai-eleventh-lesson.html">📖 打开第 11 课开始上课 →</a>
+                <div class="check-line">
+                  <span>上完这课了吗？</span>
+                  <button class="check-btn" type="button">⭐ 完成打卡</button>
+                </div>
+              </div></div></div>
+            </div>
+          </div>
+
+          <div class="stop" data-lesson="12">
+            <div class="stop-num">12</div>
+            <div class="card">
+              <button class="card-top" type="button">
+                <span class="emoji">🎉</span>
+                <span class="titles">
+                  <h4>作品发布会</h4>
+                  <p class="concept">向全家展示这一路的所有作品</p>
+                </span>
+                <span class="chev">▾</span>
+              </button>
+              <div class="card-body"><div><div class="card-body-inner">
+                <div class="row do"><b>动手</b><span>给家人开一场发布会：演示每件作品，讲讲学到了什么；GitHub 作品集主页当天正式「剪彩」。</span></div>
+                <div class="row make"><b>作品</b><span>发布会视频 + 作品集 v1.0（视频只在家庭内部分享）。</span></div>
+                <div class="row tip"><b>提示</b><span>提前「布置观众」：请家人认真玩、多提问，别敷衍。</span></div>
+                <a class="lesson-link" href="day-of-ai-twelfth-lesson.html">📖 打开第 12 课开始上课 →</a>
+                <div class="check-line">
+                  <span>上完这课了吗？</span>
+                  <button class="check-btn" type="button">⭐ 完成打卡</button>
+                </div>
+              </div></div></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ GITHUB ============ -->
+    <section class="section">
+      <div class="section-head">
+        <div class="mark" style="background: var(--coral);">🏛️</div>
+        <div>
+          <h2>GitHub：我的作品博物馆</h2>
+          <p>四步走，跟着课程节奏逐步展开。</p>
+        </div>
+      </div>
+
+      <div class="warn">
+        ⚠️ <b>重要前提：</b>GitHub 服务条款要求年满 <b>13 岁</b>。所以现阶段由<b>家长注册并管理账号</b>，孩子在陪同下使用。
+        可以做成仪式感：<b>"这是帮你保管的博物馆，13 岁生日交钥匙。"</b>
+      </div>
+
+      <div class="gh-grid">
+        <div class="gh-step">
+          <span class="step-n">第 0 步 · 课前</span>
+          <div class="g-emoji">🔑</div>
+          <h4>家长开好账号</h4>
+          <p>用家长邮箱注册，用户名建议中性英文（如 <b>aiden-builds</b>），开启两步验证。约 20 分钟。</p>
+        </div>
+        <div class="gh-step">
+          <span class="step-n">第 1 步 · 随第 6 课</span>
+          <div class="g-emoji">🏛️</div>
+          <h4>认识作品博物馆</h4>
+          <p>比喻：GitHub = 全世界程序员共用的<b>博物馆 + 时光机</b>。上传俄罗斯方块，README 由孩子口述，发布按钮他自己点。</p>
+        </div>
+        <div class="gh-step">
+          <span class="step-n">第 2 步 · 随第 7–8 课</span>
+          <div class="g-emoji">🌐</div>
+          <h4>Pages 上线 ★</h4>
+          <p>开通 GitHub Pages，游戏变成<b>真实网址</b>，发给爷爷奶奶玩——这是 8 岁孩子最强的驱动力。</p>
+        </div>
+        <div class="gh-step">
+          <span class="step-n">第 3 步 · 每课固定</span>
+          <div class="g-emoji">📦</div>
+          <h4>存档仪式</h4>
+          <p>每课最后 10 分钟：作品入库 → 截图 / 录屏 → 口述三句话 → <b>commit 信息孩子自己想</b>（"给方块换新衣服"也很棒）。</p>
+        </div>
+        <div class="gh-step">
+          <span class="step-n">第 4 步 · 第 12 课</span>
+          <div class="g-emoji">🎀</div>
+          <h4>作品集主页剪彩</h4>
+          <p>建同名 profile 仓库当门面：卡通头像、一句话介绍、作品列表。发布会当天正式剪彩。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RITUAL & TEMPLATE ============ -->
+    <section class="section">
+      <div class="section-head">
+        <div class="mark" style="background: var(--violet);">⏱️</div>
+        <div>
+          <h2>每一课的固定节奏</h2>
+          <p>45–60 分钟怎么分，以及雷打不动的三句话。</p>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="panel-card">
+          <h3>⏰ 时间模板（约 55 分钟）</h3>
+          <div class="timeline">
+            <div class="t1">5′<br>回顾</div>
+            <div class="t2">15′<br>新概念</div>
+            <div class="t3">25′<br>动手实践</div>
+            <div class="t4">10′<br>存档仪式</div>
+          </div>
+          <p class="small">8 岁孩子的专注力上限就在这里——宁短勿长。动手永远是最大的一块。</p>
+        </div>
+        <div class="panel-card">
+          <h3>✍️ 存档三句话（孩子口述）</h3>
+          <div class="q-list">
+            <div>1️⃣ 我今天做了什么？</div>
+            <div>2️⃣ 最难的是什么？</div>
+            <div>3️⃣ 下次我想做什么？</div>
+          </div>
+          <p class="small">失败的作品同样存档，写上"哪里不行、为什么"——这比成功更珍贵。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PARENT RULES ============ -->
+    <section class="section">
+      <div class="section-head">
+        <div class="mark" style="background: var(--green);">👨‍👩‍👦</div>
+        <div>
+          <h2>家长三原则 &amp; 七条提醒</h2>
+          <p>执行时最容易踩的坑，都在这里。</p>
+        </div>
+      </div>
+
+      <div class="rules">
+        <div class="rule">
+          <h4>⌨️ 键盘在孩子手上</h4>
+          <p>哪怕打字慢，操作让他做。你动手一次，他就少学一次。</p>
+        </div>
+        <div class="rule">
+          <h4>🗣️ 提示词让孩子口述</h4>
+          <p>把想法讲清楚，本身就是最重要的 AI 技能。</p>
+        </div>
+        <div class="rule">
+          <h4>💪 失败也存档</h4>
+          <p>做砸的作品同样记录，写上"哪里不行、为什么"。</p>
+        </div>
+      </div>
+
+      <div class="reminders">
+        <div class="reminder"><div class="r-ico">🌐</div><p><b>课前一天试跑工具。</b><span>Teachable Machine / Quick Draw / AutoDraw 是 Google 产品，国内直连不可用；GitHub 也不稳定。备选：Machine Learning for Kids、Code.org、腾讯扣叮。</span></p></div>
+        <div class="reminder"><div class="r-ico">🔞</div><p><b>AI 聊天工具同样有年龄条款。</b><span>Claude / ChatGPT 不允许 8 岁儿童独立使用——用家长账号、全程陪同，顺带做内容把关。</span></p></div>
+        <div class="reminder"><div class="r-ico">📜</div><p><b>提前立好 AI 家规：</b><span>"AI 帮我们做还不会的事（写代码），不代替正在练的事（作业、作文、算术）。" 第 10 课呼应此条。</span></p></div>
+        <div class="reminder"><div class="r-ico">🍽️</div><p><b>课表是菜单不是军令状。</b><span>哪课上头就多停留，无感就跳过；唯一不变的是每课 10 分钟存档仪式。</span></p></div>
+        <div class="reminder"><div class="r-ico">💾</div><p><b>立即做第一次本地 commit。</b><span>课件目前只存在一台电脑上，不必等 GitHub 注册，先本地存档。</span></p></div>
+        <div class="reminder"><div class="r-ico">🔤</div><p><b>英文界面当免费英语课。</b><span>让孩子先猜按钮含义（"Train 是什么？"），不要代劳翻译。</span></p></div>
+        <div class="reminder"><div class="r-ico">🎪</div><p><b>发布会提前"布置观众"。</b><span>请家人认真玩、多提问——第一次展示的反馈质量决定持续动力。</span></p></div>
+      </div>
+    </section>
+
+    <footer>
+      Aiden 的 AI 之旅 · 第 3–12 课冒险地图<br>
+      隐私红线：公开仓库不放真实全名 / 学校 / 正脸照片；署名用昵称；发布会视频仅家庭内部分享。
+    </footer>
+  </div>
+
+  <script>
+    (function () {
+      var KEY = "aiden-ai-roadmap-progress";
+      var TOTAL = 10;
+
+      function load() {
+        try { return JSON.parse(localStorage.getItem(KEY)) || {}; }
+        catch (e) { return {}; }
+      }
+      function save(state) {
+        try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+      }
+
+      var state = load();
+      var stops = document.querySelectorAll(".stop");
+      var bar = document.getElementById("progressBar");
+      var count = document.getElementById("progressCount");
+
+      function refresh() {
+        var done = 0;
+        stops.forEach(function (s) {
+          var id = s.getAttribute("data-lesson");
+          var checked = !!state[id];
+          s.classList.toggle("checked", checked);
+          var btn = s.querySelector(".check-btn");
+          btn.innerHTML = checked ? "🌟 已完成！再点取消" : "⭐ 完成打卡";
+          if (checked) done++;
+        });
+        count.textContent = done;
+        bar.style.width = (done / TOTAL) * 100 + "%";
+      }
+
+      function burst(x, y) {
+        var emo = ["⭐", "🌟", "✨", "🎉"];
+        for (var i = 0; i < 8; i++) {
+          var s = document.createElement("span");
+          s.className = "star-pop";
+          s.textContent = emo[i % emo.length];
+          s.style.left = x + "px";
+          s.style.top = y + "px";
+          s.style.setProperty("--dx", (Math.floor(i * 23 % 160) - 80) + "px");
+          s.style.setProperty("--rot", (Math.floor(i * 47 % 90) - 45) + "deg");
+          document.body.appendChild(s);
+          setTimeout(function (el) { return function () { el.remove(); }; }(s), 950);
+        }
+      }
+
+      stops.forEach(function (s) {
+        var id = s.getAttribute("data-lesson");
+
+        s.querySelector(".card-top").addEventListener("click", function () {
+          s.classList.toggle("open");
+        });
+
+        s.querySelector(".check-btn").addEventListener("click", function (e) {
+          e.stopPropagation();
+          state[id] = !state[id];
+          save(state);
+          refresh();
+          if (state[id]) {
+            var r = e.target.getBoundingClientRect();
+            burst(r.left + r.width / 2, r.top);
+          }
+        });
+      });
+
+      refresh();
+      // 默认展开第 3 课（下一课）
+      var next = document.querySelector('.stop[data-lesson="3"]');
+      if (next) next.classList.add("open");
+    })();
+  </script>
+</body>
+</html>
