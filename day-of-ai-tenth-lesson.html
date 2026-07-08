@@ -982,7 +982,7 @@
           <div class="guide-panel">
             <h3>家长开场白</h3>
             <div class="say-box">“今天你不当学生，你当侦探。我们要一起抓 AI 的错！”</div>
-            <p>提前打开 Claude（或家里常用的 AI），准备实测。今天的重点体验：AI 犯错时，语气还是特别自信，一点都不脸红。</p>
+            <p>提前打开你常用的 AI，准备实测。今天的重点体验：AI 犯错时，语气还是特别自信，一点都不脸红。</p>
           </div>
         </div>
       </section>
@@ -992,7 +992,7 @@
           <div>
             <div class="eyebrow">任务 1</div>
             <h2 id="hunt-title">抓幻觉大行动</h2>
-            <p class="stage-lead">AI 一本正经地编答案，这叫“幻觉”。下面是 4 张容易让 AI 出错的问题卡。拿去问 Claude，抓到一个错，就赢一枚侦探徽章！</p>
+            <p class="stage-lead">AI 一本正经地编答案，这叫“幻觉”。下面是 4 张容易让 AI 出错的问题卡。拿去问 AI，抓到一个错，就赢一枚侦探徽章！</p>
           </div>
           <span class="time-pill">10 分钟</span>
         </div>
@@ -1010,7 +1010,7 @@
           <div class="guide-panel">
             <h3>侦探小提示</h3>
             <ul>
-              <li>把卡片上的问题原样问 Claude，看它怎么答。</li>
+              <li>把卡片上的问题原样问 AI，看它怎么答。</li>
               <li>它编故事了？算错了？瞎猜了？在卡片里记下来，点“抓到了”。</li>
               <li>如果它老实说“我不知道”，也给它点个赞——诚实不算错！</li>
             </ul>
@@ -1562,7 +1562,7 @@
         box.className = "hunt-card";
         box.innerHTML = `
           <h4>${card.title}</h4>
-          <div class="prompt-box"><strong>问 Claude：</strong>${card.prompt}</div>
+          <div class="prompt-box"><strong>问 AI：</strong>${card.prompt}</div>
           <div class="hint">${card.hint}</div>
           <input class="text-input" data-hunt-note="${card.id}" placeholder="AI 答错了什么？记下来" value="" />
           <button class="catch-btn" type="button" data-hunt-catch="${card.id}">🕵️ 抓到了！</button>

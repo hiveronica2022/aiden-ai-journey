@@ -307,6 +307,26 @@
       color: var(--muted);
       font-size: 13px;
     }
+    .lesson-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 7px;
+    }
+    .lbadge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 3px 9px;
+      border-radius: 999px;
+      border: 1px solid;
+      white-space: nowrap;
+    }
+    .lbadge.offline { color: var(--green); background: var(--green-soft); border-color: #b8d9b8; }
+    .lbadge.ai-yes { color: var(--violet); background: var(--violet-soft); border-color: #c3b8ea; }
+    .lbadge.ai-no { color: var(--muted); background: #eef2f4; border-color: var(--line); }
     .card-top .chev {
       flex: none;
       color: var(--muted);
@@ -659,6 +679,13 @@
         </div>
       </div>
 
+      <div style="margin-top:16px;padding:14px 16px;border-radius:14px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow-sm);font-size:13.5px;color:var(--muted);line-height:1.95;">
+        <b style="color:var(--ink);">标签说明：</b>
+        <span class="lbadge offline">🔌 可离线</span> 课件断网也能打开、能玩、能打卡——<b style="color:var(--ink);">所有课都可离线</b>，不用担心网络。
+        <span class="lbadge ai-yes">🤖 需要 AI</span> 这课有一个环节要用到「你常用的 AI」（哪个都行，提前打开备用）。
+        <span class="lbadge ai-no">✅ 无需 AI</span> 这课不用 AI 也能完整完成。
+      </div>
+
       <div class="module mod-a">
         <div class="module-head">
           <span class="tag">模块 A</span>
@@ -675,6 +702,7 @@
                 <span class="titles">
                   <h4>机器如何学习？</h4>
                   <p class="concept">训练数据 · 测试 · 偏差（课件已备好）</p>
+                  <div class="lesson-badges"><span class="lbadge offline">🔌 可离线</span><span class="lbadge ai-yes">🤖 需要 AI</span></div>
                 </span>
                 <span class="chev">▾</span>
               </button>
@@ -703,6 +731,7 @@
                 <span class="titles">
                   <h4>数据越多越聪明？</h4>
                   <p class="concept">数据质量决定模型好坏</p>
+                  <div class="lesson-badges"><span class="lbadge offline">🔌 可离线</span><span class="lbadge ai-yes">🤖 需要 AI</span></div>
                 </span>
                 <span class="chev">▾</span>
               </button>
@@ -732,6 +761,7 @@
                 <span class="titles">
                   <h4>AI 与创作</h4>
                   <p class="concept">AI 是工具，创意在人</p>
+                  <div class="lesson-badges"><span class="lbadge offline">🔌 可离线</span><span class="lbadge ai-yes">🤖 需要 AI</span></div>
                 </span>
                 <span class="chev">▾</span>
               </button>
@@ -774,11 +804,12 @@
                 <span class="titles">
                   <h4>我是产品经理</h4>
                   <p class="concept">把想法讲清楚，是最重要的 AI 技能</p>
+                  <div class="lesson-badges"><span class="lbadge offline">🔌 可离线</span><span class="lbadge ai-yes">🤖 需要 AI</span></div>
                 </span>
                 <span class="chev">▾</span>
               </button>
               <div class="card-body"><div><div class="card-body-inner">
-                <div class="row do"><b>动手</b><span>回到俄罗斯方块：孩子提 3 个改进需求（换配色 / 加计分 / 加音效），口述给 Claude，看着它改，自己试玩验收。</span></div>
+                <div class="row do"><b>动手</b><span>回到俄罗斯方块：孩子提 3 个改进需求（换配色 / 加计分 / 加音效），口述给你常用的 AI，看着它改，自己试玩验收。</span></div>
                 <div class="row make"><b>作品</b><span>俄罗斯方块 v2！同时这一课引入 GitHub「作品博物馆」（见下方第 1 步）。</span></div>
                 <div class="row tip"><b>提示</b><span>需求不清 AI 就会做错——这本身就是最好的教学时刻。</span></div>
                 <a class="lesson-link" href="day-of-ai-sixth-lesson.html">📖 打开第 6 课开始上课 →</a>
@@ -798,6 +829,7 @@
                 <span class="titles">
                   <h4>从想法到游戏</h4>
                   <p class="concept">想法 → 口述需求 → 生成 → 试玩 → 迭代</p>
+                  <div class="lesson-badges"><span class="lbadge offline">🔌 可离线</span><span class="lbadge ai-yes">🤖 需要 AI</span></div>
                 </span>
                 <span class="chev">▾</span>
               </button>
@@ -822,6 +854,7 @@
                 <span class="titles">
                   <h4>我的个人网页</h4>
                   <p class="concept">在互联网上拥有自己的一页</p>
+                  <div class="lesson-badges"><span class="lbadge offline">🔌 可离线</span><span class="lbadge ai-yes">🤖 需要 AI</span></div>
                 </span>
                 <span class="chev">▾</span>
               </button>
@@ -846,6 +879,7 @@
                 <span class="titles">
                   <h4>提示词魔法</h4>
                   <p class="concept">怎么说，AI 才听得懂？</p>
+                  <div class="lesson-badges"><span class="lbadge offline">🔌 可离线</span><span class="lbadge ai-yes">🤖 需要 AI</span></div>
                 </span>
                 <span class="chev">▾</span>
               </button>
@@ -882,6 +916,7 @@
                 <span class="titles">
                   <h4>AI 会犯错、会有偏见</h4>
                   <p class="concept">幻觉 · 偏见 · 不能全信</p>
+                  <div class="lesson-badges"><span class="lbadge offline">🔌 可离线</span><span class="lbadge ai-yes">🤖 需要 AI</span></div>
                 </span>
                 <span class="chev">▾</span>
               </button>
@@ -906,6 +941,7 @@
                 <span class="titles">
                   <h4>AI 当我的老师</h4>
                   <p class="concept">用 AI 学习，而不是替我学习</p>
+                  <div class="lesson-badges"><span class="lbadge offline">🔌 可离线</span><span class="lbadge ai-yes">🤖 需要 AI</span></div>
                 </span>
                 <span class="chev">▾</span>
               </button>
@@ -930,6 +966,7 @@
                 <span class="titles">
                   <h4>作品发布会</h4>
                   <p class="concept">向全家展示这一路的所有作品</p>
+                  <div class="lesson-badges"><span class="lbadge offline">🔌 可离线</span><span class="lbadge ai-no">✅ 无需 AI</span></div>
                 </span>
                 <span class="chev">▾</span>
               </button>
@@ -1059,7 +1096,7 @@
 
       <div class="reminders">
         <div class="reminder"><div class="r-ico">🌐</div><p><b>课前一天试跑工具。</b><span>Teachable Machine / Quick Draw / AutoDraw 是 Google 产品，国内直连不可用；GitHub 也不稳定。备选：Machine Learning for Kids、Code.org、腾讯扣叮。</span></p></div>
-        <div class="reminder"><div class="r-ico">🔞</div><p><b>AI 聊天工具同样有年龄条款。</b><span>Claude / ChatGPT 不允许 8 岁儿童独立使用——用家长账号、全程陪同，顺带做内容把关。</span></p></div>
+        <div class="reminder"><div class="r-ico">🔞</div><p><b>AI 聊天工具同样有年龄条款。</b><span>各类 AI 聊天工具一般都要求满 13 岁，不允许 8 岁儿童独立使用——用家长账号、全程陪同，顺带做内容把关。</span></p></div>
         <div class="reminder"><div class="r-ico">📜</div><p><b>提前立好 AI 家规：</b><span>"AI 帮我们做还不会的事（写代码），不代替正在练的事（作业、作文、算术）。" 第 10 课呼应此条。</span></p></div>
         <div class="reminder"><div class="r-ico">🍽️</div><p><b>课表是菜单不是军令状。</b><span>哪课上头就多停留，无感就跳过；唯一不变的是每课 10 分钟存档仪式。</span></p></div>
         <div class="reminder"><div class="r-ico">💾</div><p><b>立即做第一次本地 commit。</b><span>课件目前只存在一台电脑上，不必等 GitHub 注册，先本地存档。</span></p></div>

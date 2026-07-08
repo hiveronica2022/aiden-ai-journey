@@ -1192,8 +1192,8 @@
         <div class="stage-head">
           <div>
             <div class="eyebrow">任务 4</div>
-            <h2 id="real-title">变成真的：交给 Claude</h2>
-            <p class="stage-lead">设计稿画好了，安全检查也过了。现在把设计稿念给 Claude，让它做成真网页，再放进你的 GitHub Pages 作品集！完成一步点一下打勾。</p>
+            <h2 id="real-title">变成真的：交给 AI</h2>
+            <p class="stage-lead">设计稿画好了，安全检查也过了。现在把设计稿念给 AI，让它做成真网页，再放进你的 GitHub Pages 作品集！完成一步点一下打勾。</p>
           </div>
           <span class="time-pill">8 分钟</span>
         </div>
@@ -1202,12 +1202,12 @@
             <div class="prompt-box" id="realPrompt"></div>
             <button class="task-check" type="button" data-task="t1">
               <span class="task-num">1</span>
-              <span><strong>复制上面的设计稿提示词，发给 Claude</strong>（或者孩子直接念给 Claude 听）</span>
+              <span><strong>复制上面的设计稿提示词，发给 AI</strong>（或者孩子直接念给 AI 听）</span>
               <span class="task-tick">✓</span>
             </button>
             <button class="task-check" type="button" data-task="t2">
               <span class="task-num">2</span>
-              <span><strong>看 Claude 做出的网页，提 1-2 个修改意见</strong>（用上第七课学的迭代！比如换颜色、换头像）</span>
+              <span><strong>看 AI 做出的网页，提 1-2 个修改意见</strong>（用上第七课学的迭代！比如换颜色、换头像）</span>
               <span class="task-tick">✓</span>
             </button>
             <button class="task-check" type="button" data-task="t3">
@@ -1226,7 +1226,7 @@
             <h3>家长小贴士</h3>
             <ul>
               <li>可以把个人主页放在仓库的 index.html，这样网址最短。</li>
-              <li>让 Claude 在主页里加上第七课游戏的链接，作品集就打通了。</li>
+              <li>让 AI 在主页里加上第七课游戏的链接，作品集就打通了。</li>
               <li>发布后全家打开手机看一看，仪式感拉满。</li>
             </ul>
             <div class="say-box">“这一页会一直陪着你长大，以后每个作品都能放进来。”</div>
@@ -1772,7 +1772,7 @@
         });
       });
       document.getElementById("copyRealBtn").addEventListener("click", () => {
-        copyText(buildSitePrompt(), "设计稿提示词已复制，发给 Claude 吧！");
+        copyText(buildSitePrompt(), "设计稿提示词已复制，发给 AI 吧！");
       });
       renderReal();
     }

@@ -959,7 +959,7 @@
           <div>
             <div class="eyebrow">任务 3</div>
             <h2 id="story-title">故事接龙：你一句，AI 一句</h2>
-            <p class="stage-lead">和 AI 轮流讲故事！孩子先说一句，家长把它念给 Claude 听（或打字问），再把 AI 接的那句记回来。接满 4 轮（8 句）就能拼出完整故事。</p>
+            <p class="stage-lead">和 AI 轮流讲故事！孩子先说一句，家长把它念给 AI 听（或打字问），再把 AI 接的那句记回来。接满 4 轮（8 句）就能拼出完整故事。</p>
           </div>
           <span class="time-pill">8 分钟</span>
         </div>
@@ -981,9 +981,9 @@
           </div>
           <div class="guide-panel">
             <h3>怎么拿到 AI 的那句？</h3>
-            <div class="prompt-box"><strong>念给 Claude 听：</strong>&ldquo;我们在玩故事接龙。故事到这里：（读一遍已有的句子）。请你只接一句话，要适合 8 岁小朋友，有一点点好笑。&rdquo;</div>
+            <div class="prompt-box"><strong>念给 AI 听：</strong>&ldquo;我们在玩故事接龙。故事到这里：（读一遍已有的句子）。请你只接一句话，要适合 8 岁小朋友，有一点点好笑。&rdquo;</div>
             <ul>
-              <li>家长可以用手机问 Claude，也可以自己现编一句扮演 AI。</li>
+              <li>家长可以用手机问 AI，也可以自己现编一句扮演 AI。</li>
               <li>轮到谁，颜色条会提示：黄色是孩子，青色是 AI。</li>
               <li>写错了可以点句子旁边的&ldquo;删除&rdquo;。</li>
             </ul>
@@ -1473,7 +1473,7 @@
         list.appendChild(row);
       });
       const pill = document.getElementById("turnPill");
-      pill.textContent = nextSpeaker() === "kid" ? "现在轮到：👧 孩子" : "现在轮到：🤖 AI（家长帮忙问 Claude）";
+      pill.textContent = nextSpeaker() === "kid" ? "现在轮到：👧 孩子" : "现在轮到：🤖 AI（家长帮忙问 AI）";
       const final = document.getElementById("storyFinal");
       if (state.storyShown && state.storyLines.length >= MIN_LINES) {
         final.style.display = "block";

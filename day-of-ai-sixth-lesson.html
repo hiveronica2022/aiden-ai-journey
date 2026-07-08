@@ -448,7 +448,7 @@
           <div>
             <div class="eyebrow">任务 3</div>
             <h2 id="workshop-title">需求卡工坊</h2>
-            <p class="stage-lead">把每个想法填进模板，工坊会自动帮你拼成一段可以念给 Claude 听的需求。</p>
+            <p class="stage-lead">把每个想法填进模板，工坊会自动帮你拼成一段可以念给 AI 听的需求。</p>
           </div>
           <span class="time-pill">8 分钟</span>
         </div>
@@ -480,8 +480,8 @@
           <div class="guide-panel">
             <h3>怎么用这张卡</h3>
             <ul>
-              <li>让孩子把需求卡<strong>念给 Claude 听</strong>（家长操作电脑）。</li>
-              <li>Claude 改好后，把新代码换进游戏文件里再打开。</li>
+              <li>让孩子把需求卡<strong>念给 AI 听</strong>（家长操作电脑）。</li>
+              <li>AI 改好后，把新代码换进游戏文件里再打开。</li>
               <li>一次只改一个想法，改好一个再改下一个。</li>
             </ul>
             <div class="say-box">“我想要 ___，因为 ___，做到 ___ 就算成功。”这是产品经理的万能句式！</div>
@@ -947,7 +947,7 @@
       document.getElementById("copyPrompt").addEventListener("click", () => {
         const text = buildPrompt();
         if (navigator.clipboard && text) {
-          navigator.clipboard.writeText(text).then(() => showToast("需求卡已复制，可以念给 Claude 听啦。"));
+          navigator.clipboard.writeText(text).then(() => showToast("需求卡已复制，可以念给 AI 听啦。"));
         } else {
           showToast("先把三格填好再复制。");
         }
@@ -965,7 +965,7 @@
       out.textContent = text || "填一填上面三格，这里会自动出现你的需求卡。";
       const done = Boolean(text);
       const feedback = document.getElementById("workshopFeedback");
-      feedback.textContent = done ? "需求卡做好了！复制它，念给 Claude 听。" : "三格都填好，需求卡就完成了。";
+      feedback.textContent = done ? "需求卡做好了！复制它，念给 AI 听。" : "三格都填好，需求卡就完成了。";
       feedback.className = `feedback ${done ? "good" : ""}`;
       markComplete("workshop", done);
     }
