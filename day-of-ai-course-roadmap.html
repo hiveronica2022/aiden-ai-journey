@@ -187,6 +187,22 @@
     .module.mod-a { --mod-line: rgba(11,143,139,.4); --mod-bg: linear-gradient(180deg, #ffffff, var(--teal-soft)); --mod-color: var(--teal); }
     .module.mod-b { --mod-line: rgba(222,98,81,.4);  --mod-bg: linear-gradient(180deg, #ffffff, var(--coral-soft)); --mod-color: var(--coral); }
     .module.mod-c { --mod-line: rgba(114,95,180,.4); --mod-bg: linear-gradient(180deg, #ffffff, var(--violet-soft)); --mod-color: var(--violet); }
+    .module.mod-intro { --mod-line: rgba(241,198,75,.5); --mod-bg: linear-gradient(180deg, #ffffff, var(--gold-soft)); --mod-color: #b08908; }
+    .stop.review .stop-num::after {
+      content: "✓";
+      position: absolute;
+      right: -4px;
+      bottom: -4px;
+      width: 22px;
+      height: 22px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--green);
+      color: #fff;
+      font-size: 13px;
+      border: 2px solid #fff;
+    }
 
     .module-head {
       display: flex;
@@ -686,6 +702,60 @@
         <span class="lbadge ai-no">✅ 无需 AI</span> 这课不用 AI 也能完整完成。
       </div>
 
+      <div class="module mod-intro">
+        <div class="module-head">
+          <span class="tag">入门</span>
+          <h3>先认识 AI</h3>
+          <span class="star" style="background:var(--green-soft);color:var(--green);">🏅 已通关 · 随时可回顾</span>
+        </div>
+        <p class="module-note">最开始的两课，认识身边的 AI、搞懂 AI 到底是什么。已经上过了，随时点开复习。</p>
+        <div class="stops">
+
+          <div class="stop review">
+            <div class="stop-num">1</div>
+            <div class="card">
+              <button class="card-top" type="button">
+                <span class="emoji">🕵️</span>
+                <span class="titles">
+                  <h4>AI 侦探任务</h4>
+                  <p class="concept">认识身边的 AI · 抓 AI 犯错</p>
+                  <div class="lesson-badges"><span class="lbadge offline">🔌 可离线</span><span class="lbadge ai-no">✅ 无需 AI</span></div>
+                </span>
+                <span class="chev">▾</span>
+              </button>
+              <div class="card-body"><div><div class="card-body-inner">
+                <div class="row do"><b>做过</b><span>玩「AI 寻宝」分辨哪些东西是 AI、抓 AI 犯错、当一次「训练老师」教机器。</span></div>
+                <div class="row make"><b>作品</b><span>一份「AI 侦探报告」。</span></div>
+                <div class="row tip"><b>回顾点</b><span>身边哪些东西是 AI？AI 也会犯错，不是什么都懂。</span></div>
+                <a class="lesson-link" href="day-of-ai-first-lesson.html">📖 打开第 1 课复习 →</a>
+              </div></div></div>
+            </div>
+          </div>
+
+          <div class="stop review">
+            <div class="stop-num">2</div>
+            <div class="card">
+              <button class="card-top" type="button">
+                <span class="emoji">💡</span>
+                <span class="titles">
+                  <h4>什么是 AI？</h4>
+                  <p class="concept">固定规则 vs AI 判断 · 靠数据学习</p>
+                  <div class="lesson-badges"><span class="lbadge offline">🔌 可离线</span><span class="lbadge ai-no">✅ 无需 AI</span></div>
+                </span>
+                <span class="chev">▾</span>
+              </button>
+              <div class="card-body"><div><div class="card-body-inner">
+                <div class="row do"><b>做过</b><span>分辨「固定规则 vs AI 判断」、给机器人写一个算法、拼出自己的 AI 定义。</span></div>
+                <div class="row make"><b>作品</b><span>一句「我自己的 AI 定义」。</span></div>
+                <div class="row tip"><b>回顾点</b><span>AI 和普通程序不一样：它靠很多例子（数据）学会做判断。这是第 3、4 课的基础。</span></div>
+                <a class="lesson-link" href="day-of-ai-second-lesson.html">📖 打开第 2 课复习 →</a>
+              </div></div></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <div class="module mod-a">
         <div class="module-head">
           <span class="tag">模块 A</span>
@@ -1133,10 +1203,11 @@
         var done = 0;
         stops.forEach(function (s) {
           var id = s.getAttribute("data-lesson");
+          if (!id) return; // 回顾卡（第 1、2 课）不计入冒险进度
           var checked = !!state[id];
           s.classList.toggle("checked", checked);
           var btn = s.querySelector(".check-btn");
-          btn.innerHTML = checked ? "🌟 已完成！再点取消" : "⭐ 完成打卡";
+          if (btn) btn.innerHTML = checked ? "🌟 已完成！再点取消" : "⭐ 完成打卡";
           if (checked) done++;
         });
         count.textContent = done;
@@ -1161,11 +1232,13 @@
       stops.forEach(function (s) {
         var id = s.getAttribute("data-lesson");
 
-        s.querySelector(".card-top").addEventListener("click", function () {
+        var top = s.querySelector(".card-top");
+        if (top) top.addEventListener("click", function () {
           s.classList.toggle("open");
         });
 
-        s.querySelector(".check-btn").addEventListener("click", function (e) {
+        var btn = s.querySelector(".check-btn");
+        if (btn) btn.addEventListener("click", function (e) {
           e.stopPropagation();
           state[id] = !state[id];
           save(state);
